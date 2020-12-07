@@ -1,0 +1,42 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp5.0</TargetFramework>
+    <UserSecretsId>aspnet-COO.Server-8077F3A7-0459-4263-A48B-42A7C1791354</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Data\Migrations\20200717122003_AuditInformationCreatedByNotRequired.cs" />
+    <Compile Remove="Data\Migrations\20200717122003_AuditInformationCreatedByNotRequired.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200717122615_AuditInformation.cs" />
+    <Compile Remove="Data\Migrations\20200717122615_AuditInformation.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200717140200_UserProfiles.cs" />
+    <Compile Remove="Data\Migrations\20200717140200_UserProfiles.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200717160207_UserProfiles.cs" />
+    <Compile Remove="Data\Migrations\20200717160207_UserProfiles.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200717160247_UserProfiles.cs" />
+    <Compile Remove="Data\Migrations\20200717160247_UserProfiles.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200717160333_UserProfiles.cs" />
+    <Compile Remove="Data\Migrations\20200717160333_UserProfiles.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="EFCore.NamingConventions" Version="1.1.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="5.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="5.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="5.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="5.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="5.0.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="5.0.0" />
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL.Design" Version="1.1.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="5.6.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Data\Migrations\" />
+  </ItemGroup>
+
+</Project>
