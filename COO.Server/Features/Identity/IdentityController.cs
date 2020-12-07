@@ -1,6 +1,7 @@
 ﻿namespace COO.Server.Features.Identity
 {
     using System.Threading.Tasks;
+    using COO.Server.Infrastructure.Services;
     using Data.Models;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Identity;
@@ -36,12 +37,50 @@
             };
 
             var result = await this.userManager.CreateAsync(user, model.Password);
-            if (!result.Succeeded)
+            if (result.Succeeded)
             {
-                return BadRequest(result.Errors);
+                var code = await this.userManager.GenerateEmailConfirmationTokenAsync(user);
+
+                var callbackUrl = Url.Action(
+                        "ConfirmEmail",
+                        "Identity",
+                        new { userId = user.Id, code = code },
+                        protocol: HttpContext.Request.Scheme);
+
+                EmailService emailService = new EmailService(this.appSettings.EmailSender, this.appSettings.PasswordSender);
+
+                emailService.SendEmail(
+                    "Confirm your account",
+                    $"Confirm registration by clicking on the link: <a href='{callbackUrl}'>link</a>",
+                    user.Email,
+                    "smtp.gmail.com"
+                );
+
+                return Ok("To complete the registration, check your email and follow the link provided in the letter");
             }
 
-            return Ok();
+            return BadRequest(result.Errors);
+        }
+
+        [HttpGet]
+        [AllowAnonymous]
+        [Route(nameof(ConfirmEmail))]
+        public async Task<IActionResult> ConfirmEmail(string userId, string code)
+        {
+            if (userId == null || code == null)
+            {
+                return BadRequest();
+            }
+            var user = await this.userManager.FindByIdAsync(userId);
+            if (user == null)
+            {
+                return Unauthorized();
+            }
+            var result = await this.userManager.ConfirmEmailAsync(user, code);
+            if (result.Succeeded)
+                return Ok();
+            else
+                return Unauthorized();
         }
 
         [HttpPost]
@@ -55,9 +94,14 @@
                 return Unauthorized();
             }
 
-            var passwordValid = await this.userManager.CheckPasswordAsync(user, model.Password);
-            if (!passwordValid)
+            if (!await this.userManager.CheckPasswordAsync(user, model.Password))
             {
+                return Unauthorized();
+            }
+
+            if (!await this.userManager.IsEmailConfirmedAsync(user))
+            {
+                //ModelState.AddModelError(string.Empty, "You have not confirmed your email");
                 return Unauthorized();
             }
 

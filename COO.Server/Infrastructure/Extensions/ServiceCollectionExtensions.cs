@@ -48,8 +48,11 @@
                     options.Password.RequireLowercase = false;
                     options.Password.RequireNonAlphanumeric = false;
                     options.Password.RequireUppercase = false;
+                    options.User.RequireUniqueEmail = true;
+                    options.SignIn.RequireConfirmedEmail = true;
                 })
-                .AddEntityFrameworkStores<COODbContext>();
+                .AddEntityFrameworkStores<COODbContext>()
+                .AddDefaultTokenProviders();
 
             //services.AddIdentity<User, IdentityRole<string>>(options => options.SignIn.RequireConfirmedAccount = true)
             //    .AddEntityFrameworkStores<COODbContext>();
