@@ -1,6 +1,7 @@
 ﻿namespace COO.Server.Features.Identity
 {
     using System.Threading.Tasks;
+    using COO.Server.Infrastructure.Helpers;
     using COO.Server.Infrastructure.Services;
     using Data.Models;
     using Microsoft.AspNetCore.Authorization;
@@ -14,15 +15,18 @@
         private readonly UserManager<User> userManager;
         private readonly IIdentityService identity;
         private readonly AppSettings appSettings;
+        private readonly IEmailService emailService;
 
         public IdentityController(
             UserManager<User> userManager,
             IIdentityService identity,
-            IOptions<AppSettings> appSettings)
+            IOptions<AppSettings> appSettings,
+            IEmailService emailService)
         {
             this.userManager = userManager;
             this.identity = identity;
             this.appSettings = appSettings.Value;
+            this.emailService = emailService;
         }
 
         [HttpPost]
@@ -47,40 +51,115 @@
                         new { userId = user.Id, code = code },
                         protocol: HttpContext.Request.Scheme);
 
-                EmailService emailService = new EmailService(this.appSettings.EmailSender, this.appSettings.PasswordSender);
+                await this.emailService.SendAsync(
+                    to: user.Email,
+                    subject: "ConfirmEmail",
+                    html: $"Confirm registration by clicking on the link: <a href='{callbackUrl}'>link</a>"
+                    );
 
-                emailService.SendEmail(
-                    "Confirm your account",
-                    $"Confirm registration by clicking on the link: <a href='{callbackUrl}'>link</a>",
-                    user.Email,
-                    "smtp.gmail.com"
-                );
-
-                return Ok("To complete the registration, check your email and follow the link provided in the letter");
+                return Ok(new { message = "To complete the registration, check your email and follow the link provided in the letter" });
             }
+            else
+            {
+                var errorMessage = "";
+                foreach(var error in result.Errors)
+                {
+                    errorMessage = error.Description;
+                }
 
-            return BadRequest(result.Errors);
+                throw new AppException(errorMessage);
+            }
         }
 
         [HttpGet]
         [AllowAnonymous]
         [Route(nameof(ConfirmEmail))]
-        public async Task<IActionResult> ConfirmEmail(string userId, string code)
+        public async Task<ActionResult> ConfirmEmail(string userId, string code)
         {
             if (userId == null || code == null)
             {
-                return BadRequest();
+                throw new AppException("Link is incorrect");
             }
             var user = await this.userManager.FindByIdAsync(userId);
             if (user == null)
             {
-                return Unauthorized();
+                throw new AppException("Link is incorrect");
             }
             var result = await this.userManager.ConfirmEmailAsync(user, code);
             if (result.Succeeded)
-                return Ok();
+            {
+                return Redirect($"{this.appSettings.ClientUrl}/login");
+            }
             else
-                return Unauthorized();
+            {
+                throw new AppException("Link is incorrect");
+            }
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        [Route(nameof(ForgotPassword))]
+        public async Task<ActionResult> ForgotPassword(ForgotPasswordRequestModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = await this.userManager.FindByEmailAsync(model.Email);
+                if (user == null || !(await this.userManager.IsEmailConfirmedAsync(user)))
+                {
+                    // the user with the given email may not be present in the database
+                    // however, we print a standard message to hide
+                    // presence or absence of a user in the database
+                    return Ok(new { message = "To reset your password, follow the link in the letter sent to your email." });
+                }
+
+                var code = await this.userManager.GeneratePasswordResetTokenAsync(user);
+
+                var callbackUrl = $"{this.appSettings.ClientUrl}/reset-password?code={code}";
+
+                await this.emailService.SendAsync(
+                    model.Email,
+                    "Reset Password",
+                    $"To reset your password, follow the link: <a href='{callbackUrl}'>link</a>");
+
+                return Ok( new { message = "To reset your password, follow the link in the letter sent to your email." });
+            }
+            else
+            {
+                throw new AppException("Email is incorrect");
+            }
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        [Route(nameof(ResetPassword))]
+        public async Task<ActionResult> ResetPassword(ResetPasswordRequestModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = await this.userManager.FindByEmailAsync(model.Email);
+                
+                if (user == null)
+                {
+                    return Ok( new { message = "Your password has been reset. To enter the application, follow the" });
+                }
+
+                var code = model.Code.Replace(" ", "+");
+
+                var result = await this.userManager.ResetPasswordAsync(user, code, model.Password);
+
+                if (result.Succeeded)
+                {
+                    return Ok(new { message = "Your password has been reset. To enter the application, follow the" });
+                }
+                else
+                {
+                    throw new AppException("Token is not valid");
+                }
+            }
+            else
+            {
+                throw new AppException("Email or password is incorrect");
+            }
         }
 
         [HttpPost]
@@ -91,18 +170,17 @@
             var user = await this.userManager.FindByNameAsync(model.UserName);
             if (user == null)
             {
-                return Unauthorized();
+                throw new AppException("UserName or password is incorrect");
             }
 
             if (!await this.userManager.CheckPasswordAsync(user, model.Password))
             {
-                return Unauthorized();
+                throw new AppException("UserName or password is incorrect");
             }
 
             if (!await this.userManager.IsEmailConfirmedAsync(user))
             {
-                //ModelState.AddModelError(string.Empty, "You have not confirmed your email");
-                return Unauthorized();
+                throw new AppException("UserName or password is incorrect");
             }
 
             var token = this.identity.GenerateJwtToken(
@@ -112,6 +190,7 @@
 
             return new LoginResponseModel
             {
+                UserName = user.UserName,
                 Token = token
             };
         }

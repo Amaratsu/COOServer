@@ -92,6 +92,7 @@
             => services
                 .AddScoped<ICurrentUserService, CurrentUserService>()
                 .AddTransient<IIdentityService, IdentityService>()
+                .AddTransient<IEmailService, EmailService>()
                 .AddTransient<IProfileService, ProfileService>()
                 .AddTransient<ICatService, CatService>()
                 .AddTransient<ISearchService, SearchService>()

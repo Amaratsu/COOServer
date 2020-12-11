@@ -36,6 +36,7 @@ namespace COO.Server
                     .AllowAnyOrigin()
                     .AllowAnyHeader()
                     .AllowAnyMethod())
+                .UseMiddleware<ErrorHandlerMiddleware>()
                 .UseAuthentication()
                 .UseAuthorization()
                 .UseEndpoints(endpoints =>

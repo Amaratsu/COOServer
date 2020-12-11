@@ -1,47 +1,38 @@
 ﻿namespace COO.Server.Infrastructure.Services
 {
-    using System;
-    using System.ComponentModel;
-    using System.Net.Mail;
+    using MailKit.Net.Smtp;
+    using MailKit.Security;
+    using Microsoft.Extensions.Options;
+    using MimeKit;
+    using MimeKit.Text;
     using System.Threading.Tasks;
 
-    public class EmailService
+    public class EmailService: IEmailService
     {
-        private ValueTuple<string, string> credentials;
-        public EmailService(string email, string password)
+        private readonly AppSettings _appSettings;
+
+        public EmailService(IOptions<AppSettings> appSettings)
         {
-            credentials.Item1 = email;
-            credentials.Item2 = password;
+            _appSettings = appSettings.Value;
         }
 
-        public void SendEmail(string subject, string body, string to, string host, int port = 587, bool EnableSsl = true)
+        public async Task SendAsync(string to, string subject, string html, string from = null)
         {
-            try
+            // create message
+            var email = new MimeMessage();
+            email.From.Add(MailboxAddress.Parse(from ?? _appSettings.EmailFrom));
+            email.To.Add(MailboxAddress.Parse(to));
+            email.Subject = subject;
+            email.Body = new TextPart(TextFormat.Html) { Text = html };
+
+            // send email
+            using (var smtp = new SmtpClient())
             {
-                MailMessage message = new MailMessage() { Subject = subject, IsBodyHtml = true, Body = body };
-                message.To.Add(new MailAddress(to));
-                message.From = new MailAddress(credentials.Item1);
-
-                SmtpClient smtpClient = new SmtpClient();
-                smtpClient.Host = !string.IsNullOrWhiteSpace(host) ? host : "smtp.gmail.com";
-                smtpClient.Port = port;
-                smtpClient.EnableSsl = EnableSsl;
-                smtpClient.DeliveryMethod = SmtpDeliveryMethod.Network;
-                smtpClient.SendCompleted += SmtpClient_SendCompleted;
-                smtpClient.UseDefaultCredentials = false;
-                smtpClient.Credentials = new System.Net.NetworkCredential(credentials.Item1, credentials.Item2);
-
-                smtpClient.Send(message);
+                await smtp.ConnectAsync(_appSettings.SmtpHost, _appSettings.SmtpPort, SecureSocketOptions.StartTls);
+                await smtp.AuthenticateAsync(_appSettings.SmtpUser, _appSettings.SmtpPass);
+                await smtp.SendAsync(email);
+                await smtp.DisconnectAsync(true);
             }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.ToString(), "WebAPI email");
-            }
-        }
-
-        private void SmtpClient_SendCompleted(object sender, AsyncCompletedEventArgs e)
-        {
-            Console.WriteLine(e.ToString(), "WebAPI email");
         }
     }
 }
