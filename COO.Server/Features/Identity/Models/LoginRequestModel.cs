@@ -1,13 +1,20 @@
 ﻿namespace COO.Server.Features.Identity.Models
 {
-    using System.ComponentModel.DataAnnotations;
+    using FluentValidation;
 
     public class LoginRequestModel
     {
-        [Required]
         public string UserName { get; set; }
 
-        [Required]
         public string Password { get; set; }
+    }
+
+    public class LoginValidator : AbstractValidator<LoginRequestModel>
+    {
+        public LoginValidator()
+        {
+            RuleFor(model => model.UserName).NotNull().MinimumLength(6);
+            RuleFor(model => model.Password).NotNull().EmailAddress();
+        }
     }
 }

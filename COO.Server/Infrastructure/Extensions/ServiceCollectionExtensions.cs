@@ -17,6 +17,7 @@
     using Microsoft.OpenApi.Models;
     using Services;
     using COO.Server.Data.Models;
+    using FluentValidation.AspNetCore;
 
     public static class ServiceCollectionExtensions
     {
@@ -114,6 +115,9 @@
             => services
                 .AddControllers(options => options
                     .Filters
-                    .Add<ModelOrNotFoundActionFilter>());
+                    .Add<ModelOrNotFoundActionFilter>())
+                    .AddFluentValidation(fv => {
+                        fv.RunDefaultMvcValidationAfterFluentValidationExecutes = false;
+                    });
     }
 }

@@ -1,11 +1,17 @@
 ﻿namespace COO.Server.Features.Identity.Models
 {
-    using System.ComponentModel.DataAnnotations;
+    using FluentValidation;
 
     public class ForgotPasswordRequestModel
     {
-        [Required]
-        [EmailAddress]
         public string Email { get; set; }
+    }
+
+    public class ForgotPasswordValidator : AbstractValidator<ForgotPasswordRequestModel>
+    {
+        public ForgotPasswordValidator()
+        {
+            RuleFor(model => model.Email).NotNull().EmailAddress();
+        }
     }
 }

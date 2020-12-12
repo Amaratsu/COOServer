@@ -1,9 +1,11 @@
 ﻿namespace COO.Server.Features.Identity
 {
+    using System;
     using System.Threading.Tasks;
     using COO.Server.Infrastructure.Helpers;
     using COO.Server.Infrastructure.Services;
     using Data.Models;
+    using FluentValidation.Results;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
@@ -34,40 +36,50 @@
         [Route(nameof(Register))]
         public async Task<ActionResult> Register(RegisterRequestModel model)
         {
-            var user = new User
+            RegisterValidator validator = new RegisterValidator();
+            ValidationResult validateResult = validator.Validate(model);
+
+            if (validateResult.IsValid)
             {
-                Email = model.Email,
-                UserName = model.UserName
-            };
+                var user = new User
+                {
+                    Email = model.Email,
+                    UserName = model.UserName
+                };
 
-            var result = await this.userManager.CreateAsync(user, model.Password);
-            if (result.Succeeded)
-            {
-                var code = await this.userManager.GenerateEmailConfirmationTokenAsync(user);
+                var newUser = await this.userManager.CreateAsync(user, model.Password);
+                if (newUser.Succeeded)
+                {
+                    var code = await this.userManager.GenerateEmailConfirmationTokenAsync(user);
 
-                var callbackUrl = Url.Action(
-                        "ConfirmEmail",
-                        "Identity",
-                        new { userId = user.Id, code = code },
-                        protocol: HttpContext.Request.Scheme);
+                    var callbackUrl = Url.Action(
+                            "ConfirmEmail",
+                            "Identity",
+                            new { userId = user.Id, code = code },
+                            protocol: HttpContext.Request.Scheme);
 
-                await this.emailService.SendAsync(
-                    to: user.Email,
-                    subject: "ConfirmEmail",
-                    html: $"Confirm registration by clicking on the link: <a href='{callbackUrl}'>link</a>"
-                    );
+                    await this.emailService.SendAsync(
+                        to: user.Email,
+                        subject: "ConfirmEmail",
+                        html: $"Confirm registration by clicking on the link: <a href='{callbackUrl}'>link</a>"
+                        );
 
-                return Ok(new { message = "To complete the registration, check your email and follow the link provided in the letter" });
-            }
+                    return Ok(new { message = "To complete the registration, check your email and follow the link provided in the letter" });
+                }
+                else
+                {
+                    var errorMessage = "";
+                    foreach (var error in newUser.Errors)
+                    {
+                        errorMessage = error.Description;
+                    }
+
+                    throw new AppException(errorMessage);
+                }
+            } 
             else
             {
-                var errorMessage = "";
-                foreach(var error in result.Errors)
-                {
-                    errorMessage = error.Description;
-                }
-
-                throw new AppException(errorMessage);
+                throw new AppException(validateResult.Errors[0].ErrorMessage);
             }
         }
 
@@ -101,7 +113,10 @@
         [Route(nameof(ForgotPassword))]
         public async Task<ActionResult> ForgotPassword(ForgotPasswordRequestModel model)
         {
-            if (ModelState.IsValid)
+            ForgotPasswordValidator validator = new ForgotPasswordValidator();
+            ValidationResult validateResult = validator.Validate(model);
+
+            if (validateResult.IsValid)
             {
                 var user = await this.userManager.FindByEmailAsync(model.Email);
                 if (user == null || !(await this.userManager.IsEmailConfirmedAsync(user)))
@@ -125,7 +140,7 @@
             }
             else
             {
-                throw new AppException("Email is incorrect");
+                throw new AppException(validateResult.Errors[0].ErrorMessage);
             }
         }
 
@@ -134,7 +149,10 @@
         [Route(nameof(ResetPassword))]
         public async Task<ActionResult> ResetPassword(ResetPasswordRequestModel model)
         {
-            if (ModelState.IsValid)
+            ResetPasswordValidator validator = new ResetPasswordValidator();
+            ValidationResult validateResult = validator.Validate(model);
+
+            if (validateResult.IsValid)
             {
                 var user = await this.userManager.FindByEmailAsync(model.Email);
                 
@@ -158,7 +176,7 @@
             }
             else
             {
-                throw new AppException("Email or password is incorrect");
+                throw new AppException(validateResult.Errors[0].ErrorMessage);
             }
         }
 
@@ -167,32 +185,43 @@
         [Route(nameof(Login))]
         public async Task<ActionResult<LoginResponseModel>> Login(LoginRequestModel model)
         {
-            var user = await this.userManager.FindByNameAsync(model.UserName);
-            if (user == null)
+            LoginValidator validator = new LoginValidator();
+            ValidationResult validateResult = validator.Validate(model);
+
+            if (validateResult.IsValid)
             {
-                throw new AppException("UserName or password is incorrect");
+
+                var user = await this.userManager.FindByNameAsync(model.UserName);
+                if (user == null)
+                {
+                    throw new AppException("UserName or password is incorrect");
+                }
+
+                if (!await this.userManager.CheckPasswordAsync(user, model.Password))
+                {
+                    throw new AppException("UserName or password is incorrect");
+                }
+
+                if (!await this.userManager.IsEmailConfirmedAsync(user))
+                {
+                    throw new AppException("UserName or password is incorrect");
+                }
+
+                var token = this.identity.GenerateJwtToken(
+                    user.Id,
+                    user.UserName,
+                    this.appSettings.Secret);
+
+                return new LoginResponseModel
+                {
+                    UserName = user.UserName,
+                    Token = token
+                };
             }
-
-            if (!await this.userManager.CheckPasswordAsync(user, model.Password))
+            else
             {
-                throw new AppException("UserName or password is incorrect");
+                throw new AppException(validateResult.Errors[0].ErrorMessage);
             }
-
-            if (!await this.userManager.IsEmailConfirmedAsync(user))
-            {
-                throw new AppException("UserName or password is incorrect");
-            }
-
-            var token = this.identity.GenerateJwtToken(
-                user.Id,
-                user.UserName,
-                this.appSettings.Secret);
-
-            return new LoginResponseModel
-            {
-                UserName = user.UserName,
-                Token = token
-            };
         }
     }
 }

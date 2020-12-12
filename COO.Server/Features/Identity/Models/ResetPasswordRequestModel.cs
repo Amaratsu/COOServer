@@ -1,20 +1,25 @@
 ﻿namespace COO.Server.Features.Identity.Models
 {
-    using System.ComponentModel.DataAnnotations;
+    using FluentValidation;
 
     public class ResetPasswordRequestModel
     {
-        [Required]
-        [EmailAddress]
         public string Email { get; set; }
 
-        [Required]
-        [MinLength(6)]
         public string Password { get; set; }
 
-        [Compare("Password")]
         public string ConfirmPassword { get; set; }
 
         public string Code { get; set; }
+    }
+
+    public class ResetPasswordValidator : AbstractValidator<ResetPasswordRequestModel>
+    {
+        public ResetPasswordValidator()
+        {
+            RuleFor(model => model.Email).NotNull().EmailAddress();
+            RuleFor(model => model.Password).NotNull().MinimumLength(6);
+            RuleFor(model => model.ConfirmPassword).Equal(model => model.Password);
+        }
     }
 }
