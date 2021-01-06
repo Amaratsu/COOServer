@@ -16,8 +16,8 @@ namespace COO.Server
         public void ConfigureServices(IServiceCollection services)
             => services
                 .AddDatabase(this.Configuration)
-                .AddIdentity()
-                .AddJwtAuthentication(services.GetApplicationSettings(this.Configuration))
+                //.AddIdentity()
+                //.AddJwtAuthentication(services.GetApplicationSettings(this.Configuration))
                 .AddApplicationServices()
                 .AddSwagger()
                 .AddApiControllers();
@@ -37,8 +37,8 @@ namespace COO.Server
                     .AllowAnyHeader()
                     .AllowAnyMethod())
                 .UseMiddleware<ErrorHandlerMiddleware>()
-                .UseAuthentication()
-                .UseAuthorization()
+                //.UseAuthentication()
+                //.UseAuthorization()
                 .UseEndpoints(endpoints =>
                 {
                     endpoints.MapControllers();

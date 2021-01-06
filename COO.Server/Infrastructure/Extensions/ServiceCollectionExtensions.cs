@@ -2,11 +2,6 @@
 {
     using System.Text;
     using Data;
-    using Features.Cats;
-    using Features.Follows;
-    using Features.Identity;
-    using Features.Profiles;
-    using Features.Search;
     using Filters;
     using Microsoft.AspNetCore.Authentication.JwtBearer;
     using Microsoft.AspNetCore.Identity;
@@ -18,6 +13,7 @@
     using Services;
     using COO.Server.Data.Models;
     using FluentValidation.AspNetCore;
+    using COO.Server.Features.Servers;
 
     public static class ServiceCollectionExtensions
     {
@@ -42,7 +38,7 @@
         public static IServiceCollection AddIdentity(this IServiceCollection services)
         {
             services
-                .AddIdentity<User, IdentityRole>(options =>
+                .AddIdentity<SaveUser, IdentityRole>(options =>
                 {
                     options.Password.RequiredLength = 6;
                     options.Password.RequireDigit = false;
@@ -91,13 +87,14 @@
 
         public static IServiceCollection AddApplicationServices(this IServiceCollection services)
             => services
-                .AddScoped<ICurrentUserService, CurrentUserService>()
-                .AddTransient<IIdentityService, IdentityService>()
-                .AddTransient<IEmailService, EmailService>()
-                .AddTransient<IProfileService, ProfileService>()
-                .AddTransient<ICatService, CatService>()
-                .AddTransient<ISearchService, SearchService>()
-                .AddTransient<IFollowService, FollowService>();
+                .AddScoped<IServerService, ServerService>()
+                //.AddScoped<ICurrentUserService, CurrentUserService>()
+                //.AddTransient<IIdentityService, IdentityService>()
+                .AddScoped<IEmailService, EmailService>();
+                //.AddTransient<IProfileService, ProfileService>()
+                //.AddTransient<ICatService, CatService>()
+                //.AddTransient<ISearchService, SearchService>()
+                //.AddTransient<IFollowService, FollowService>()
 
         public static IServiceCollection AddSwagger(this IServiceCollection services)
             => services.AddSwaggerGen(c =>

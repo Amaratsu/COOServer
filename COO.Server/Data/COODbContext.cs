@@ -1,16 +1,16 @@
 ﻿namespace COO.Server.Data
 {
-    using System;
-    using System.Linq;
-    using System.Threading;
-    using System.Threading.Tasks;
-    using Infrastructure.Services;
-    using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+    //using System;
+    //using System.Linq;
+    //using System.Threading;
+    //using System.Threading.Tasks;
+    //using Infrastructure.Services;
+    //using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
     using Microsoft.EntityFrameworkCore;
     using Models;
     //using Models.Base;
 
-    public class COODbContext : IdentityDbContext<User>
+    public class COODbContext : DbContext
     {
         //private readonly ICurrentUserService currentUser;
 
@@ -18,25 +18,39 @@
             DbContextOptions<COODbContext> options)
             : base(options) { }
 
-        public DbSet<Cat> Cats { get; set; }
+        //public DbSet<Cat> Cats { get; set; }
 
-        public DbSet<Profile> Profiles { get; set; }
+        //public DbSet<Profile> Profiles { get; set; }
 
-        public DbSet<Follow> Follows { get; set; }
+        //public DbSet<Follow> Follows { get; set; }
 
-        public override int SaveChanges(bool acceptAllChangesOnSuccess)
-        {
-            //this.ApplyAuditInformation();
+        public DbSet<Server> Servers { get; set; }
 
-            return base.SaveChanges(acceptAllChangesOnSuccess);
-        }
+        public DbSet<DS_CreationRequest> DS_CreationRequests { get; set; }
 
-        public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = new CancellationToken())
-        {
-            //this.ApplyAuditInformation();
+        public DbSet<DS_HostInfo> DS_HostInfos { get; set; }
 
-            return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
-        }
+        public DbSet<DS_LoginRequest> DS_LoginRequests { get; set; }
+
+        public DbSet<LFG> LFGs { get; set; }
+
+        public DbSet<SaveUser> SaveUsers { get; set; }
+        public DbSet<PlayUser> PlayUsers { get; set; }
+        public DbSet<CharUser> CharUsers { get; set; }
+
+        //public override int SaveChanges(bool acceptAllChangesOnSuccess)
+        //{
+        //    //this.ApplyAuditInformation();
+
+        //    return base.SaveChanges(acceptAllChangesOnSuccess);
+        //}
+
+        //public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = new CancellationToken())
+        //{
+        //    //this.ApplyAuditInformation();
+
+        //    return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
+        //}
 
         //protected override void OnModelCreating(ModelBuilder builder)
         //{
