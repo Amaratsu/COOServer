@@ -93,11 +93,11 @@
             => services
                 .AddScoped<ICurrentUserService, CurrentUserService>()
                 .AddTransient<IIdentityService, IdentityService>()
-                .AddTransient<IEmailService, EmailService>()
-                .AddTransient<IProfileService, ProfileService>()
-                .AddTransient<ICatService, CatService>()
-                .AddTransient<ISearchService, SearchService>()
-                .AddTransient<IFollowService, FollowService>();
+                .AddTransient<IEmailService, EmailService>();
+                //.AddTransient<IProfileService, ProfileService>()
+                //.AddTransient<ICatService, CatService>()
+                //.AddTransient<ISearchService, SearchService>()
+                //.AddTransient<IFollowService, FollowService>();
 
         public static IServiceCollection AddSwagger(this IServiceCollection services)
             => services.AddSwaggerGen(c =>

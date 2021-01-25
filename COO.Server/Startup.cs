@@ -16,7 +16,7 @@ namespace COO.Server
         public void ConfigureServices(IServiceCollection services)
             => services
                 .AddDatabase(this.Configuration)
-                .AddIdentity()
+                //.AddIdentity()
                 .AddJwtAuthentication(services.GetApplicationSettings(this.Configuration))
                 .AddApplicationServices()
                 .AddSwagger()
