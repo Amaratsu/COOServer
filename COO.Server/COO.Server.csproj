@@ -6,18 +6,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Data\Migrations\20200717122003_AuditInformationCreatedByNotRequired.cs" />
-    <Compile Remove="Data\Migrations\20200717122003_AuditInformationCreatedByNotRequired.Designer.cs" />
-    <Compile Remove="Data\Migrations\20200717122615_AuditInformation.cs" />
-    <Compile Remove="Data\Migrations\20200717122615_AuditInformation.Designer.cs" />
-    <Compile Remove="Data\Migrations\20200717140200_UserProfiles.cs" />
-    <Compile Remove="Data\Migrations\20200717140200_UserProfiles.Designer.cs" />
-    <Compile Remove="Data\Migrations\20200717160207_UserProfiles.cs" />
-    <Compile Remove="Data\Migrations\20200717160207_UserProfiles.Designer.cs" />
-    <Compile Remove="Data\Migrations\20200717160247_UserProfiles.cs" />
-    <Compile Remove="Data\Migrations\20200717160247_UserProfiles.Designer.cs" />
-    <Compile Remove="Data\Migrations\20200717160333_UserProfiles.cs" />
-    <Compile Remove="Data\Migrations\20200717160333_UserProfiles.Designer.cs" />
+    <Compile Remove="Data\Migrations\**" />
+    <Content Remove="Data\Migrations\**" />
+    <EmbeddedResource Remove="Data\Migrations\**" />
+    <None Remove="Data\Migrations\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -39,7 +31,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Data\Migrations\" />
+    <Folder Include="Migrations\" />
   </ItemGroup>
 
 </Project>

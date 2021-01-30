@@ -7,10 +7,10 @@
 
     public interface IProfileService
     {
-        Task<ProfileServiceModel> ByUser(string userId, bool allInformation = false);
+        //Task<ProfileServiceModel> ByUser(int userId, bool allInformation = false);
 
         Task<Result> Update(
-            string userId, 
+            int userId, 
             string email, 
             string userName, 
             string name, 

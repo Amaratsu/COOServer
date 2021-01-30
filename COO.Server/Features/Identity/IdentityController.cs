@@ -208,7 +208,7 @@
                 }
 
                 var token = this.identity.GenerateJwtToken(
-                    user.Id,
+                    user.Id.ToString(),
                     user.UserName,
                     this.appSettings.Secret);
 

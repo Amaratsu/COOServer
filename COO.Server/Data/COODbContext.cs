@@ -10,7 +10,7 @@
     using Models;
     //using Models.Base;
 
-    public class COODbContext : IdentityDbContext<User>
+    public class COODbContext : IdentityDbContext<User, UserRole, int>
     {
         //private readonly ICurrentUserService currentUser;
 

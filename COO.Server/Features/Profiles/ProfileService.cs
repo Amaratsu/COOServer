@@ -14,30 +14,30 @@
 
         public ProfileService(COODbContext data) => this.data = data;
 
-        public async Task<ProfileServiceModel> ByUser(string userId, bool allInformation = false)
-            => await this.data
-                .Users
-                .Where(u => u.Id == userId)
-                .Select(u => allInformation 
-                    ? new PublicProfileServiceModel
-                    {
-                        Name = u.Profile.Name,
-                        MainPhotoUrl = u.Profile.MainPhotoUrl,
-                        WebSite = u.Profile.WebSite,
-                        Biography = u.Profile.Biography,
-                        Gender = u.Profile.Gender.ToString(),
-                        IsPrivate = u.Profile.IsPrivate
-                    }
-                    : new ProfileServiceModel
-                    {
-                        Name = u.Profile.Name,
-                        MainPhotoUrl = u.Profile.MainPhotoUrl,
-                        IsPrivate = u.Profile.IsPrivate
-                    })
-                .FirstOrDefaultAsync();
+        //public async Task<ProfileServiceModel> ByUser(int userId, bool allInformation = false)
+        //    => await this.data
+        //        .Users
+        //        .Where(u => u.Id == userId)
+        //        .Select(u => allInformation 
+        //            ? new PublicProfileServiceModel
+        //            {
+        //                Name = u.Profile.Name,
+        //                MainPhotoUrl = u.Profile.MainPhotoUrl,
+        //                WebSite = u.Profile.WebSite,
+        //                Biography = u.Profile.Biography,
+        //                Gender = u.Profile.Gender.ToString(),
+        //                IsPrivate = u.Profile.IsPrivate
+        //            }
+        //            : new ProfileServiceModel
+        //            {
+        //                Name = u.Profile.Name,
+        //                MainPhotoUrl = u.Profile.MainPhotoUrl,
+        //                IsPrivate = u.Profile.IsPrivate
+        //            })
+        //        .FirstOrDefaultAsync();
 
         public async Task<Result> Update(
-            string userId,
+            int userId,
             string email,
             string userName,
             string name,
@@ -49,7 +49,7 @@
         {
             var user = await this.data
                 .Users
-                .Include(u => u.Profile)
+                //.Include(u => u.Profile)
                 .FirstOrDefaultAsync(p => p.Id == userId);
 
             if (user == null)
@@ -57,10 +57,10 @@
                 return "User does not exist.";
             }
 
-            if (user.Profile == null)
-            {
-                user.Profile = new Profile();
-            }
+            //if (user.Profile == null)
+            //{
+            //    user.Profile = new Profile();
+            //}
 
             var result = await this.ChangeEmail(user, userId, email);
             if (result.Failure)
@@ -74,16 +74,16 @@
                 return result;
             }
 
-            this.ChangeProfile(
-                user.Profile,
-                name,
-                mainPhotoUrl,
-                webSite,
-                biography,
-                gender,
-                isPrivate);
+            //this.ChangeProfile(
+            //    user.Profile,
+            //    name,
+            //    mainPhotoUrl,
+            //    webSite,
+            //    biography,
+            //    gender,
+            //    isPrivate);
 
-            await this.data.SaveChangesAsync();
+            //await this.data.SaveChangesAsync();
 
             return true;
         }
@@ -95,7 +95,7 @@
                 .Select(p => !p.IsPrivate)
                 .FirstOrDefaultAsync();
 
-        private async Task<Result> ChangeEmail(User user, string userId, string email)
+        private async Task<Result> ChangeEmail(User user, int userId, string email)
         {
             if (!string.IsNullOrWhiteSpace(email) && user.Email != email)
             {
@@ -114,7 +114,7 @@
             return true;
         }
 
-        private async Task<Result> ChangeUserName(User user, string userId, string userName)
+        private async Task<Result> ChangeUserName(User user, int userId, string userName)
         {
             if (!string.IsNullOrWhiteSpace(userName) && user.UserName != userName)
             {
