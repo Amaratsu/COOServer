@@ -1,5 +1,6 @@
 ﻿namespace COO.Server.Features.MMO
 {
+    using System.Collections.Generic;
     using System.Threading.Tasks;
     using COO.Server.Features.Identity.Models;
     using COO.Server.Features.MMO.Models;
@@ -348,6 +349,87 @@
             {
                 return Ok(new { Status = "You are not logged in." });
             }
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        [Route(nameof(GetIP))]
+        public async Task<ActionResult> GetIP()
+        {
+            var address = await this.mmoService.GetIPAsync();
+#if DEBUG
+            address = "127.0.0.1";
+#endif
+            return Ok(new { Status = "OK", Address = address });
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        [Route(nameof(SaveCharacter))]
+        public async Task<ActionResult> SaveCharacter(SaveCharacterRequestModel model)
+        {
+            await this.mmoService.UpdateCharacterAsync(
+                model.CharId, model.Health, model.Mana, model.Experience,
+                model.Level, model.PosX, model.PosY, model.PosZ,
+                model.RotationYaw, model.EquipChest, model.EquipFeet,
+                model.EquipHands, model.EquipHead, model.EquipLegs,
+                model.Hotbar0, model.Hotbar1, model.Hotbar2, model.Hotbar3
+                );
+
+            await this.mmoService.DeleteRangeInventoryByCharIdAsync(model.CharId);
+
+            await this.mmoService.DeleteRangeQuestsByCharIdAsync(model.CharId);
+
+            if (model.Inventory.Count > 0)
+            {
+                var inventory = new List<Inventory>();
+                model.Inventory.ForEach(i => {
+                    inventory.Add(new Inventory {
+                        CharacterId = model.CharId,
+                        Slot = i.Slot,
+                        Item = i.Item,
+                        Amount = i.Amount
+                    });
+                });
+                await this.mmoService.AddRangeInventoryAsync(inventory);
+            }
+
+            if (model.Quests.Count > 0)
+            {
+                var quests = new List<Quest>();
+                model.Quests.ForEach(q => {
+                    if (q.Completed == 1)
+                    {
+                        quests.Add(new Quest
+                        {
+                            CharacterId = model.CharId,
+                            Name = q.Name,
+                            Completed = q.Completed,
+                            Task1 = 0,
+                            Task2 = 0,
+                            Task3 = 0,
+                            Task4 = 0
+                        });
+                    }
+                    else
+                    {
+                        quests.Add(new Quest
+                        {
+                            CharacterId = model.CharId,
+                            Name = q.Name,
+                            Completed = q.Completed,
+                            Task1 = q.Task1,
+                            Task2 = q.Task2,
+                            Task3 = q.Task3,
+                            Task4 = q.Task4
+                        });
+                    }
+                    
+                });
+                await this.mmoService.AddRangeQuestsAsync(quests);
+            }
+
+            return Ok( new { Status = "OK" });
         }
     }
 }

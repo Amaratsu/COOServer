@@ -20,10 +20,22 @@
             string equipHands, string equipHead, string equipLegs,
             string hotbar0, string hotbar1, string hotbar2, string hotbar3
             );
+        Task<bool> UpdateCharacterAsync(
+            int charId, int health, int mana, 
+            int experience, int level, int posx, int posy, int posz,
+            decimal yaw, string equipChest, string equipFeet,
+            string equipHands, string equipHead, string equipLegs,
+            string hotbar0, string hotbar1, string hotbar2, string hotbar3
+            );
         Task<bool> DeleteCharacterAsync(int charId);
         Task<List<Inventory>> GetInventoryListByCharIdAsync(int charId);
+        Task<bool> DeleteRangeInventoryByCharIdAsync(int charId);
+        Task<bool> AddRangeInventoryAsync(List<Inventory> inventory);
         Task<List<Quest>> GetQuestListByCharIdAsync(int charId);
+        Task<bool> DeleteRangeQuestsByCharIdAsync(int charId);
+        Task<bool> AddRangeQuestsAsync(List<Quest> quests);
         Task<Clan> FindClanAsync(int id);
         Task<List<Character>> GetCharacterListByUserIdAsync(int userId);
+        Task<string> GetIPAsync();
     }
 }

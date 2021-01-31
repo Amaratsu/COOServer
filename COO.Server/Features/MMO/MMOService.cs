@@ -5,6 +5,7 @@
     using Microsoft.EntityFrameworkCore;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Net.Http;
     using System.Threading.Tasks;
 
     public class MMOService : IMMOService
@@ -164,5 +165,110 @@
                 .Characters
                 .Where(ch => ch.UserId == userId)
                 .ToListAsync();
+
+        public async Task<string> GetIPAsync()
+        {
+            var httpClient = new HttpClient();
+            return await httpClient.GetStringAsync("https://api.ipify.org");
+        }
+
+        public async Task<bool> UpdateCharacterAsync(
+            int charId,
+            int health, 
+            int mana,
+            int experience,
+            int level,
+            int posx, 
+            int posy, 
+            int posz, 
+            decimal yaw, 
+            string equipChest, 
+            string equipFeet, 
+            string equipHands, 
+            string equipHead, 
+            string equipLegs, 
+            string hotbar0, 
+            string hotbar1, 
+            string hotbar2, 
+            string hotbar3
+            )
+        {
+            var character = await FindCharacterByCharIdAsync(charId);
+            if (character != null)
+            {
+                character.Health = health;
+                character.Mana = mana;
+                character.Experience = experience;
+                character.Level = level;
+                character.PosX = posx;
+                character.PosY = posy;
+                character.PosZ = posz;
+                character.RotationYaw = yaw;
+                character.EquipChest = equipChest;
+                character.EquipFeet = equipFeet;
+                character.EquipHands = equipHands;
+                character.EquipHead = equipHead;
+                character.EquipLegs = equipLegs;
+                character.Hotbar0 = hotbar0;
+                character.Hotbar1 = hotbar1;
+                character.Hotbar2 = hotbar2;
+                character.Hotbar3 = hotbar3;
+
+                await this.data.SaveChangesAsync();
+
+                return true;
+            }
+            return false;
+        }
+
+        public async Task<bool> DeleteRangeInventoryByCharIdAsync(int charId)
+        {
+            var oldInventory = await GetInventoryListByCharIdAsync(charId);
+            if (oldInventory.Count > 0)
+            {
+                this.data.Inventories.RemoveRange(oldInventory);
+
+                await this.data.SaveChangesAsync();
+
+                return true;
+            }
+            return false;
+        }
+
+        public async Task<bool> DeleteRangeQuestsByCharIdAsync(int charId)
+        {
+            var oldQuests = await GetQuestListByCharIdAsync(charId);
+            if (oldQuests.Count > 0)
+            {
+                this.data.Quests.RemoveRange(oldQuests);
+
+                await this.data.SaveChangesAsync();
+
+                return true;
+            }
+            return false;
+        }
+
+        public async Task<bool> AddRangeInventoryAsync(List<Inventory> inventory)
+        {
+            if (inventory.Count > 0)
+            {
+                this.data.Inventories.AddRange(inventory);
+                await this.data.SaveChangesAsync();
+                return true;
+            }
+            return false;
+        }
+
+        public async Task<bool> AddRangeQuestsAsync(List<Quest> quests)
+        {
+            if (quests.Count > 0)
+            {
+                this.data.Quests.AddRange(quests);
+                await this.data.SaveChangesAsync();
+                return true;
+            }
+            return false;
+        }
     }
 }
