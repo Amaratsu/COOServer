@@ -44,7 +44,7 @@
                         break;
                 }
 
-                var result = JsonSerializer.Serialize(new { message = error?.Message });
+                var result = JsonSerializer.Serialize(new { Status = error?.Message });
                 await response.WriteAsync(result);
             }
         }

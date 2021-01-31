@@ -3,6 +3,7 @@
     using System.Threading;
     using System.Threading.Tasks;
     using COO.Server.Data.Models;
+    using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
     using Microsoft.EntityFrameworkCore;
 
     public class COODbContext : IdentityDbContext<User, UserRole, int>

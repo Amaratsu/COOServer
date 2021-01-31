@@ -64,7 +64,7 @@
                         html: $"Confirm registration by clicking on the link: <a href='{callbackUrl}'>link</a>"
                         );
 
-                    return Ok(new { message = "To complete the registration, check your email and follow the link provided in the letter" });
+                    return Ok(new { status = "To complete the registration, check your email and follow the link provided in the letter" });
                 }
                 else
                 {
@@ -124,7 +124,7 @@
                     // the user with the given email may not be present in the database
                     // however, we print a standard message to hide
                     // presence or absence of a user in the database
-                    return Ok(new { message = "To reset your password, follow the link in the letter sent to your email." });
+                    return Ok(new { status = "To reset your password, follow the link in the letter sent to your email." });
                 }
 
                 var code = await this.userManager.GeneratePasswordResetTokenAsync(user);
@@ -136,7 +136,7 @@
                     "Reset Password",
                     $"To reset your password, follow the link: <a href='{callbackUrl}'>link</a>");
 
-                return Ok( new { message = "To reset your password, follow the link in the letter sent to your email." });
+                return Ok( new { status = "To reset your password, follow the link in the letter sent to your email." });
             }
             else
             {
@@ -158,7 +158,7 @@
                 
                 if (user == null)
                 {
-                    return Ok( new { message = "Your password has been reset. To enter the application, follow the" });
+                    return Ok( new { status = "Your password has been reset. To enter the application, follow the" });
                 }
 
                 var code = model.Code.Replace(" ", "+");
@@ -167,7 +167,7 @@
 
                 if (result.Succeeded)
                 {
-                    return Ok(new { message = "Your password has been reset. To enter the application, follow the" });
+                    return Ok(new { status = "Your password has been reset. To enter the application, follow the" });
                 }
                 else
                 {
@@ -191,7 +191,7 @@
             if (validateResult.IsValid)
             {
 
-                var user = await this.userManager.FindByNameAsync(model.UserName);
+                var user = await this.userManager.FindByNameAsync(model.Login);
                 if (user == null)
                 {
                     throw new AppException("UserName or password is incorrect");

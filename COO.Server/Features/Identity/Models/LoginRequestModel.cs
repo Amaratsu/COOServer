@@ -4,7 +4,7 @@
 
     public class LoginRequestModel
     {
-        public string UserName { get; set; }
+        public string Login { get; set; }
 
         public string Password { get; set; }
     }
@@ -13,7 +13,7 @@
     {
         public LoginValidator()
         {
-            RuleFor(model => model.UserName).NotNull().MinimumLength(6);
+            RuleFor(model => model.Login).NotNull().MinimumLength(6);
             RuleFor(model => model.Password).NotNull().EmailAddress();
         }
     }
