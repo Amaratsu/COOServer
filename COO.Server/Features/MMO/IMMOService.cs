@@ -37,5 +37,6 @@
         Task<Clan> FindClanAsync(int id);
         Task<List<Character>> GetCharacterListByUserIdAsync(int userId);
         Task<string> GetIPAsync();
+        Task<string> GetServer();
     }
 }

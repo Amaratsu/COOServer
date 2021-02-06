@@ -270,5 +270,11 @@
             }
             return false;
         }
+
+        public async Task<string> GetServer()
+        {
+            var httpClient = new HttpClient();
+            return await httpClient.GetStringAsync("https://api.ipify.org");
+        }
     }
 }

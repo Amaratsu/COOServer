@@ -66,7 +66,7 @@
                         html: $"Confirm registration by clicking on the link: <a href='{callbackUrl}'>link</a>"
                         );
 
-                    return Ok(new { Status = "OK" });
+                    return Ok(new { status = "OK" });
                 }
                 else
                 {
@@ -143,7 +143,7 @@
 
                 await this.mmoService.CreateActiveLoginAsync(user.Id, randomString, null);
 
-                return Ok(new { Status = "OK", SessionKey = randomString, UserId = user.Id });
+                return Ok(new { status = "OK", sessionkey = randomString, userid = user.Id });
             }
             else
             {
@@ -167,21 +167,21 @@
                     var character = await this.mmoService.FindCharacterByCharIdAndUserIdAsync(model.CharId, model.UserId);
                     if (character != null)
                     {
-                        return Ok(new { Status = "OK" });
+                        return Ok(new { status = "OK" });
                     }
                     else
                     {
-                        return Ok(new { Status = "Character not found" });
+                        return Ok(new { status = "Character not found" });
                     }
                 }
                 else
                 {
-                    return Ok(new { Status = "You are not logged in." });
+                    return Ok(new { status = "You are not logged in." });
                 }
             } 
             else
             {
-                return Ok(new { Status = "You are not logged in." });
+                return Ok(new { status = "You are not logged in." });
             }
         }
 
@@ -203,9 +203,9 @@
                         var gender = 0;
                         var health = 300;
                         var mana = 100;
-                        var posX = 6890;
-                        var posY = -3370;
-                        var posZ = 20692;
+                        var posx = 6890;
+                        var posy = -3370;
+                        var posz = 20692;
                         var yaw = 0;
                         await this.mmoService.CreateCharacterAsync(
                             model.UserId,
@@ -214,9 +214,9 @@
                             gender,
                             health,
                             mana,
-                            posX,
-                            posY,
-                            posZ,
+                            posx,
+                            posy,
+                            posz,
                             yaw,
                             "",
                             "",
@@ -228,21 +228,21 @@
                             "",
                             ""
                             );
-                        return Ok(new { Status = "OK" });
+                        return Ok(new { status = "OK" });
                     }
                     else
                     {
-                        return Ok(new { Status = "This name is unavailable" });
+                        return Ok(new { status = "This name is unavailable" });
                     }
                 }
                 else
                 {
-                    return Ok(new { Status = "You are not logged in." });
+                    return Ok(new { status = "You are not logged in." });
                 }
             }
             else
             {
-                return Ok(new { Status = "You are not logged in." });
+                return Ok(new { status = "You are not logged in." });
             }
         }
 
@@ -259,21 +259,21 @@
                 {
                     if(!await this.mmoService.DeleteCharacterAsync(model.CharId))
                     {
-                        return Ok(new { Status = "Character not found" });
+                        return Ok(new { status = "Character not found" });
                     }
                     else
                     {
-                        return Ok(new { Status = "OK" });
+                        return Ok(new { status = "OK" });
                     }
                 }
                 else
                 {
-                    return Ok(new { Status = "You are not logged in." });
+                    return Ok(new { status = "You are not logged in." });
                 }
             }
             else
             {
-                return Ok(new { Status = "You are not logged in." });
+                return Ok(new { status = "You are not logged in." });
             }
         }
 
@@ -294,33 +294,33 @@
                 var quests = await this.mmoService.GetQuestListByCharIdAsync(model.CharId);
 
                 return Ok(new {
-                    Status = "OK",
-                    Name = character.Name,
-                    Inventory = inventories,
-                    Quests = quests,
-                    Health = character.Health,
-                    Mana = character.Mana,
-                    Level = character.Level,
-                    Experience = character.Experience,
-                    Clan = clan != null ? clan.Name : "",
-                    PosX = character.PosX,
-                    PosY = character.PosY,
-                    posZ = character.PosZ,
-                    RotationYaw = character.RotationYaw,
-                    EquipHead = character.EquipHead,
-                    EquipChest = character.EquipChest,
-                    EquipHands = character.EquipHands,
-                    EquipLegs = character.EquipLegs,
-                    EquipFeet = character.EquipFeet,
-                    Hotbar0 = character.Hotbar0,
-                    Hotbar1 = character.Hotbar1,
-                    Hotbar2 = character.Hotbar2,
-                    Hotbar3 = character.Hotbar3
+                    status = "OK",
+                    name = character.Name,
+                    inventory = inventories,
+                    quests = quests,
+                    health = character.Health,
+                    mana = character.Mana,
+                    level = character.Level,
+                    experience = character.Experience,
+                    clan = clan != null ? clan.Name : "",
+                    posx = character.PosX,
+                    posy = character.PosY,
+                    posz = character.PosZ,
+                    rotationyaw = character.RotationYaw,
+                    equiphead = character.EquipHead,
+                    equipchest = character.EquipChest,
+                    equiphands = character.EquipHands,
+                    equiplegs = character.EquipLegs,
+                    equipfeet = character.EquipFeet,
+                    hotbar0 = character.Hotbar0,
+                    hotbar1 = character.Hotbar1,
+                    hotbar2 = character.Hotbar2,
+                    hotbar3 = character.Hotbar3
                 });
             }
             else
             {
-                return Ok(new { Status = $"Character id {model.CharId} not found" });
+                return Ok(new { status = $"Character id {model.CharId} not found" });
             }
         }
 
@@ -338,16 +338,16 @@
                 {
                     var characters = await this.mmoService.GetCharacterListByUserIdAsync(model.UserId);
 
-                    return Ok(new { Status = "OK", Characters = characters });
+                    return Ok(new { status = "OK", characters = characters });
                 }
                 else
                 {
-                    return Ok(new { Status = "You are not logged in." });
+                    return Ok(new { status = "You are not logged in." });
                 }
             }
             else
             {
-                return Ok(new { Status = "You are not logged in." });
+                return Ok(new { status = "You are not logged in." });
             }
         }
 
@@ -360,7 +360,7 @@
 #if DEBUG
             address = "127.0.0.1";
 #endif
-            return Ok(new { Status = "OK", Address = address });
+            return Ok(new { status = "OK", address = address });
         }
 
         [HttpPost]
@@ -429,7 +429,19 @@
                 await this.mmoService.AddRangeQuestsAsync(quests);
             }
 
-            return Ok( new { Status = "OK" });
+            return Ok( new { status = "OK" });
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        [Route(nameof(GetServer))]
+        public async Task<ActionResult> GetServer()
+        {
+            var address = await this.mmoService.GetServer();
+#if DEBUG
+            address = "127.0.0.1";
+#endif
+            return Ok(new { status = "OK", address = address });
         }
     }
 }

@@ -18,6 +18,7 @@
     using Services;
     using COO.Server.Data.Models;
     using FluentValidation.AspNetCore;
+    using COO.Server.Features.MMO;
 
     public static class ServiceCollectionExtensions
     {
@@ -93,7 +94,8 @@
             => services
                 .AddScoped<ICurrentUserService, CurrentUserService>()
                 .AddTransient<IIdentityService, IdentityService>()
-                .AddTransient<IEmailService, EmailService>();
+                .AddTransient<IEmailService, EmailService>()
+                .AddTransient<IMMOService, MMOService>();
                 //.AddTransient<IProfileService, ProfileService>()
                 //.AddTransient<ICatService, CatService>()
                 //.AddTransient<ISearchService, SearchService>()

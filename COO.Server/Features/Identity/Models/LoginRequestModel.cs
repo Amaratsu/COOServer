@@ -14,7 +14,7 @@
         public LoginValidator()
         {
             RuleFor(model => model.Login).NotNull().MinimumLength(6);
-            RuleFor(model => model.Password).NotNull().EmailAddress();
+            RuleFor(model => model.Password).NotNull().MinimumLength(6);
         }
     }
 }
