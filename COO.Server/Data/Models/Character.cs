@@ -12,10 +12,10 @@
         public int Health { get; set; }
         public int Mana { get; set; }
         public int Experience { get; set; }
-        public int? PosX { get; set; }
-        public int? PosY { get; set; }
-        public int? PosZ { get; set; }
-        public decimal RotationYaw { get; set; }
+        public double? PosX { get; set; }
+        public double? PosY { get; set; }
+        public double? PosZ { get; set; }
+        public double RotationYaw { get; set; }
         public string EquipChest { get; set; }
         public string EquipFeet { get; set; }
         public string EquipHands { get; set; }

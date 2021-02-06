@@ -398,7 +398,7 @@
             {
                 var quests = new List<Quest>();
                 model.Quests.ForEach(q => {
-                    if (q.Completed == 1)
+                    if (q.Completed)
                     {
                         quests.Add(new Quest
                         {

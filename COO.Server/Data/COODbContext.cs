@@ -21,9 +21,9 @@
         public DbSet<Inventory> Inventories { get; set; }
         public DbSet<Quest> Quests { get; set; }
 
-        public DbSet<Cat> Cats { get; set; }
-        public DbSet<Follow> Follows { get; set; }
-        public DbSet<Profile> Profiles { get; set; }
+        //public DbSet<Cat> Cats { get; set; }
+        //public DbSet<Follow> Follows { get; set; }
+        //public DbSet<Profile> Profiles { get; set; }
 
         public override int SaveChanges(bool acceptAllChangesOnSuccess)
         {

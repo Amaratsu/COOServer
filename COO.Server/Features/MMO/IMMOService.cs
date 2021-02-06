@@ -15,15 +15,15 @@
         Task<Character> FindCharacterByNameAsync(string name);
         Task<bool> CreateCharacterAsync(
             int userId, string name, int classId, int gender,
-            int health, int mana, int posx, int posy, int posz,
-            decimal yaw, string equipChest, string equipFeet,
+            int health, int mana, double posx, double posy, double posz,
+            double yaw, string equipChest, string equipFeet,
             string equipHands, string equipHead, string equipLegs,
             string hotbar0, string hotbar1, string hotbar2, string hotbar3
             );
         Task<bool> UpdateCharacterAsync(
             int charId, int health, int mana, 
-            int experience, int level, int posx, int posy, int posz,
-            decimal yaw, string equipChest, string equipFeet,
+            int experience, int level, double posx, double posy, double posz,
+            double yaw, string equipChest, string equipFeet,
             string equipHands, string equipHead, string equipLegs,
             string hotbar0, string hotbar1, string hotbar2, string hotbar3
             );
