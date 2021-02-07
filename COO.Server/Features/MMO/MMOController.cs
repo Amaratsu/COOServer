@@ -66,7 +66,7 @@
                         html: $"Confirm registration by clicking on the link: <a href='{callbackUrl}'>link</a>"
                         );
 
-                    return Ok(new { status = "OK" });
+                    return Ok(new { Status = "OK" });
                 }
                 else
                 {
@@ -143,7 +143,7 @@
 
                 await this.mmoService.CreateActiveLoginAsync(user.Id, randomString, null);
 
-                return Ok(new { status = "OK", sessionkey = randomString, userid = user.Id });
+                return Ok(new { Status = "OK", SessionKey = randomString, UserId = user.Id });
             }
             else
             {
@@ -164,24 +164,24 @@
                 if (activeLogin.SessionKey == model.SessionKey)
                 {
                     // check that the character with this id belongs to this player
-                    var character = await this.mmoService.FindCharacterByCharIdAndUserIdAsync(model.CharId, model.UserId);
+                    var character = await this.mmoService.FindCharacterByCharacterIdAndUserIdAsync(model.CharacterId, model.UserId);
                     if (character != null)
                     {
-                        return Ok(new { status = "OK" });
+                        return Ok(new { Status = "OK" });
                     }
                     else
                     {
-                        return Ok(new { status = "Character not found" });
+                        return Ok(new { Status = "Character not found" });
                     }
                 }
                 else
                 {
-                    return Ok(new { status = "You are not logged in." });
+                    return Ok(new { Status = "You are not logged in." });
                 }
-            } 
+            }
             else
             {
-                return Ok(new { status = "You are not logged in." });
+                return Ok(new { Status = "You are not logged in." });
             }
         }
 
@@ -228,21 +228,21 @@
                             "",
                             ""
                             );
-                        return Ok(new { status = "OK" });
+                        return Ok(new { Status = "OK" });
                     }
                     else
                     {
-                        return Ok(new { status = "This name is unavailable" });
+                        return Ok(new { Status = "This name is unavailable" });
                     }
                 }
                 else
                 {
-                    return Ok(new { status = "You are not logged in." });
+                    return Ok(new { Status = "You are not logged in." });
                 }
             }
             else
             {
-                return Ok(new { status = "You are not logged in." });
+                return Ok(new { Status = "You are not logged in." });
             }
         }
 
@@ -257,23 +257,23 @@
                 // if the user owns the current active session
                 if (activeLogin.SessionKey == model.SessionKey)
                 {
-                    if(!await this.mmoService.DeleteCharacterAsync(model.CharId))
+                    if (!await this.mmoService.DeleteCharacterAsync(model.CharacterId))
                     {
-                        return Ok(new { status = "Character not found" });
+                        return Ok(new { Status = "Character not found" });
                     }
                     else
                     {
-                        return Ok(new { status = "OK" });
+                        return Ok(new { Status = "OK" });
                     }
                 }
                 else
                 {
-                    return Ok(new { status = "You are not logged in." });
+                    return Ok(new { Status = "You are not logged in." });
                 }
             }
             else
             {
-                return Ok(new { status = "You are not logged in." });
+                return Ok(new { Status = "You are not logged in." });
             }
         }
 
@@ -282,45 +282,45 @@
         [Route(nameof(GetCharacter))]
         public async Task<ActionResult> GetCharacter(GetCharacterRequestModel model)
         {
-            var character = await this.mmoService.FindCharacterByCharIdAsync(model.CharId);
+            var character = await this.mmoService.FindCharacterByCharacterIdAsync(model.CharacterId);
             if (character != null)
             {
-                await this.mmoService.UpdateActiveLoginAsync(model.UserId, null, model.CharId);
+                await this.mmoService.UpdateActiveLoginAsync(model.UserId, null, model.CharacterId);
 
-                var inventories = await this.mmoService.GetInventoryListByCharIdAsync(model.CharId);
+                var inventories = await this.mmoService.GetInventoryListByCharacterIdAsync(model.CharacterId);
 
-                var clan = await this.mmoService.FindClanAsync(character.Clan);
+                var clan = await this.mmoService.FindClanByIdAsync(character.ClanId);
 
-                var quests = await this.mmoService.GetQuestListByCharIdAsync(model.CharId);
+                var quests = await this.mmoService.GetQuestListByCharacterIdAsync(model.CharacterId);
 
                 return Ok(new {
-                    status = "OK",
-                    name = character.Name,
-                    inventory = inventories,
-                    quests = quests,
-                    health = character.Health,
-                    mana = character.Mana,
-                    level = character.Level,
-                    experience = character.Experience,
-                    clan = clan != null ? clan.Name : "",
-                    posx = character.PosX,
-                    posy = character.PosY,
-                    posz = character.PosZ,
-                    rotationyaw = character.RotationYaw,
-                    equiphead = character.EquipHead,
-                    equipchest = character.EquipChest,
-                    equiphands = character.EquipHands,
-                    equiplegs = character.EquipLegs,
-                    equipfeet = character.EquipFeet,
-                    hotbar0 = character.Hotbar0,
-                    hotbar1 = character.Hotbar1,
-                    hotbar2 = character.Hotbar2,
-                    hotbar3 = character.Hotbar3
+                    Status = "OK",
+                    Name = character.Name,
+                    Inventory = inventories,
+                    Quests = quests,
+                    Health = character.Health,
+                    Mana = character.Mana,
+                    Level = character.Level,
+                    Experience = character.Experience,
+                    ClanName = clan != null ? clan.Name : "",
+                    PosX = character.PosX,
+                    PosY = character.PosY,
+                    PosZ = character.PosZ,
+                    RotationYaw = character.RotationYaw,
+                    EquipHead = character.EquipHead,
+                    EquipChest = character.EquipChest,
+                    EquipHands = character.EquipHands,
+                    EquipLegs = character.EquipLegs,
+                    EquipFeet = character.EquipFeet,
+                    Hotbar0 = character.Hotbar0,
+                    Hotbar1 = character.Hotbar1,
+                    Hotbar2 = character.Hotbar2,
+                    Hotbar3 = character.Hotbar3
                 });
             }
             else
             {
-                return Ok(new { status = $"Character id {model.CharId} not found" });
+                return Ok(new { Status = $"Character id {model.CharacterId} not found" });
             }
         }
 
@@ -338,16 +338,16 @@
                 {
                     var characters = await this.mmoService.GetCharacterListByUserIdAsync(model.UserId);
 
-                    return Ok(new { status = "OK", characters = characters });
+                    return Ok(new { Status = "OK", characters = characters });
                 }
                 else
                 {
-                    return Ok(new { status = "You are not logged in." });
+                    return Ok(new { Status = "You are not logged in." });
                 }
             }
             else
             {
-                return Ok(new { status = "You are not logged in." });
+                return Ok(new { Status = "You are not logged in." });
             }
         }
 
@@ -360,7 +360,7 @@
 #if DEBUG
             address = "127.0.0.1";
 #endif
-            return Ok(new { status = "OK", address = address });
+            return Ok(new { Status = "OK", Address = address });
         }
 
         [HttpPost]
@@ -369,23 +369,23 @@
         public async Task<ActionResult> SaveCharacter(SaveCharacterRequestModel model)
         {
             await this.mmoService.UpdateCharacterAsync(
-                model.CharId, model.Health, model.Mana, model.Experience,
+                model.CharacterId, model.Health, model.Mana, model.Experience,
                 model.Level, model.PosX, model.PosY, model.PosZ,
                 model.RotationYaw, model.EquipChest, model.EquipFeet,
                 model.EquipHands, model.EquipHead, model.EquipLegs,
                 model.Hotbar0, model.Hotbar1, model.Hotbar2, model.Hotbar3
                 );
 
-            await this.mmoService.DeleteRangeInventoryByCharIdAsync(model.CharId);
+            await this.mmoService.DeleteRangeInventoryByCharacterIdAsync(model.CharacterId);
 
-            await this.mmoService.DeleteRangeQuestsByCharIdAsync(model.CharId);
+            await this.mmoService.DeleteRangeQuestsByCharacterIdAsync(model.CharacterId);
 
             if (model.Inventory.Count > 0)
             {
                 var inventory = new List<Inventory>();
                 model.Inventory.ForEach(i => {
                     inventory.Add(new Inventory {
-                        CharacterId = model.CharId,
+                        CharacterId = model.CharacterId,
                         Slot = i.Slot,
                         Item = i.Item,
                         Amount = i.Amount
@@ -402,7 +402,7 @@
                     {
                         quests.Add(new Quest
                         {
-                            CharacterId = model.CharId,
+                            CharacterId = model.CharacterId,
                             Name = q.Name,
                             Completed = q.Completed,
                             Task1 = 0,
@@ -415,7 +415,7 @@
                     {
                         quests.Add(new Quest
                         {
-                            CharacterId = model.CharId,
+                            CharacterId = model.CharacterId,
                             Name = q.Name,
                             Completed = q.Completed,
                             Task1 = q.Task1,
@@ -424,12 +424,12 @@
                             Task4 = q.Task4
                         });
                     }
-                    
+
                 });
                 await this.mmoService.AddRangeQuestsAsync(quests);
             }
 
-            return Ok( new { status = "OK" });
+            return Ok(new { Status = "OK" });
         }
 
         [HttpPost]
@@ -441,7 +441,133 @@
 #if DEBUG
             address = "127.0.0.1";
 #endif
-            return Ok(new { status = "OK", address = address });
+            return Ok(new { Status = "OK", Address = address });
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        [Route(nameof(AddCharacterToClan))]
+        public async Task<ActionResult> AddCharacterToClan(AddCharacterToClanRequestModel model)
+        {
+            var character = await this.mmoService.FindCharacterByNameAsync(model.CharacterName);
+            if (character != null)
+            {
+                if (character.ClanId != 0)
+                {
+                    return Ok(new { Status = "character is already in a clan" });
+                }
+                else
+                {
+                    await this.mmoService.UpdateCharacterClanAsync(character, model.ClanId);
+                    return Ok(new { Status = "OK" });
+                }
+            }
+            else
+            {
+                return Ok(new { Status = "character not found" });
+            }
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        [Route(nameof(CreateClan))]
+        public async Task<ActionResult> CreateClan(CreateClanRequestModel model)
+        {
+            var clan = await this.mmoService.FindClanByNameAsync(model.ClanName);
+            if (clan != null)
+            {
+                return Ok(new { ststus = "This clan name is unavailable" });
+            }
+            else
+            {
+                var character = await this.mmoService.FindCharacterByNameAsync(model.CharacterName);
+                if (character != null)
+                {
+                    if (character.ClanId != 0)
+                    {
+                        return Ok(new { Status = "character already has a clan" });
+                    }
+                    else
+                    {
+                        var clanId = await this.mmoService.CreateClanAsync(character.Id, model.ClanName);
+
+                        await this.mmoService.UpdateCharacterClanAsync(character, clanId);
+
+                        return Ok(new { Status = "OK" });
+                    }
+                }
+                else
+                {
+                    return Ok(new { Status = "character not found" });
+                }
+            }
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        [Route(nameof(DisbandClan))]
+        public async Task<ActionResult> DisbandClan(DisbandClanRequestModel model)
+        {
+            var character = await this.mmoService.FindCharacterByCharacterIdAsync(model.CharacterId);
+            if (character != null)
+            {
+                if (character.ClanId == 0)
+                {
+                    return Ok(new { Status = "Character is not in a clan" });
+                }
+                else
+                {
+                    var clan = await this.mmoService.FindClanByIdAsync(character.ClanId);
+                    if (clan.LeaderId != model.CharacterId)
+                    {
+                        return Ok(new { Status = "Character is not the clan leader." });
+                    }
+                    else
+                    {
+                        var clanId = character.ClanId;
+                        await this.mmoService.DeleteClanAsync(clanId);
+                        await this.mmoService.UpdateCharactersClanAsync(clanId);
+                        return Ok(new { Status = "OK" });
+                    }
+                }
+            }
+            else
+            {
+                return Ok(new { Status = "character not found" });
+            }
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        [Route(nameof(GetClanCharacters))]
+        public async Task<ActionResult> GetClanCharacters()
+        {
+            var clans = await this.mmoService.GetClans();
+            return Ok(new { Status = "OK", Clans = clans });
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        [Route(nameof(DeleteCharacterFromClan))]
+        public async Task<ActionResult> DeleteCharacterFromClan(DeleteCharacterFromClanRequestModel model)
+        {
+            var character = await this.mmoService.FindCharacterByCharacterIdAsync(model.CharacterId);
+            if (character != null)
+            {
+                if (character.ClanId != 0)
+                {
+                    await this.mmoService.UpdateCharacterClanAsync(character, 0);
+                    return Ok(new { Status = "OK" });
+                }
+                else
+                {
+                    return Ok(new { Status = "character is not in a clan" });
+                }
+            }
+            else
+            {
+                return Ok(new { Status = "character not found" });
+            }
         }
     }
 }

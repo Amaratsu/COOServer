@@ -6,7 +6,7 @@
         public int UserId { get; set; }
         public string Name { get; set; }
         public int Gender { get; set; }
-        public int Clan { get; set; }
+        public int ClanId { get; set; }
         public int Class { get; set; }
         public int Level { get; set; }
         public int Health { get; set; }

@@ -1,8 +1,7 @@
 ﻿namespace COO.Server.Features.MMO.Models
 {
-    public class GetCharacterRequestModel
+    public class DisbandClanRequestModel
     {
-        public int UserId { get; set; }
         public int CharacterId { get; set; }
     }
 }

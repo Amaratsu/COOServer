@@ -4,6 +4,6 @@
     {
         public int UserId { get; set; }
         public string SessionKey { get; set; }
-        public int CharId { get; set; }
+        public int CharacterId { get; set; }
     }
 }

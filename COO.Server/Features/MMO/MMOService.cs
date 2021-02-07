@@ -14,7 +14,7 @@
 
         public MMOService(COODbContext data) => this.data = data;
 
-        public async Task<bool> CreateActiveLoginAsync(int userId, string sessionKey, int? characterId)
+        public async Task<int> CreateActiveLoginAsync(int userId, string sessionKey, int? characterId)
         {
             var activeLogin = new ActiveLogin
             {
@@ -27,10 +27,10 @@
 
             await this.data.SaveChangesAsync();
 
-            return true;
+            return activeLogin.Id;
         }
 
-        public async Task<bool> CreateCharacterAsync(
+        public async Task<int> CreateCharacterAsync(
             int userId, 
             string name, 
             int classId, 
@@ -61,7 +61,7 @@
                 Mana = mana,
                 Level = 1,
                 Experience = 0,
-                Clan = 0,
+                ClanId = 0,
                 PosX = posx,
                 PosY = posy,
                 PosZ = posz,
@@ -81,7 +81,7 @@
 
             await this.data.SaveChangesAsync();
 
-            return true;
+            return character.Id;
         }
 
         public async Task<bool> DeleteActiveLoginAsync(int userId)
@@ -96,9 +96,9 @@
             return false;
         }
 
-        public async Task<bool> DeleteCharacterAsync(int charId)
+        public async Task<bool> DeleteCharacterAsync(int characterId)
         {
-            var character = await FindCharacterByCharIdAsync(charId);
+            var character = await FindCharacterByCharacterIdAsync(characterId);
             if (character != null)
             {
                 this.data.Characters.Remove(character);
@@ -113,15 +113,15 @@
                 .ActiveLogins
                 .FirstOrDefaultAsync(al => al.UserId == userId);
 
-        public async Task<Character> FindCharacterByCharIdAsync(int charId)
+        public async Task<Character> FindCharacterByCharacterIdAsync(int characterId)
             => await this.data
                 .Characters
-                .FirstOrDefaultAsync(c => c.Id == charId);
+                .FirstOrDefaultAsync(c => c.Id == characterId);
 
-        public async Task<Character> FindCharacterByCharIdAndUserIdAsync(int charId, int userId)
+        public async Task<Character> FindCharacterByCharacterIdAndUserIdAsync(int characterId, int userId)
             => await this.data
                 .Characters
-                .FirstOrDefaultAsync(c => c.Id == charId && c.UserId == userId);
+                .FirstOrDefaultAsync(c => c.Id == characterId && c.UserId == userId);
 
         public async Task<Character> FindCharacterByNameAsync(string name)
             => await this.data
@@ -143,22 +143,27 @@
             return false;
         }
 
-        public async Task<List<Inventory>> GetInventoryListByCharIdAsync(int charId)
+        public async Task<List<Inventory>> GetInventoryListByCharacterIdAsync(int characterId)
             => await this.data
                 .Inventories
-                .Where(i => i.CharacterId == charId)
+                .Where(i => i.CharacterId == characterId)
                 .ToListAsync();
 
-        public async Task<List<Quest>> GetQuestListByCharIdAsync(int charId)
+        public async Task<List<Quest>> GetQuestListByCharacterIdAsync(int characterId)
             => await this.data
                 .Quests
-                .Where(q => q.CharacterId == charId)
+                .Where(q => q.CharacterId == characterId)
                 .ToListAsync();
 
-        public async Task<Clan> FindClanAsync(int id)
+        public async Task<Clan> FindClanByIdAsync(int id)
             => await this.data
                 .Clans
                 .FirstOrDefaultAsync(c => c.Id == id);
+
+        public async Task<Clan> FindClanByNameAsync(string name)
+            => await this.data
+                .Clans
+                .FirstOrDefaultAsync(c => c.Name == name);
 
         public async Task<List<Character>> GetCharacterListByUserIdAsync(int userId)
             => await this.data
@@ -173,7 +178,7 @@
         }
 
         public async Task<bool> UpdateCharacterAsync(
-            int charId,
+            int characterId,
             int health, 
             int mana,
             int experience,
@@ -193,7 +198,7 @@
             string hotbar3
             )
         {
-            var character = await FindCharacterByCharIdAsync(charId);
+            var character = await FindCharacterByCharacterIdAsync(characterId);
             if (character != null)
             {
                 character.Health = health;
@@ -221,9 +226,9 @@
             return false;
         }
 
-        public async Task<bool> DeleteRangeInventoryByCharIdAsync(int charId)
+        public async Task<bool> DeleteRangeInventoryByCharacterIdAsync(int characterId)
         {
-            var oldInventory = await GetInventoryListByCharIdAsync(charId);
+            var oldInventory = await GetInventoryListByCharacterIdAsync(characterId);
             if (oldInventory.Count > 0)
             {
                 this.data.Inventories.RemoveRange(oldInventory);
@@ -235,9 +240,9 @@
             return false;
         }
 
-        public async Task<bool> DeleteRangeQuestsByCharIdAsync(int charId)
+        public async Task<bool> DeleteRangeQuestsByCharacterIdAsync(int characterId)
         {
-            var oldQuests = await GetQuestListByCharIdAsync(charId);
+            var oldQuests = await GetQuestListByCharacterIdAsync(characterId);
             if (oldQuests.Count > 0)
             {
                 this.data.Quests.RemoveRange(oldQuests);
@@ -276,5 +281,70 @@
             var httpClient = new HttpClient();
             return await httpClient.GetStringAsync("https://api.ipify.org");
         }
+
+        public async Task<bool> UpdateCharacterClanAsync(Character character, int clanId)
+        {
+            character.ClanId = clanId;
+
+            await this.data.SaveChangesAsync();
+
+            return true;
+        }
+
+        public async Task<bool> UpdateCharactersClanAsync(int clanId)
+        {
+            var characters = await this.data.Characters.Where(c => c.ClanId == clanId).ToListAsync();
+            if (characters.Count > 0)
+            {
+                characters.ForEach(c => clanId = 0);
+                await this.data.SaveChangesAsync();
+                return true;
+            }
+            return false;
+        }
+
+        public async Task<int> CreateClanAsync(int leaderId, string name)
+        {
+            var clan = new Clan
+            {
+                LeaderId = leaderId,
+                Name = name
+            };
+
+            this.data.Add(clan);
+
+            await this.data.SaveChangesAsync();
+
+            return clan.Id;
+        }
+
+        public async Task<bool> DeleteClanAsync(int clanId)
+        {
+            var clan = await FindClanByIdAsync(clanId);
+            if (clan != null)
+            {
+                this.data.Clans.Remove(clan);
+                await this.data.SaveChangesAsync();
+                return true;
+            }
+            return false;
+        }
+
+        public async Task<List<ClanCharacter>> GetClans()
+            => await this.data.Characters
+                .Join(this.data.Clans,
+                    ch => ch.ClanId,
+                    c => c.Id,
+                    (ch, c) => new ClanCharacter
+                    {
+                        CharacterId = ch.Id,
+                        CharacterName = ch.Name,
+                        ClanId = c.Id,
+                        ClanName = c.Name,
+                        IsLeader = ch.Id == c.LeaderId
+                    }
+                )
+                .Where(c => c.ClanId != 0).
+                ToListAsync();
     }
 }

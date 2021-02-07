@@ -5,7 +5,7 @@
 
     public class SaveCharacterRequestModel
     {
-        public int CharId { get; set; }
+        public int CharacterId { get; set; }
         public List<Inventory> Inventory { get; set; }
         public List<Quest> Quests { get; set; }
         public int Health { get; set; }
