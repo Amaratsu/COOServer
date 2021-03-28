@@ -44,5 +44,6 @@
         Task<List<Character>> GetCharacterListByUserIdAsync(int userId);
         Task<string> GetIPAsync();
         Task<string> GetServer();
+        Task<List<Server>> GetServerList();
     }
 }

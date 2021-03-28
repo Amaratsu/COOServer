@@ -346,5 +346,9 @@
                 )
                 .Where(c => c.ClanId != 0).
                 ToListAsync();
+
+        public async Task<List<Server>> GetServerList()
+            => await this.data.Servers
+                .ToListAsync();
     }
 }

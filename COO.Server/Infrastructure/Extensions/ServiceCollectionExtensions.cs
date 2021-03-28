@@ -5,7 +5,6 @@
     using Features.Cats;
     using Features.Follows;
     using Features.Identity;
-    using Features.Profiles;
     using Features.Search;
     using Filters;
     using Microsoft.AspNetCore.Authentication.JwtBearer;

@@ -446,6 +446,32 @@
 
         [HttpPost]
         [AllowAnonymous]
+        [Route(nameof(GetServerList))]
+        public async Task<ActionResult> GetServerList(GetServerListRequestModel model)
+        {
+            var activeLogin = await this.mmoService.FindActiveLoginAsync(model.UserId);
+            if (activeLogin != null)
+            {
+                // if the user owns the current active session
+                if (activeLogin.SessionKey == model.SessionKey)
+                {
+                    var servers = await this.mmoService.GetServerList();
+
+                    return Ok(new { Status = "OK", servers = servers });
+                }
+                else
+                {
+                    return Ok(new { Status = "You are not logged in." });
+                }
+            }
+            else
+            {
+                return Ok(new { Status = "You are not logged in." });
+            }
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
         [Route(nameof(AddCharacterToClan))]
         public async Task<ActionResult> AddCharacterToClan(AddCharacterToClanRequestModel model)
         {

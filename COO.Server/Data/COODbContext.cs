@@ -20,6 +20,7 @@
         public DbSet<Clan> Clans { get; set; }
         public DbSet<Inventory> Inventories { get; set; }
         public DbSet<Quest> Quests { get; set; }
+        public DbSet<Server> Servers { get; set; }
 
         //public DbSet<Cat> Cats { get; set; }
         //public DbSet<Follow> Follows { get; set; }
