@@ -1,4 +1,4 @@
-﻿namespace COO.Server.Data.Models
+﻿namespace COO.Domain.Core
 {
     public class Inventory
     {

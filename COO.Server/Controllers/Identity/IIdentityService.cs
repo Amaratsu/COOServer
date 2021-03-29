@@ -1,4 +1,4 @@
-﻿namespace COO.Server.Features.Identity
+﻿namespace COO.Server.Controllers.Identity
 {
     public interface IIdentityService
     {

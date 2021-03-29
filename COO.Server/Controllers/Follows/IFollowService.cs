@@ -1,8 +1,8 @@
-﻿namespace COO.Server.Features.Follows
-{
-    using System.Threading.Tasks;
-    using Infrastructure.Services;
+﻿using System.Threading.Tasks;
+using COO.Server.Infrastructure.Services;
 
+namespace COO.Server.Controllers.Follows
+{
     public interface IFollowService
     {
         Task<Result> Follow(int userId, int followerId);

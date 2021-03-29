@@ -1,11 +1,11 @@
-﻿namespace COO.Server.Features.Identity
-{
-    using System;
-    using System.IdentityModel.Tokens.Jwt;
-    using System.Security.Claims;
-    using System.Text;
-    using Microsoft.IdentityModel.Tokens;
+﻿using System;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
+using Microsoft.IdentityModel.Tokens;
 
+namespace COO.Server.Controllers.Identity
+{
     public class IdentityService : IIdentityService
     {
         public string GenerateJwtToken(string userId, string userName, string secret)

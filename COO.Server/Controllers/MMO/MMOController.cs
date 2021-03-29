@@ -1,36 +1,42 @@
-﻿namespace COO.Server.Features.MMO
-{
-    using System.Collections.Generic;
-    using System.Threading.Tasks;
-    using COO.Server.Features.Identity.Models;
-    using COO.Server.Features.MMO.Models;
-    using COO.Server.Infrastructure.Helpers;
-    using COO.Server.Infrastructure.Services;
-    using COO.Server.Middleware;
-    using Data.Models;
-    using FluentValidation.Results;
-    using Microsoft.AspNetCore.Authorization;
-    using Microsoft.AspNetCore.Identity;
-    using Microsoft.AspNetCore.Mvc;
-    using Microsoft.Extensions.Options;
+﻿using COO.Business.Logic.MMO.Write.CreateActiveLogin;
+using COO.Domain.Core;
+using COO.Server.Controllers.Identity.Models;
+using COO.Server.Controllers.MMO.Models;
+using COO.Server.Data;
+using COO.Server.Infrastructure.Helpers;
+using COO.Server.Infrastructure.Services;
+using COO.Server.Middleware;
+using FluentValidation.Results;
+using MediatR;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
+namespace COO.Server.Controllers.MMO
+{
     public class MMOController : ApiController
     {
-        private readonly UserManager<User> userManager;
+        private readonly UserManager<Validation.User> userManager;
         private readonly IMMOService mmoService;
         private readonly AppSettings appSettings;
         private readonly IEmailService emailService;
+        private readonly IMediator _mediator;
 
         public MMOController(
-            UserManager<User> userManager,
+            UserManager<Validation.User> userManager,
             IMMOService mmoService,
             IOptions<AppSettings> appSettings,
-            IEmailService emailService)
+            IEmailService emailService,
+            IMediator mediator)
         {
             this.userManager = userManager;
             this.mmoService = mmoService;
             this.appSettings = appSettings.Value;
             this.emailService = emailService;
+            this._mediator = mediator;
         }
 
         [HttpPost]
@@ -43,7 +49,7 @@
 
             if (validateResult.IsValid)
             {
-                var user = new User
+                var user = new Validation.User
                 {
                     Email = model.Email,
                     UserName = model.UserName
@@ -141,7 +147,7 @@
 
                 var randomString = Helper.RandomString(10);
 
-                await this.mmoService.CreateActiveLoginAsync(user.Id, randomString, null);
+                await _mediator.Send(new CreateActiveLoginCommand(user.Id, randomString, null));
 
                 return Ok(new { Status = "OK", SessionKey = randomString, UserId = user.Id });
             }

@@ -1,4 +1,4 @@
-﻿namespace COO.Server.Features.Cats.Models
+﻿namespace COO.Server.Controllers.Cats.Models
 {
     public class CatListingServiceModel
     {

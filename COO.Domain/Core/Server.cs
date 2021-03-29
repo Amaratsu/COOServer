@@ -1,7 +1,7 @@
-﻿namespace COO.Server.Data.Models
-{
-    using System;
+﻿using System;
 
+namespace COO.Domain.Core
+{
     public class Server
     {
         public int Id { get; set; }

@@ -1,8 +1,8 @@
-﻿namespace COO.Server.Features
-{
-    using Microsoft.AspNetCore.Authorization;
-    using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
+namespace COO.Server.Controllers
+{
     [Authorize]
     [ApiController]
     [Route("[controller]")]

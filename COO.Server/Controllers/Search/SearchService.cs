@@ -1,12 +1,5 @@
-﻿namespace COO.Server.Features.Search
+﻿namespace COO.Server.Controllers.Search
 {
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Threading.Tasks;
-    using Data;
-    using Microsoft.EntityFrameworkCore;
-    using Models;
-
     public class SearchService : ISearchService
     {
         private readonly COODbContext data;

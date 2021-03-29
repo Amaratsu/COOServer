@@ -1,13 +1,13 @@
-﻿namespace COO.Server.Infrastructure.Extensions
-{
-    using COO.Server.Infrastructure.Helpers;
-    using Microsoft.AspNetCore.Http;
-    using System;
-    using System.Collections.Generic;
-    using System.Net;
-    using System.Text.Json;
-    using System.Threading.Tasks;
+﻿using System;
+using System.Collections.Generic;
+using System.Net;
+using System.Text.Json;
+using System.Threading.Tasks;
+using COO.Server.Infrastructure.Helpers;
+using Microsoft.AspNetCore.Http;
 
+namespace COO.Server.Middleware
+{
     public class ErrorHandlerMiddleware
     {
         private readonly RequestDelegate _next;
@@ -37,6 +37,10 @@
                     case KeyNotFoundException e:
                         // not found error
                         response.StatusCode = (int)HttpStatusCode.NotFound;
+                        break;
+                    case FluentValidation.ValidationException e:
+                        // not found error
+                        response.StatusCode = (int)HttpStatusCode.BadRequest;
                         break;
                     default:
                         // unhandled error

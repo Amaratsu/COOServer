@@ -1,11 +1,10 @@
-﻿namespace COO.Server.Infrastructure.Extensions
+﻿using COO.Server.Controllers.Identity;
+using COO.Server.Controllers.MMO;
+
+namespace COO.Server.Infrastructure.Extensions
 {
     using System.Text;
     using Data;
-    using Features.Cats;
-    using Features.Follows;
-    using Features.Identity;
-    using Features.Search;
     using Filters;
     using Microsoft.AspNetCore.Authentication.JwtBearer;
     using Microsoft.AspNetCore.Identity;
@@ -17,7 +16,6 @@
     using Services;
     using COO.Server.Data.Models;
     using FluentValidation.AspNetCore;
-    using COO.Server.Features.MMO;
 
     public static class ServiceCollectionExtensions
     {

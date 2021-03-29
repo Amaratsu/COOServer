@@ -1,4 +1,4 @@
-﻿namespace COO.Server.Features.Search.Models
+﻿namespace COO.Server.Controllers.Search.Models
 {
     public class ProfileSearchServiceModel
     {

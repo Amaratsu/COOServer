@@ -1,17 +1,15 @@
-﻿namespace COO.Server.Features.Identity
-{
-    using System;
-    using System.Threading.Tasks;
-    using COO.Server.Infrastructure.Helpers;
-    using COO.Server.Infrastructure.Services;
-    using Data.Models;
-    using FluentValidation.Results;
-    using Microsoft.AspNetCore.Authorization;
-    using Microsoft.AspNetCore.Identity;
-    using Microsoft.AspNetCore.Mvc;
-    using Microsoft.Extensions.Options;
-    using Models;
+﻿using System.Threading.Tasks;
+using COO.Server.Controllers.Identity.Models;
+using COO.Server.Infrastructure.Helpers;
+using COO.Server.Infrastructure.Services;
+using FluentValidation.Results;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 
+namespace COO.Server.Controllers.Identity
+{
     public class IdentityController : ApiController
     {
         private readonly UserManager<User> userManager;

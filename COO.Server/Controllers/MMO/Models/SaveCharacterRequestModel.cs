@@ -1,8 +1,7 @@
-﻿namespace COO.Server.Features.MMO.Models
-{
-    using COO.Server.Data.Models;
-    using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
+namespace COO.Server.Controllers.MMO.Models
+{
     public class SaveCharacterRequestModel
     {
         public int CharacterId { get; set; }

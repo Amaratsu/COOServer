@@ -1,13 +1,12 @@
-﻿namespace COO.Server.Features.MMO
-{
-    using COO.Server.Data.Models;
-    using System.Collections.Generic;
-    using System.Threading.Tasks;
+﻿using COO.Domain.Core;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
+namespace COO.Server.Controllers.MMO
+{
     public interface IMMOService
     {
         Task<ActiveLogin> FindActiveLoginAsync(int userId);
-        Task<int> CreateActiveLoginAsync(int userId, string sessionKey, int? characterId);
         Task<bool> DeleteActiveLoginAsync(int userId);
         Task<bool> UpdateActiveLoginAsync(int userId, string sessionKey, int? characterId);
         Task<Character> FindCharacterByCharacterIdAsync(int characterId);
@@ -44,6 +43,6 @@
         Task<List<Character>> GetCharacterListByUserIdAsync(int userId);
         Task<string> GetIPAsync();
         Task<string> GetServer();
-        Task<List<Server>> GetServerList();
+        Task<List<Domain.Core.Server>> GetServerList();
     }
 }

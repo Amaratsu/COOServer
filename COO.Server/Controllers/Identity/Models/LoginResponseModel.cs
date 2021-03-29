@@ -1,4 +1,4 @@
-﻿namespace COO.Server.Features.Identity.Models
+﻿namespace COO.Server.Controllers.Identity.Models
 {
     public class LoginResponseModel
     {

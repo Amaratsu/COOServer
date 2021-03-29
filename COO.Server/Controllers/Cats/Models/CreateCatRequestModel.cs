@@ -1,7 +1,7 @@
-﻿namespace COO.Server.Features.Cats.Models
-{
-    using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
+namespace COO.Server.Controllers.Cats.Models
+{
     using static Data.Validation.Cat;
 
     public class CreateCatRequestModel

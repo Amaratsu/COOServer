@@ -1,14 +1,5 @@
-﻿namespace COO.Server.Features.Cats
+﻿namespace COO.Server.Controllers.Cats
 {
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Threading.Tasks;
-    using Data;
-    using Data.Models;
-    using Infrastructure.Services;
-    using Microsoft.EntityFrameworkCore;
-    using Models;
-
     //public class CatService : ICatService
     //{
     //    private readonly COODbContext data;

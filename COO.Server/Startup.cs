@@ -1,3 +1,6 @@
+using COO.Server.Middleware;
+using FluentValidation;
+
 namespace COO.Server
 {
     using Infrastructure.Extensions;
@@ -18,6 +21,7 @@ namespace COO.Server
                 .AddDatabase(this.Configuration)
                 .AddIdentity()
                 .AddJwtAuthentication(services.GetApplicationSettings(this.Configuration))
+                .AddValidatorsFromAssembly(typeof(Startup).Assembly)
                 .AddApplicationServices()
                 .AddSwagger()
                 .AddApiControllers();

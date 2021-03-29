@@ -1,7 +1,7 @@
-﻿namespace COO.Server.Data.Models
-{
-    using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
+namespace COO.Domain.Core
+{
     public class Follow
     {
         public int Id { get; set; }

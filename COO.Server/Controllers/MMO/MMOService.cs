@@ -1,34 +1,18 @@
-﻿namespace COO.Server.Features.MMO
-{
-    using COO.Server.Data;
-    using COO.Server.Data.Models;
-    using Microsoft.EntityFrameworkCore;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Net.Http;
-    using System.Threading.Tasks;
+﻿using COO.DataAccess.Contexts;
+using COO.Domain.Core;
+using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net.Http;
+using System.Threading.Tasks;
 
+namespace COO.Server.Controllers.MMO
+{
     public class MMOService : IMMOService
     {
         private readonly COODbContext data;
 
         public MMOService(COODbContext data) => this.data = data;
-
-        public async Task<int> CreateActiveLoginAsync(int userId, string sessionKey, int? characterId)
-        {
-            var activeLogin = new ActiveLogin
-            {
-                UserId = userId,
-                SessionKey = sessionKey,
-                CharacterId = characterId
-            };
-
-            this.data.Add(activeLogin);
-
-            await this.data.SaveChangesAsync();
-
-            return activeLogin.Id;
-        }
 
         public async Task<int> CreateCharacterAsync(
             int userId, 
@@ -347,7 +331,7 @@
                 .Where(c => c.ClanId != 0).
                 ToListAsync();
 
-        public async Task<List<Server>> GetServerList()
+        public async Task<List<Domain.Core.Server>> GetServerList()
             => await this.data.Servers
                 .ToListAsync();
     }

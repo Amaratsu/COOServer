@@ -1,7 +1,7 @@
-﻿namespace COO.Server.Features.Identity.Models
-{
-    using FluentValidation;
+﻿using FluentValidation;
 
+namespace COO.Server.Controllers.Identity.Models
+{
     public class LoginRequestModel
     {
         public string Login { get; set; }

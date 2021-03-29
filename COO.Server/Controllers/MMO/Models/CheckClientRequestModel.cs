@@ -1,4 +1,4 @@
-﻿namespace COO.Server.Features.MMO.Models
+﻿namespace COO.Server.Controllers.MMO.Models
 {
     public class CheckClientRequestModel
     {
