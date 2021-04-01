@@ -5,10 +5,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Logic\MMO\Read\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="FluentValidation" Version="9.5.3" />
     <PackageReference Include="MediatR" Version="9.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.4" />
@@ -17,6 +13,7 @@
   <ItemGroup>
     <ProjectReference Include="..\COO.DataAccess\COO.DataAccess.csproj" />
     <ProjectReference Include="..\COO.Domain\COO.Domain.csproj" />
+    <ProjectReference Include="..\COO.Infrastructure\COO.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

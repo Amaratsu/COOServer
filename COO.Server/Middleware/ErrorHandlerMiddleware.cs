@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Net;
 using System.Text.Json;
 using System.Threading.Tasks;
-using COO.Server.Infrastructure.Helpers;
+using COO.Infrastructure.Exceptions;
 using Microsoft.AspNetCore.Http;
 
 namespace COO.Server.Middleware
@@ -48,7 +48,7 @@ namespace COO.Server.Middleware
                         break;
                 }
 
-                var result = JsonSerializer.Serialize(new { Status = error?.Message });
+                var result = JsonSerializer.Serialize(new { Message = error?.Message });
                 await response.WriteAsync(result);
             }
         }

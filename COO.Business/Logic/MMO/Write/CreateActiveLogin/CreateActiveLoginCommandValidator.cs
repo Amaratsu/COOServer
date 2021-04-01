@@ -7,7 +7,7 @@ namespace COO.Business.Logic.MMO.Write.CreateActiveLogin
         public CreateActiveLoginCommandValidator()
         {
             RuleFor(x => x.UserId).GreaterThan(0);
-            RuleFor(x => x.SessionKey).NotNull().NotEmpty();
+            RuleFor(x => x.Token).NotNull().NotEmpty();
         }
     }
 }

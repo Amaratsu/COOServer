@@ -6,13 +6,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Data\Migrations\**" />
-    <Content Remove="Data\Migrations\**" />
-    <EmbeddedResource Remove="Data\Migrations\**" />
-    <None Remove="Data\Migrations\**" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Content Remove="Properties\serviceDependencies.COOServer - Web Deploy.json" />
   </ItemGroup>
 
@@ -41,11 +34,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Data\Models\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\COO.Business\COO.Business.csproj" />
+    <ProjectReference Include="..\COO.Infrastructure\COO.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

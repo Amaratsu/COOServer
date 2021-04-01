@@ -22,8 +22,7 @@ namespace COO.Business.Logic.MMO.Write.CreateActiveLogin
             var activeLogin = new ActiveLogin
             {
                 UserId = request.UserId,
-                SessionKey = request.SessionKey,
-                CharacterId = request.CharacterId
+                SessionKey = request.Token
             };
 
             await context.ActiveLogins.AddAsync(activeLogin, cancellationToken);

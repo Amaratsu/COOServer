@@ -1,4 +1,4 @@
-﻿namespace COO.Server.Infrastructure.Helpers
+﻿namespace COO.Infrastructure.Exceptions
 {
     using System;
     using System.Globalization;

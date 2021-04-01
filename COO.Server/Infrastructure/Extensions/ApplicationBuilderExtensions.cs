@@ -1,6 +1,6 @@
 ﻿namespace COO.Server.Infrastructure.Extensions
 {
-    using Data;
+    using COO.DataAccess.Contexts;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.DependencyInjection;

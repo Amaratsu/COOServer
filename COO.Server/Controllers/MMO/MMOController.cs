@@ -1,15 +1,13 @@
-﻿using COO.Business.Logic.MMO.Write.CreateActiveLogin;
+﻿using COO.Business.Logic.MMO.Read.GetUserByLogin;
+using COO.Business.Logic.MMO.Write.CreateActiveLogin;
 using COO.Domain.Core;
 using COO.Server.Controllers.Identity.Models;
 using COO.Server.Controllers.MMO.Models;
-using COO.Server.Data;
-using COO.Server.Infrastructure.Helpers;
 using COO.Server.Infrastructure.Services;
 using COO.Server.Middleware;
 using FluentValidation.Results;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using System.Collections.Generic;
@@ -19,20 +17,17 @@ namespace COO.Server.Controllers.MMO
 {
     public class MMOController : ApiController
     {
-        private readonly UserManager<Validation.User> userManager;
         private readonly IMMOService mmoService;
         private readonly AppSettings appSettings;
         private readonly IEmailService emailService;
         private readonly IMediator _mediator;
 
         public MMOController(
-            UserManager<Validation.User> userManager,
             IMMOService mmoService,
             IOptions<AppSettings> appSettings,
             IEmailService emailService,
             IMediator mediator)
         {
-            this.userManager = userManager;
             this.mmoService = mmoService;
             this.appSettings = appSettings.Value;
             this.emailService = emailService;
@@ -121,40 +116,9 @@ namespace COO.Server.Controllers.MMO
         [Route(nameof(Login))]
         public async Task<ActionResult> Login(LoginRequestModel model)
         {
-            LoginValidator validator = new LoginValidator();
-            ValidationResult validateResult = validator.Validate(model);
+            var user = await _mediator.Send(new GetUserByLoginQuery(model.Login, model.Password));
 
-            if (validateResult.IsValid)
-            {
-
-                var user = await this.userManager.FindByNameAsync(model.Login);
-                if (user == null)
-                {
-                    throw new AppException("Login or password is incorrect");
-                }
-
-                if (!await this.userManager.CheckPasswordAsync(user, model.Password))
-                {
-                    throw new AppException("Login or password is incorrect");
-                }
-
-                if (!await this.userManager.IsEmailConfirmedAsync(user))
-                {
-                    throw new AppException("Login or password is incorrect");
-                }
-
-                await this.mmoService.DeleteActiveLoginAsync(user.Id);
-
-                var randomString = Helper.RandomString(10);
-
-                await _mediator.Send(new CreateActiveLoginCommand(user.Id, randomString, null));
-
-                return Ok(new { Status = "OK", SessionKey = randomString, UserId = user.Id });
-            }
-            else
-            {
-                throw new AppException(validateResult.Errors[0].ErrorMessage);
-            }
+            return Ok(new { Status = "OK", SessionKey = randomString, UserId = user.Id });
         }
 
 

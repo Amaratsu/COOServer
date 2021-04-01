@@ -10,11 +10,10 @@ namespace COO.DataAccess.Contexts
             : base(options) { }
 
         public DbSet<User> Users { get; set; }
-        public DbSet<ActiveLogin> ActiveLogins { get; set; }
         public DbSet<Character> Characters { get; set; }
         public DbSet<Clan> Clans { get; set; }
         public DbSet<Inventory> Inventories { get; set; }
         public DbSet<Quest> Quests { get; set; }
-        public DbSet<Domain.Core.Server> Servers { get; set; }
+        public DbSet<Server> Servers { get; set; }
     }
 }
