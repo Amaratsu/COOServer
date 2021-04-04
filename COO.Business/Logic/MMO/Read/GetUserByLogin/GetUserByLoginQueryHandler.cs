@@ -27,7 +27,7 @@ namespace COO.Business.Logic.MMO.Read.GetUserByLogin
         {
             await using var context = _contextFactory.CreateDbContext();
 
-            var user = await context.Users.FirstOrDefaultAsync(user => user.Name.ToLower() == request.Login.ToLower() || user.Email.ToLower() == request.Login.ToLower());
+            var user = await context.Users.FirstOrDefaultAsync(user => user.Name.ToLower() == request.Login.ToLower());
 
             if (user == null)
             {

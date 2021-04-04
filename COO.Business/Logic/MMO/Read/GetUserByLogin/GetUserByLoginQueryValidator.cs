@@ -1,7 +1,6 @@
-﻿using COO.Business.Logic.MMO.Read.GetUserByLogin;
-using FluentValidation;
+﻿using FluentValidation;
 
-namespace COO.Business.Logic.MMO.Write.CreateActiveLogin
+namespace COO.Business.Logic.MMO.Read.GetUserByLogin
 {
     public class GetUserByLoginQueryValidator : AbstractValidator<GetUserByLoginQuery>
     {

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using COO.Domain.Core;
+using System.Collections.Generic;
 
 namespace COO.Server.Controllers.MMO.Models
 {

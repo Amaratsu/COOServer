@@ -1,11 +1,9 @@
 ﻿using COO.Business.Logic.MMO.Read.GetUserByLogin;
-using COO.Business.Logic.MMO.Write.CreateActiveLogin;
+using COO.Business.Logic.MMO.Write.CreateConfirmEmail;
+using COO.Business.Logic.MMO.Write.CreateRegister;
 using COO.Domain.Core;
-using COO.Server.Controllers.Identity.Models;
 using COO.Server.Controllers.MMO.Models;
 using COO.Server.Infrastructure.Services;
-using COO.Server.Middleware;
-using FluentValidation.Results;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -17,9 +15,9 @@ namespace COO.Server.Controllers.MMO
 {
     public class MMOController : ApiController
     {
-        private readonly IMMOService mmoService;
-        private readonly AppSettings appSettings;
-        private readonly IEmailService emailService;
+        private readonly IMMOService _mmoService;
+        private readonly AppSettings _appSettings;
+        private readonly IEmailService _emailService;
         private readonly IMediator _mediator;
 
         public MMOController(
@@ -28,10 +26,10 @@ namespace COO.Server.Controllers.MMO
             IEmailService emailService,
             IMediator mediator)
         {
-            this.mmoService = mmoService;
-            this.appSettings = appSettings.Value;
-            this.emailService = emailService;
-            this._mediator = mediator;
+            _mmoService = mmoService;
+            _appSettings = appSettings.Value;
+            _emailService = emailService;
+            _mediator = mediator;
         }
 
         [HttpPost]
@@ -39,76 +37,29 @@ namespace COO.Server.Controllers.MMO
         [Route(nameof(Register))]
         public async Task<ActionResult> Register(RegisterRequestModel model)
         {
-            RegisterValidator validator = new RegisterValidator();
-            ValidationResult validateResult = validator.Validate(model);
+            var user = await _mediator.Send(new CreateRegisterCommand(model.Login, model.Email, model.Password));
 
-            if (validateResult.IsValid)
-            {
-                var user = new Validation.User
-                {
-                    Email = model.Email,
-                    UserName = model.UserName
-                };
+            var callbackUrl = Url.Action(
+                    "ConfirmEmail",
+                    "MMO",
+                    new { userId = user.Id, token = user.Token },
+                    protocol: HttpContext.Request.Scheme);
 
-                var newUser = await this.userManager.CreateAsync(user, model.Password);
-                if (newUser.Succeeded)
-                {
-                    var code = await this.userManager.GenerateEmailConfirmationTokenAsync(user);
+            await _emailService.SendAsync(
+                to: user.Email,
+                subject: "ConfirmEmail",
+                html: $"Confirm registration by clicking on the link: <a href='{callbackUrl}'>link</a>"
+                );
 
-                    var callbackUrl = Url.Action(
-                            "ConfirmEmail",
-                            "MMO",
-                            new { userId = user.Id, code = code },
-                            protocol: HttpContext.Request.Scheme);
-
-                    await this.emailService.SendAsync(
-                        to: user.Email,
-                        subject: "ConfirmEmail",
-                        html: $"Confirm registration by clicking on the link: <a href='{callbackUrl}'>link</a>"
-                        );
-
-                    return Ok(new { Status = "OK" });
-                }
-                else
-                {
-                    var errorMessage = "";
-                    foreach (var error in newUser.Errors)
-                    {
-                        errorMessage = error.Description;
-                    }
-
-                    throw new AppException(errorMessage);
-                }
-            }
-            else
-            {
-                throw new AppException(validateResult.Errors[0].ErrorMessage);
-            }
+            return Ok(new { Message = $"The account was created successfully, a confirmation email {user.Email} was sent to your email." }) ;
         }
 
         [HttpGet]
         [AllowAnonymous]
         [Route(nameof(ConfirmEmail))]
-        public async Task<ActionResult> ConfirmEmail(string userId, string code)
+        public async Task<ActionResult> ConfirmEmail(int userId, string token)
         {
-            if (userId == null || code == null)
-            {
-                throw new AppException("Link is incorrect");
-            }
-            var user = await this.userManager.FindByIdAsync(userId);
-            if (user == null)
-            {
-                throw new AppException("Link is incorrect");
-            }
-            var result = await this.userManager.ConfirmEmailAsync(user, code);
-            if (result.Succeeded)
-            {
-                return Redirect($"{this.appSettings.ClientUrl}/login");
-            }
-            else
-            {
-                throw new AppException("Link is incorrect");
-            }
+            return Ok(await _mediator.Send(new CreateConfirmEmailCommand(userId, token)));
         }
 
         [HttpPost]
