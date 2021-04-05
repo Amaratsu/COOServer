@@ -9,20 +9,20 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace COO.Business.Logic.MMO.Write.CreateRegister
+namespace COO.Business.Logic.MMO.Write.Registration
 {
-    public class CreateRegisterCommandHandler : IRequestHandler<CreateRegisterCommand, User>
+    public class RegistrationCommandHandler : IRequestHandler<RegistrationCommand, RegistrationResponseModel>
     {
         private readonly IDbContextFactory<COODbContext> _contextFactory;
         private readonly IDataHashService _dataHashService;
 
-        public CreateRegisterCommandHandler(IDbContextFactory<COODbContext> contextFactory, IDataHashService dataHashService)
+        public RegistrationCommandHandler(IDbContextFactory<COODbContext> contextFactory, IDataHashService dataHashService)
         {
             _contextFactory = contextFactory;
             _dataHashService = dataHashService;
         }
 
-        public async Task<User> Handle(CreateRegisterCommand request, CancellationToken cancellationToken)
+        public async Task<RegistrationResponseModel> Handle(RegistrationCommand request, CancellationToken cancellationToken)
         {
             await using var context = _contextFactory.CreateDbContext();
 
@@ -47,7 +47,11 @@ namespace COO.Business.Logic.MMO.Write.CreateRegister
             await context.Users.AddAsync(user, cancellationToken);
             await context.SaveChangesAsync(cancellationToken);
 
-            return user;
+            return new RegistrationResponseModel { 
+                UserId = user.Id,
+                Email = user.Email,
+                Token = user.Token
+            };
         }
     }
 }

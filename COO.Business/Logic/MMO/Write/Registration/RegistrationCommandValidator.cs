@@ -1,10 +1,10 @@
 ﻿using FluentValidation;
 
-namespace COO.Business.Logic.MMO.Write.CreateRegister
+namespace COO.Business.Logic.MMO.Write.Registration
 {
-    class CreateRegisterCommandValidator : AbstractValidator<CreateRegisterCommand>
+    public class RegistrationCommandValidator : AbstractValidator<RegistrationCommand>
     {
-        public CreateRegisterCommandValidator()
+        public RegistrationCommandValidator()
         {
             RuleFor(x => x.Login).NotNull().NotEmpty();
             RuleFor(x => x.Email).NotNull().NotEmpty().EmailAddress();

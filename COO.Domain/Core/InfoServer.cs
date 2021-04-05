@@ -2,7 +2,7 @@
 
 namespace COO.Domain.Core
 {
-    public class Server
+    public class InfoServer
     {
         public int Id { get; set; }
         // 0 - game hub, 1 - open world, 2 - instance

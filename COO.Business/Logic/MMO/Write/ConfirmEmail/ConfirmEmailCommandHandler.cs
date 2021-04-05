@@ -6,18 +6,18 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace COO.Business.Logic.MMO.Write.CreateConfirmEmail
+namespace COO.Business.Logic.MMO.Write.ConfirmEmail
 {
-    public class CreateConfirmEmailCommandHandler : IRequestHandler<CreateConfirmEmailCommand, string>
+    public class ConfirmEmailCommandHandler : IRequestHandler<ConfirmEmailCommand, string>
     {
         private readonly IDbContextFactory<COODbContext> _contextFactory;
 
-        public CreateConfirmEmailCommandHandler(IDbContextFactory<COODbContext> contextFactory)
+        public ConfirmEmailCommandHandler(IDbContextFactory<COODbContext> contextFactory)
         {
             _contextFactory = contextFactory;
         }
 
-        public async Task<string> Handle(CreateConfirmEmailCommand request, CancellationToken cancellationToken)
+        public async Task<string> Handle(ConfirmEmailCommand request, CancellationToken cancellationToken)
         {
             await using var context = _contextFactory.CreateDbContext();
 

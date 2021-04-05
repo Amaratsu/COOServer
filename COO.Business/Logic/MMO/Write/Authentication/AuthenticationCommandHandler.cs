@@ -1,29 +1,27 @@
 ﻿using COO.DataAccess.Contexts;
-using COO.Domain.Core;
 using COO.Infrastructure.Exceptions;
 using COO.Infrastructure.Helpers;
 using COO.Infrastructure.Services.DataHash;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace COO.Business.Logic.MMO.Read.GetUserByLogin
+namespace COO.Business.Logic.MMO.Write.Authentication
 {
-    public sealed class GetUserByLoginQueryHandler : IRequestHandler<GetUserByLoginQuery, User>
+    public class AuthenticationCommandHandler : IRequestHandler<AuthenticationCommand, AuthenticationResponseModel>
     {
         private readonly IDbContextFactory<COODbContext> _contextFactory;
         private readonly IDataHashService _dataHashService;
 
-        public GetUserByLoginQueryHandler(IDbContextFactory<COODbContext> contextFactory, IDataHashService dataHashService)
+        public AuthenticationCommandHandler(IDbContextFactory<COODbContext> contextFactory, IDataHashService dataHashService)
         {
             _contextFactory = contextFactory;
             _dataHashService = dataHashService;
         }
 
-        public async Task<User> Handle(GetUserByLoginQuery request, CancellationToken cancellationToken)
+        public async Task<AuthenticationResponseModel> Handle(AuthenticationCommand request, CancellationToken cancellationToken)
         {
             await using var context = _contextFactory.CreateDbContext();
 
@@ -59,7 +57,11 @@ namespace COO.Business.Logic.MMO.Read.GetUserByLogin
 
             await context.SaveChangesAsync();
 
-            return user;
+            return new AuthenticationResponseModel
+            {
+                UserId = user.Id,
+                Token = user.Token
+            };
         }
     }
 }

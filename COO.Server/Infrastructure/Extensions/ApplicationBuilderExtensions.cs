@@ -1,9 +1,6 @@
 ﻿namespace COO.Server.Infrastructure.Extensions
 {
-    using COO.DataAccess.Contexts;
     using Microsoft.AspNetCore.Builder;
-    using Microsoft.EntityFrameworkCore;
-    using Microsoft.Extensions.DependencyInjection;
 
     public static class ApplicationBuilderExtensions
     {
@@ -15,14 +12,5 @@
                     options.SwaggerEndpoint("/swagger/v1/swagger.json", "My COO API");
                     options.RoutePrefix = string.Empty;
                 });
-
-        public static void ApplyMigrations(this IApplicationBuilder app)
-        {
-            using var services = app.ApplicationServices.CreateScope();
-
-            var dbContext = services.ServiceProvider.GetService<COODbContext>();
-
-            dbContext.Database.Migrate();
-        }
     }
 }

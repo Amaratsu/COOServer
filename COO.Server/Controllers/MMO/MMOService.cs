@@ -39,7 +39,7 @@ namespace COO.Server.Controllers.MMO
             {
                 UserId = userId,
                 Name = name,
-                Class = classId,
+                ClassId = classId,
                 Gender = gender,
                 Health = health,
                 Mana = mana,
@@ -68,18 +68,6 @@ namespace COO.Server.Controllers.MMO
             return character.Id;
         }
 
-        public async Task<bool> DeleteActiveLoginAsync(int userId)
-        {
-            var activeLogin = await FindActiveLoginAsync(userId);
-            if (activeLogin != null)
-            {
-                this.data.ActiveLogins.Remove(activeLogin);
-                await this.data.SaveChangesAsync();
-                return true;
-            }
-            return false;
-        }
-
         public async Task<bool> DeleteCharacterAsync(int characterId)
         {
             var character = await FindCharacterByCharacterIdAsync(characterId);
@@ -91,11 +79,6 @@ namespace COO.Server.Controllers.MMO
             }
             return false;
         }
-
-        public async Task<ActiveLogin> FindActiveLoginAsync(int userId)
-            => await this.data
-                .ActiveLogins
-                .FirstOrDefaultAsync(al => al.UserId == userId);
 
         public async Task<Character> FindCharacterByCharacterIdAsync(int characterId)
             => await this.data
@@ -111,21 +94,6 @@ namespace COO.Server.Controllers.MMO
             => await this.data
                 .Characters
                 .FirstOrDefaultAsync(c => c.Name == name);
-
-        public async Task<bool> UpdateActiveLoginAsync(int userId, string sessionKey, int? characterId)
-        {
-            var activeLogin = await FindActiveLoginAsync(userId);
-            if (activeLogin != null)
-            {
-                activeLogin.SessionKey = sessionKey != null ? sessionKey : activeLogin.SessionKey;
-                activeLogin.CharacterId = characterId != null ? characterId : activeLogin.CharacterId;
-
-                await this.data.SaveChangesAsync();
-
-                return true;
-            }
-            return false;
-        }
 
         public async Task<List<Inventory>> GetInventoryListByCharacterIdAsync(int characterId)
             => await this.data
@@ -331,8 +299,8 @@ namespace COO.Server.Controllers.MMO
                 .Where(c => c.ClanId != 0).
                 ToListAsync();
 
-        public async Task<List<Domain.Core.Server>> GetServerList()
-            => await this.data.Servers
+        public async Task<List<Domain.Core.InfoServer>> GetServerList()
+            => await this.data.InfoServers
                 .ToListAsync();
     }
 }

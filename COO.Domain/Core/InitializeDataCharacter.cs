@@ -1,18 +1,12 @@
 ﻿namespace COO.Domain.Core
 {
-    public class Character
+    public class InitializeDataCharacter
     {
         public int Id { get; set; }
-        public int UserId { get; set; }
-        public string Name { get; set; }
-        public int Gender { get; set; }
-        public int? ClanId { get; set; }
         public int RaceId { get; set; }
         public int ClassId { get; set; }
-        public int Level { get; set; }
         public int Health { get; set; }
         public int Mana { get; set; }
-        public int Experience { get; set; }
         public double PosX { get; set; }
         public double PosY { get; set; }
         public double PosZ { get; set; }

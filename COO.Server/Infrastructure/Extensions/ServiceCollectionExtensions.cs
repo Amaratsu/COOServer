@@ -1,7 +1,4 @@
-﻿using COO.Server.Controllers.Identity;
-using COO.Server.Controllers.MMO;
-
-namespace COO.Server.Infrastructure.Extensions
+﻿namespace COO.Server.Infrastructure.Extensions
 {
     using Filters;
     using Microsoft.Extensions.DependencyInjection;
@@ -28,7 +25,7 @@ namespace COO.Server.Infrastructure.Extensions
             this IServiceCollection services,
             IConfiguration configuration)
             => services
-                .AddDbContext<COODbContext>(options => options
+                .AddDbContextFactory<COODbContext>(options => options
                 .UseNpgsql(
                     configuration.GetDefaultConnectionString()));
 

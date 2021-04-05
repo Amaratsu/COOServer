@@ -1,15 +1,17 @@
 using COO.Server.Middleware;
 using FluentValidation;
+using COO.Business.Logic.MMO.Write.Registration;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using System.Reflection;
+using COO.Server.Infrastructure.Extensions;
+using MediatR;
 
 namespace COO.Server
 {
-    using Infrastructure.Extensions;
-    using Microsoft.AspNetCore.Builder;
-    using Microsoft.AspNetCore.Hosting;
-    using Microsoft.Extensions.Configuration;
-    using Microsoft.Extensions.DependencyInjection;
-    using Microsoft.Extensions.Hosting;
-
     public class Startup
     {
         public Startup(IConfiguration configuration) => this.Configuration = configuration;
@@ -18,8 +20,9 @@ namespace COO.Server
 
         public void ConfigureServices(IServiceCollection services)
             => services
+                .AddMediatR(typeof(RegistrationCommandHandler).GetTypeInfo().Assembly)
+                .AddValidatorsFromAssembly(typeof(RegistrationCommandValidator).Assembly)
                 .AddDatabase(this.Configuration)
-                .AddValidatorsFromAssembly(typeof(Startup).Assembly)
                 .AddApplicationServices()
                 .AddSwagger()
                 .AddApiControllers();
@@ -42,8 +45,7 @@ namespace COO.Server
                 .UseEndpoints(endpoints =>
                 {
                     endpoints.MapControllers();
-                })
-                .ApplyMigrations();
+                });
         }
     }
 }

@@ -6,9 +6,6 @@ namespace COO.Server.Controllers.MMO
 {
     public interface IMMOService
     {
-        Task<ActiveLogin> FindActiveLoginAsync(int userId);
-        Task<bool> DeleteActiveLoginAsync(int userId);
-        Task<bool> UpdateActiveLoginAsync(int userId, string sessionKey, int? characterId);
         Task<Character> FindCharacterByCharacterIdAsync(int characterId);
         Task<Character> FindCharacterByCharacterIdAndUserIdAsync(int characterId, int userId);
         Task<Character> FindCharacterByNameAsync(string name);
@@ -43,6 +40,6 @@ namespace COO.Server.Controllers.MMO
         Task<List<Character>> GetCharacterListByUserIdAsync(int userId);
         Task<string> GetIPAsync();
         Task<string> GetServer();
-        Task<List<Domain.Core.Server>> GetServerList();
+        Task<List<Domain.Core.InfoServer>> GetServerList();
     }
 }

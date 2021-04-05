@@ -16,4 +16,8 @@
     <ProjectReference Include="..\COO.Infrastructure\COO.Infrastructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Logic\MMO\Read\" />
+  </ItemGroup>
+
 </Project>
