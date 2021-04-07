@@ -3,15 +3,17 @@ using System;
 using COO.DataAccess.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace COO.DataAccess.Migrations
 {
     [DbContext(typeof(COODbContext))]
-    partial class COODbContextModelSnapshot : ModelSnapshot
+    [Migration("20210407203142_update8")]
+    partial class update8
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

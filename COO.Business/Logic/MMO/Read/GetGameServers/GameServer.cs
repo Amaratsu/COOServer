@@ -1,4 +1,4 @@
-﻿namespace COO.Business.Logic.MMO.Write.GetGameServers
+﻿namespace COO.Business.Logic.MMO.Read.GetGameServers
 {
     public class GameServer
     {

@@ -2,8 +2,6 @@
 {
     public class CreateCharacterRequestModel
     {
-        public int UserId { get; set; }
-        public string Token { get; set; }
         public string Name { get; set; }
         // 0 - male, 1 - female
         public int Gender { get; set; }

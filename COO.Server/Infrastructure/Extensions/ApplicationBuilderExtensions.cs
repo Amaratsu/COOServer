@@ -4,7 +4,7 @@
 
     public static class ApplicationBuilderExtensions
     {
-        public static IApplicationBuilder UseSwaggerUI(this IApplicationBuilder app)
+        public static IApplicationBuilder UseSwaggerUi(this IApplicationBuilder app)
             => app
                 .UseSwagger()
                 .UseSwaggerUI(options =>

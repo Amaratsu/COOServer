@@ -1,28 +1,30 @@
-﻿using System;
-using COO.DataAccess.Contexts;
+﻿using COO.DataAccess.Contexts;
 using COO.Domain.Core;
 using COO.Infrastructure.Exceptions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System.Threading;
 using System.Threading.Tasks;
+using COO.Business.Logic.MMO.Write.UpdateActivity;
 
 namespace COO.Business.Logic.MMO.Write.CreateCharacter
 {
     public class CreateCharacterCommandHandler : IRequestHandler<CreateCharacterCommand, string>
     {
         private readonly IDbContextFactory<COODbContext> _contextFactory;
+        private readonly IMediator _mediator;
 
-        public CreateCharacterCommandHandler(IDbContextFactory<COODbContext> contextFactory)
+        public CreateCharacterCommandHandler(IDbContextFactory<COODbContext> contextFactory, IMediator mediator)
         {
             _contextFactory = contextFactory;
+            _mediator = mediator;
         }
 
         public async Task<string> Handle(CreateCharacterCommand request, CancellationToken cancellationToken)
         {
             await using var context = _contextFactory.CreateDbContext();
 
-            var foundUser = await context.Users.FirstOrDefaultAsync(user => user.Id == request.UserId && user.Token == request.Token, cancellationToken);
+            var foundUser = await context.Users.FirstOrDefaultAsync(user => user.Id == request.UserId, cancellationToken);
 
             if (foundUser != null)
             {
@@ -68,11 +70,9 @@ namespace COO.Business.Logic.MMO.Write.CreateCharacter
 
                     await context.Characters.AddAsync(character, cancellationToken);
 
-                    foundUser.LastActivity = DateTime.UtcNow;
-
-                    context.Users.Update(foundUser);
-
                     await context.SaveChangesAsync(cancellationToken);
+
+                    await _mediator.Send(new UpdateActivityCommand(request.UserId), cancellationToken);
 
                     return "OK";
                 }

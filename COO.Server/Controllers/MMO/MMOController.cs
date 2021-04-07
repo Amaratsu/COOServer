@@ -1,33 +1,43 @@
-﻿using COO.Business.Logic.MMO.Write.Authentication;
+﻿using COO.Business.Logic.MMO.Read.Authentication;
 using COO.Business.Logic.MMO.Write.ConfirmEmail;
 using COO.Business.Logic.MMO.Write.CreateCharacter;
 using COO.Business.Logic.MMO.Write.Registration;
 using COO.Server.Controllers.MMO.Models;
-using COO.Server.Infrastructure.Services;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
+using COO.Business.Logic.MMO.Read.GetCharacter;
+using COO.Business.Logic.MMO.Read.GetCharacters;
 using COO.Business.Logic.MMO.Write.DeleteCharacter;
-using COO.Business.Logic.MMO.Write.GetCharacter;
-using COO.Business.Logic.MMO.Write.GetCharacters;
-using COO.Business.Logic.MMO.Write.GetGameServers;
+using COO.Server.Infrastructure.Services.Email;
+using COO.Server.Infrastructure.Services.Identity;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Options;
+using COO.Business.Logic.MMO.Read.GetGameServers;
 
 namespace COO.Server.Controllers.MMO
 {
     public class MMOController : ApiController
     {
+        private readonly IIdentityService _identityService;
+        private readonly AppSettings _appSettings;
         private readonly IEmailService _emailService;
         private readonly IMediator _mediator;
 
         public MMOController(
+            IIdentityService identityService,
+            IOptions<AppSettings> appSettings,
             IEmailService emailService,
             IMediator mediator)
         {
+            _identityService = identityService;
+            _appSettings = appSettings.Value;
             _emailService = emailService;
             _mediator = mediator;
         }
 
         [HttpPost]
+        [AllowAnonymous]
         [Route(nameof(Registration))]
         public async Task<ActionResult> Registration(RegistrationRequestModel model)
         {
@@ -49,6 +59,7 @@ namespace COO.Server.Controllers.MMO
         }
 
         [HttpGet]
+        [AllowAnonymous]
         [Route(nameof(ConfirmEmail))]
         public async Task<ActionResult> ConfirmEmail(int userId, string token)
         {
@@ -56,45 +67,52 @@ namespace COO.Server.Controllers.MMO
         }
 
         [HttpPost]
+        [AllowAnonymous]
         [Route(nameof(Login))]
         public async Task<ActionResult> Login(string login, string password)
         {
-            return Ok(await _mediator.Send(new AuthenticationCommand(login, password)));
+            var user = await _mediator.Send(new AuthenticationQuery(login, password));
+
+            var token = _identityService.GenerateJwtToken(
+                user.Id.ToString(),
+                user.UserName,
+                _appSettings.Secret);
+            return Ok( new { token, user.UserName } );
         }
 
         [HttpPost]
         [Route(nameof(GetGameServers))]
-        public async Task<ActionResult> GetGameServers(GetGameServersRequestModel model)
+        public async Task<ActionResult> GetGameServers()
         {
-            return Ok(await _mediator.Send(new GetGameServersCommand(model.UserId, model.Token)));
+            return Ok(await _mediator.Send(new GetGameServersQuery(UserId())));
         }
 
         [HttpPost]
         [Route(nameof(CreateCharacter))]
         public async Task<ActionResult> CreateCharacter(CreateCharacterRequestModel model)
         {
-            return Ok(await _mediator.Send(new CreateCharacterCommand(model.UserId, model.Token, model.Name, model.Gender, model.RaceId, model.ClassId, model.ServerId)));
+            return Ok(await _mediator.Send(new CreateCharacterCommand(UserId(), model.Name, model.Gender, model.RaceId, model.ClassId, model.ServerId)));
         }
 
         [HttpPost]
         [Route(nameof(DeleteCharacter))]
         public async Task<ActionResult> DeleteCharacter(DeleteCharacterRequestModel model)
         {
-            return Ok(await _mediator.Send(new DeleteCharacterCommand(model.UserId, model.Token, model.CharacterId)));
+            return Ok(await _mediator.Send(new DeleteCharacterCommand(UserId(), model.CharacterId)));
         }
 
         [HttpPost]
         [Route(nameof(GetCharacter))]
         public async Task<ActionResult> GetCharacter(GetCharacterRequestModel model)
         {
-            return Ok(await _mediator.Send(new GetCharacterCommand(model.UserId, model.Token, model.CharacterId, model.ServerId)));
+            return Ok(await _mediator.Send(new GetCharacterQuery(UserId(), model.CharacterId, model.ServerId)));
         }
 
         [HttpPost]
         [Route(nameof(GetCharacters))]
         public async Task<ActionResult> GetCharacters(GetCharactersRequestModel model)
         {
-            return Ok(await _mediator.Send(new GetCharactersCommand(model.UserId, model.Token, model.ServerId)));
+            return Ok(await _mediator.Send(new GetCharactersQuery(UserId(), model.ServerId)));
         }
 
         //        [HttpPost]

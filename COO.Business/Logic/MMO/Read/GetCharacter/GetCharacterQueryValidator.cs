@@ -1,13 +1,12 @@
 ﻿using FluentValidation;
 
-namespace COO.Business.Logic.MMO.Write.GetCharacter
+namespace COO.Business.Logic.MMO.Read.GetCharacter
 {
-    public class GetCharacterCommandValidator : AbstractValidator<GetCharacterCommand>
+    public class GetCharacterQueryValidator : AbstractValidator<GetCharacterQuery>
     {
-        public GetCharacterCommandValidator()
+        public GetCharacterQueryValidator()
         {
             RuleFor(x => x.UserId).NotNull().NotEmpty();
-            RuleFor(x => x.Token).NotNull().NotEmpty();
             RuleFor(x => x.CharacterId).NotNull().NotEmpty();
             RuleFor(x => x.ServerId).NotNull().NotEmpty();
         }

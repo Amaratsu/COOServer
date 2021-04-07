@@ -23,6 +23,7 @@ namespace COO.Server
                 .AddMediatR(typeof(RegistrationCommandHandler).GetTypeInfo().Assembly)
                 .AddValidatorsFromAssembly(typeof(RegistrationCommandValidator).Assembly)
                 .AddDatabase(this.Configuration)
+                .AddJwtAuthentication(services.GetApplicationSettings(this.Configuration))
                 .AddApplicationServices()
                 .AddSwagger()
                 .AddApiControllers();
@@ -35,13 +36,15 @@ namespace COO.Server
             }
 
             app
-                .UseSwaggerUI()
+                .UseSwaggerUi()
                 .UseRouting()
                 .UseCors(options => options
                     .AllowAnyOrigin()
                     .AllowAnyHeader()
                     .AllowAnyMethod())
                 .UseMiddleware<ErrorHandlerMiddleware>()
+                .UseAuthentication()
+                .UseAuthorization()
                 .UseEndpoints(endpoints =>
                 {
                     endpoints.MapControllers();

@@ -1,4 +1,4 @@
-﻿namespace COO.Server.Infrastructure.Services
+﻿namespace COO.Server.Infrastructure.Services.Email
 {
     using System.Threading.Tasks;
 

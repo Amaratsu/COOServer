@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using COO.Domain.Core;
 
-namespace COO.Business.Logic.MMO.Write.GetCharacter
+namespace COO.Business.Logic.MMO.Read.GetCharacter
 {
     public class GetCharacterResponseModel
     {

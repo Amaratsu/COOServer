@@ -26,7 +26,7 @@ namespace COO.Business.Logic.MMO.Write.Registration
         {
             await using var context = _contextFactory.CreateDbContext();
 
-            var foundUser = await context.Users.FirstOrDefaultAsync(u => u.Name == request.Login || u.Email == request.Email, cancellationToken);
+            var foundUser = await context.Users.FirstOrDefaultAsync(u => u.UserName == request.Login || u.Email == request.Email, cancellationToken);
 
             if (foundUser != null)
             {
@@ -36,7 +36,7 @@ namespace COO.Business.Logic.MMO.Write.Registration
             var salt = _dataHashService.GenerateSalt();
             var user = new User
             {
-                Name = request.Login,
+                UserName = request.Login,
                 Email = request.Email,
                 PaswordSalt = salt,
                 PasswordHash = _dataHashService.EncryptData(request.Password, salt),

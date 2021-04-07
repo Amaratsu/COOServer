@@ -4,10 +4,9 @@ namespace COO.Business.Logic.MMO.Write.CreateCharacter
 {
     public sealed class CreateCharacterCommand : IRequest<string>
     {
-        public CreateCharacterCommand(int userId, string token, string name, int gender, int raceId, int classId, int serverId)
+        public CreateCharacterCommand(int userId, string name, int gender, int raceId, int classId, int serverId)
         {
             UserId = userId;
-            Token = token;
             Name = name;
             Gender = gender;
             RaceId = raceId;
@@ -16,7 +15,6 @@ namespace COO.Business.Logic.MMO.Write.CreateCharacter
         }
 
         public int UserId { get; }
-        public string Token { get; }
         public string Name { get; }
         // 0 - male, 1 - female
         public int Gender { get; }

@@ -1,31 +1,33 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using COO.Business.Logic.MMO.Write.UpdateActivity;
 using COO.DataAccess.Contexts;
 using COO.Infrastructure.Exceptions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace COO.Business.Logic.MMO.Write.GetCharacter
+namespace COO.Business.Logic.MMO.Read.GetCharacter
 {
-    public class GetCharacterCommandHandler : IRequestHandler<GetCharacterCommand, GetCharacterResponseModel>
+    public class GetCharacterQueryHandler : IRequestHandler<GetCharacterQuery, GetCharacterResponseModel>
     {
         private readonly IDbContextFactory<COODbContext> _contextFactory;
+        private readonly IMediator _mediator;
 
-        public GetCharacterCommandHandler(IDbContextFactory<COODbContext> contextFactory)
+        public GetCharacterQueryHandler(IDbContextFactory<COODbContext> contextFactory, IMediator mediator)
         {
             _contextFactory = contextFactory;
+            _mediator = mediator;
         }
 
-        public async Task<GetCharacterResponseModel> Handle(GetCharacterCommand request,
+        public async Task<GetCharacterResponseModel> Handle(GetCharacterQuery request,
             CancellationToken cancellationToken)
         {
             await using var context = _contextFactory.CreateDbContext();
 
             var foundUser =
                 await context.Users.
-                    FirstOrDefaultAsync(u => u.Id == request.UserId && u.Token == request.Token, cancellationToken);
+                    FirstOrDefaultAsync(u => u.Id == request.UserId, cancellationToken);
 
             if (foundUser != null)
             {
@@ -45,11 +47,7 @@ namespace COO.Business.Logic.MMO.Write.GetCharacter
                     var clan = await context.Clans
                         .FirstOrDefaultAsync(c => c.Id == foundCharacter.ClanId, cancellationToken);
 
-                    foundUser.LastActivity = DateTime.UtcNow;
-
-                    context.Users.Update(foundUser);
-
-                    await context.SaveChangesAsync(cancellationToken);
+                    await _mediator.Send(new UpdateActivityCommand(request.UserId), cancellationToken);
 
                     return new GetCharacterResponseModel
                     {

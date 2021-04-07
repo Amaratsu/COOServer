@@ -1,31 +1,32 @@
 ﻿using COO.DataAccess.Contexts;
 using COO.Infrastructure.Exceptions;
-using COO.Infrastructure.Helpers;
 using COO.Infrastructure.Services.DataHash;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using System;
 using System.Threading;
 using System.Threading.Tasks;
+using COO.Business.Logic.MMO.Write.UpdateActivity;
 
-namespace COO.Business.Logic.MMO.Write.Authentication
+namespace COO.Business.Logic.MMO.Read.Authentication
 {
-    public class AuthenticationCommandHandler : IRequestHandler<AuthenticationCommand, AuthenticationResponseModel>
+    public class AuthenticationQueryHandler : IRequestHandler<AuthenticationQuery, AuthenticationResponseModel>
     {
         private readonly IDbContextFactory<COODbContext> _contextFactory;
         private readonly IDataHashService _dataHashService;
+        private readonly IMediator _mediator;
 
-        public AuthenticationCommandHandler(IDbContextFactory<COODbContext> contextFactory, IDataHashService dataHashService)
+        public AuthenticationQueryHandler(IDbContextFactory<COODbContext> contextFactory, IDataHashService dataHashService, IMediator mediator)
         {
             _contextFactory = contextFactory;
             _dataHashService = dataHashService;
+            _mediator = mediator;
         }
 
-        public async Task<AuthenticationResponseModel> Handle(AuthenticationCommand request, CancellationToken cancellationToken)
+        public async Task<AuthenticationResponseModel> Handle(AuthenticationQuery request, CancellationToken cancellationToken)
         {
             await using var context = _contextFactory.CreateDbContext();
 
-            var user = await context.Users.FirstOrDefaultAsync(u => u.Name.ToLower() == request.Login.ToLower(), cancellationToken);
+            var user = await context.Users.FirstOrDefaultAsync(u => u.UserName.ToLower() == request.Login.ToLower(), cancellationToken);
 
             if (user == null)
             {
@@ -49,18 +50,12 @@ namespace COO.Business.Logic.MMO.Write.Authentication
                 throw new AppException("The user is blocked");
             }
 
-            user.LastActivity = DateTime.UtcNow;
-            user.Token = Helpers.RandomString(10);
-            user.CountFailedLogins = 0;
-
-            context.Users.Update(user);
-
-            await context.SaveChangesAsync(cancellationToken);
+            await _mediator.Send(new UpdateActivityCommand(user.Id), cancellationToken);
 
             return new AuthenticationResponseModel
             {
-                UserId = user.Id,
-                Token = user.Token
+                Id = user.Id,
+                UserName = user.UserName
             };
         }
     }

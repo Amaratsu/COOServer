@@ -1,30 +1,32 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using COO.Business.Logic.MMO.Write.UpdateActivity;
 using COO.DataAccess.Contexts;
 using COO.Infrastructure.Exceptions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace COO.Business.Logic.MMO.Write.GetGameServers
+namespace COO.Business.Logic.MMO.Read.GetGameServers
 {
-    public class GetGameServersCommandHandler : IRequestHandler<GetGameServersCommand, GetGameServersResponseModel>
+    public class GetGameServersQueryHandler : IRequestHandler<GetGameServersQuery, GetGameServersResponseModel>
     {
         private readonly IDbContextFactory<COODbContext> _contextFactory;
+        private readonly IMediator _mediator;
 
-        public GetGameServersCommandHandler(IDbContextFactory<COODbContext> contextFactory)
+        public GetGameServersQueryHandler(IDbContextFactory<COODbContext> contextFactory, IMediator mediator)
         {
             _contextFactory = contextFactory;
+            _mediator = mediator;
         }
 
-        public async Task<GetGameServersResponseModel> Handle(GetGameServersCommand request, CancellationToken cancellationToken)
+        public async Task<GetGameServersResponseModel> Handle(GetGameServersQuery request, CancellationToken cancellationToken)
         {
             await using var context = _contextFactory.CreateDbContext();
 
             var foundUser =
                 await context.Users.
-                    FirstOrDefaultAsync(u => u.Id == request.UserId && u.Token == request.Token, cancellationToken);
+                    FirstOrDefaultAsync(u => u.Id == request.UserId, cancellationToken);
 
             if (foundUser != null)
             {
@@ -48,13 +50,9 @@ namespace COO.Business.Logic.MMO.Write.GetGameServers
                         };
                         response.GameServers.Add(gameServer);
                     });
-
-                    foundUser.LastActivity = DateTime.UtcNow;
-
-                    context.Users.Update(foundUser);
-
-                    await context.SaveChangesAsync(cancellationToken);
                 }
+
+                await _mediator.Send(new UpdateActivityCommand(request.UserId), cancellationToken);
 
                 return response;
             }

@@ -1,4 +1,4 @@
-﻿namespace COO.Business.Logic.MMO.Write.GetCharacters
+﻿namespace COO.Business.Logic.MMO.Read.GetCharacters
 {
     public class CharacterModel
     {

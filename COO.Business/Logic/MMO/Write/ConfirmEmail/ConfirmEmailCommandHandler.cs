@@ -35,7 +35,7 @@ namespace COO.Business.Logic.MMO.Write.ConfirmEmail
             context.Users.Update(user);
             await context.SaveChangesAsync(cancellationToken);
 
-            return $"User {user.Name} is confirmed.";
+            return $"User {user.UserName} is confirmed.";
         }
     }
 }
