@@ -31,19 +31,19 @@ namespace COO.Business.Logic.MMO.Write.GetCharacter
                 var foundCharacter = await context.Characters
                     .FirstOrDefaultAsync(c => c.Id == request.CharacterId, cancellationToken);
 
-                var inventories = await context.Inventories
-                    .Where(i => i.CharacterId == foundCharacter.Id)
-                    .ToListAsync(cancellationToken);
-
-                var quests = await context.Quests
-                    .Where(q => q.CharacterId == foundCharacter.Id)
-                    .ToListAsync(cancellationToken);
-
-                var clan = await context.Clans
-                    .FirstOrDefaultAsync(c => c.Id == foundCharacter.ClanId, cancellationToken);
-
                 if (foundCharacter != null)
                 {
+                    var inventories = await context.Inventories
+                        .Where(i => i.CharacterId == foundCharacter.Id)
+                        .ToListAsync(cancellationToken);
+
+                    var quests = await context.Quests
+                        .Where(q => q.CharacterId == foundCharacter.Id)
+                        .ToListAsync(cancellationToken);
+
+                    var clan = await context.Clans
+                        .FirstOrDefaultAsync(c => c.Id == foundCharacter.ClanId, cancellationToken);
+
                     return new GetCharacterResponseModel
                     {
                         CharacterId = foundCharacter.Id,
