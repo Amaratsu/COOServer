@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using COO.DataAccess.Contexts;
 using COO.Infrastructure.Exceptions;
@@ -30,6 +31,10 @@ namespace COO.Business.Logic.MMO.Write.DeleteCharacter
                 if (foundCharacter != null)
                 {
                     context.Characters.Remove(foundCharacter);
+
+                    foundUser.LastActivity = DateTime.UtcNow;
+
+                    context.Users.Update(foundUser);
 
                     await context.SaveChangesAsync(cancellationToken);
 

@@ -11,8 +11,8 @@ namespace COO.Business.Logic.MMO.Write.DeleteCharacter
             CharacterId = characterId;
         }
 
-        public int UserId { get; set; }
-        public string Token { get; set; }
-        public int CharacterId { get; set; }
+        public int UserId { get; }
+        public string Token { get; }
+        public int CharacterId { get; }
     }
 }

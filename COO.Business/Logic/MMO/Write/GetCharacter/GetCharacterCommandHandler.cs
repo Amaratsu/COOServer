@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using COO.DataAccess.Contexts;
@@ -29,7 +30,7 @@ namespace COO.Business.Logic.MMO.Write.GetCharacter
             if (foundUser != null)
             {
                 var foundCharacter = await context.Characters
-                    .FirstOrDefaultAsync(c => c.Id == request.CharacterId, cancellationToken);
+                    .FirstOrDefaultAsync(c => c.Id == request.CharacterId && c.ServerId == request.ServerId, cancellationToken);
 
                 if (foundCharacter != null)
                 {
@@ -44,11 +45,18 @@ namespace COO.Business.Logic.MMO.Write.GetCharacter
                     var clan = await context.Clans
                         .FirstOrDefaultAsync(c => c.Id == foundCharacter.ClanId, cancellationToken);
 
+                    foundUser.LastActivity = DateTime.UtcNow;
+
+                    context.Users.Update(foundUser);
+
+                    await context.SaveChangesAsync(cancellationToken);
+
                     return new GetCharacterResponseModel
                     {
                         CharacterId = foundCharacter.Id,
                         Name = foundCharacter.Name,
                         Gender = foundCharacter.Gender,
+                        RaceId = foundCharacter.RaceId,
                         ClassId = foundCharacter.ClassId,
                         Health = foundCharacter.Health,
                         Mana = foundCharacter.Mana,

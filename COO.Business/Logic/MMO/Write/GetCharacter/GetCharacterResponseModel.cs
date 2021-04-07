@@ -8,6 +8,7 @@ namespace COO.Business.Logic.MMO.Write.GetCharacter
         public int CharacterId { get; set; }
         public string Name { get; set; }
         public int Gender { get; set; }
+        public int RaceId { get; set; }
         public int ClassId { get; set; }
         public int Health { get; set; }
         public int Mana { get; set; }

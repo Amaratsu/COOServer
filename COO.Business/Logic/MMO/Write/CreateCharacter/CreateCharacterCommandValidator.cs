@@ -12,6 +12,7 @@ namespace COO.Business.Logic.MMO.Write.CreateCharacter
             RuleFor(x => x.Gender).NotNull().NotEmpty();
             RuleFor(x => x.RaceId).NotNull().NotEmpty();
             RuleFor(x => x.ClassId).NotNull().NotEmpty();
+            RuleFor(x => x.ServerId).NotNull().NotEmpty();
         }
     }
 }

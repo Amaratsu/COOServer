@@ -6,10 +6,10 @@ using COO.Server.Controllers.MMO.Models;
 using COO.Server.Infrastructure.Services;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
 using System.Threading.Tasks;
 using COO.Business.Logic.MMO.Write.DeleteCharacter;
 using COO.Business.Logic.MMO.Write.GetCharacter;
+using COO.Business.Logic.MMO.Write.GetCharacters;
 
 namespace COO.Server.Controllers.MMO
 {
@@ -19,7 +19,6 @@ namespace COO.Server.Controllers.MMO
         private readonly IMediator _mediator;
 
         public MMOController(
-            IOptions<AppSettings> appSettings,
             IEmailService emailService,
             IMediator mediator)
         {
@@ -67,7 +66,7 @@ namespace COO.Server.Controllers.MMO
         [Route(nameof(CreateCharacter))]
         public async Task<ActionResult> CreateCharacter(CreateCharacterRequestModel model)
         {
-            return Ok(await _mediator.Send(new CreateCharacterCommand(model.UserId, model.Token, model.Name, model.Gender, model.RaceId, model.ClassId)));
+            return Ok(await _mediator.Send(new CreateCharacterCommand(model.UserId, model.Token, model.Name, model.Gender, model.RaceId, model.ClassId, model.ServerId)));
         }
 
         [HttpPost]
@@ -81,34 +80,15 @@ namespace COO.Server.Controllers.MMO
         [Route(nameof(GetCharacter))]
         public async Task<ActionResult> GetCharacter(GetCharacterRequestModel model)
         {
-            return Ok(await _mediator.Send(new GetCharacterCommand(model.UserId, model.Token, model.CharacterId)));
+            return Ok(await _mediator.Send(new GetCharacterCommand(model.UserId, model.Token, model.CharacterId, model.ServerId)));
         }
 
-
-        //        [HttpPost]
-        //        [Route(nameof(GetCharacters))]
-        //        public async Task<ActionResult> GetCharacters(GetCharactersRequestModel model)
-        //        {
-        //            var activeLogin = await this.mmoService.FindActiveLoginAsync(model.UserId);
-        //            if (activeLogin != null)
-        //            {
-        //                // if the user owns the current active session
-        //                if (activeLogin.SessionKey == model.SessionKey)
-        //                {
-        //                    var characters = await this.mmoService.GetCharacterListByUserIdAsync(model.UserId);
-
-        //                    return Ok(new { Status = "OK", characters = characters });
-        //                }
-        //                else
-        //                {
-        //                    return Ok(new { Status = "You are not logged in." });
-        //                }
-        //            }
-        //            else
-        //            {
-        //                return Ok(new { Status = "You are not logged in." });
-        //            }
-        //        }
+        [HttpPost]
+        [Route(nameof(GetCharacters))]
+        public async Task<ActionResult> GetCharacters(GetCharactersRequestModel model)
+        {
+            return Ok(await _mediator.Send(new GetCharactersCommand(model.UserId, model.Token, model.ServerId)));
+        }
 
         //        [HttpPost]
         //        [Route(nameof(GetIP))]

@@ -4,6 +4,7 @@
     {
         public int Id { get; set; }
         public int UserId { get; set; }
+        public int ServerId { get; set; }
         public string Name { get; set; }
         public int Gender { get; set; }
         public int? ClanId { get; set; }

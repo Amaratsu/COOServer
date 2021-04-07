@@ -9,5 +9,6 @@
         public int Gender { get; set; }
         public int RaceId { get; set; }
         public int ClassId { get; set; }
+        public int ServerId { get; set; }
     }
 }
