@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace COO.Server.Controllers.MMO.Models
 {
-    public class SaveCharacterRequestModel
+    public class UpdateCharacterRequestModel
     {
         public int CharacterId { get; set; }
         public List<Inventory> Inventory { get; set; }

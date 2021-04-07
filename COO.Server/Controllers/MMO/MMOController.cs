@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using COO.Business.Logic.MMO.Write.DeleteCharacter;
 using COO.Business.Logic.MMO.Write.GetCharacter;
 using COO.Business.Logic.MMO.Write.GetCharacters;
+using COO.Business.Logic.MMO.Write.GetGameServers;
 
 namespace COO.Server.Controllers.MMO
 {
@@ -61,6 +62,12 @@ namespace COO.Server.Controllers.MMO
             return Ok(await _mediator.Send(new AuthenticationCommand(login, password)));
         }
 
+        [HttpPost]
+        [Route(nameof(GetGameServers))]
+        public async Task<ActionResult> GetGameServers(GetGameServersRequestModel model)
+        {
+            return Ok(await _mediator.Send(new GetGameServersCommand(model.UserId, model.Token)));
+        }
 
         [HttpPost]
         [Route(nameof(CreateCharacter))]
@@ -89,17 +96,6 @@ namespace COO.Server.Controllers.MMO
         {
             return Ok(await _mediator.Send(new GetCharactersCommand(model.UserId, model.Token, model.ServerId)));
         }
-
-        //        [HttpPost]
-        //        [Route(nameof(GetIP))]
-        //        public async Task<ActionResult> GetIP()
-        //        {
-        //            var address = await this.mmoService.GetIPAsync();
-        //#if DEBUG
-        //            address = "127.0.0.1";
-        //#endif
-        //            return Ok(new { Status = "OK", Address = address });
-        //        }
 
         //        [HttpPost]
         //        [Route(nameof(SaveCharacter))]
@@ -178,31 +174,6 @@ namespace COO.Server.Controllers.MMO
         //            address = "127.0.0.1";
         //#endif
         //            return Ok(new { Status = "OK", Address = address });
-        //        }
-
-        //        [HttpPost]
-        //        [Route(nameof(GetServerList))]
-        //        public async Task<ActionResult> GetServerList(GetServerListRequestModel model)
-        //        {
-        //            var activeLogin = await this.mmoService.FindActiveLoginAsync(model.UserId);
-        //            if (activeLogin != null)
-        //            {
-        //                // if the user owns the current active session
-        //                if (activeLogin.SessionKey == model.SessionKey)
-        //                {
-        //                    var servers = await this.mmoService.GetServerList();
-
-        //                    return Ok(new { Status = "OK", servers = servers });
-        //                }
-        //                else
-        //                {
-        //                    return Ok(new { Status = "You are not logged in." });
-        //                }
-        //            }
-        //            else
-        //            {
-        //                return Ok(new { Status = "You are not logged in." });
-        //            }
         //        }
 
         //        [HttpPost]
@@ -325,37 +296,5 @@ namespace COO.Server.Controllers.MMO
         //                return Ok(new { Status = "character not found" });
         //            }
         //        }
-
-        //[HttpPost]
-        //[Route(nameof(CheckClient))]
-        //public async Task<ActionResult> CheckClient(CheckClientRequestModel model)
-        //{
-        //    var activeLogin = await this.mmoService.FindActiveLoginAsync(model.UserId);
-        //    if (activeLogin != null)
-        //    {
-        //        // if the user owns the current active session
-        //        if (activeLogin.SessionKey == model.SessionKey)
-        //        {
-        //            // check that the character with this id belongs to this player
-        //            var character = await this.mmoService.FindCharacterByCharacterIdAndUserIdAsync(model.CharacterId, model.UserId);
-        //            if (character != null)
-        //            {
-        //                return Ok(new { Status = "OK" });
-        //            }
-        //            else
-        //            {
-        //                return Ok(new { Status = "Character not found" });
-        //            }
-        //        }
-        //        else
-        //        {
-        //            return Ok(new { Status = "You are not logged in." });
-        //        }
-        //    }
-        //    else
-        //    {
-        //        return Ok(new { Status = "You are not logged in." });
-        //    }
-        //}
     }
 }

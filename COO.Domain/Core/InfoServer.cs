@@ -19,10 +19,6 @@ namespace COO.Domain.Core
         public int MaxCount { get; set; }
         // 0 - off, 1 - work
         public int Status { get; set; }
-        // current number of characters
-        public int CNC { get; set; }
-        // maximum number of characters
-        public int MNC { get; set; }
         public DateTime LastUpdate { get; set; }
     }
 }

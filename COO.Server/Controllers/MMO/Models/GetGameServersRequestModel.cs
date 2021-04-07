@@ -1,8 +1,8 @@
 ﻿namespace COO.Server.Controllers.MMO.Models
 {
-    public class GetServerListRequestModel
+    public class GetGameServersRequestModel
     {
         public int UserId { get; set; }
-        public string SessionKey { get; set; }
+        public string Token { get; set; }
     }
 }
