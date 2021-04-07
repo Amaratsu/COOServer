@@ -21,7 +21,7 @@ namespace COO.Business.Logic.MMO.Write.CreateCharacter
         {
             await using var context = _contextFactory.CreateDbContext();
 
-            var foundUser = await context.Users.FirstOrDefaultAsync(user => user.Id == request.UserId && user.Token == request.Token);
+            var foundUser = await context.Users.FirstOrDefaultAsync(user => user.Id == request.UserId && user.Token == request.Token, cancellationToken);
 
             if (foundUser != null)
             {
@@ -31,10 +31,10 @@ namespace COO.Business.Logic.MMO.Write.CreateCharacter
                 }
                 else
                 {
-                    var fountInitializeDataCharacter = await context.InitializeDataCharacters
-                        .FirstOrDefaultAsync(character => character.RaceId == request.RaceId && character.ClassId == request.ClassId);
+                    var foundInitializeDataCharacter = await context.InitializeDataCharacters
+                        .FirstOrDefaultAsync(character => character.RaceId == request.RaceId && character.ClassId == request.ClassId, cancellationToken);
 
-                    if (fountInitializeDataCharacter != null)
+                    if (foundInitializeDataCharacter != null)
                     {
                         var character = new Character
                         {
@@ -43,28 +43,28 @@ namespace COO.Business.Logic.MMO.Write.CreateCharacter
                             Gender = request.Gender,
                             Level = 1,
                             Experience = 0,
-                            RaceId = fountInitializeDataCharacter.RaceId,
-                            ClassId = fountInitializeDataCharacter.ClassId,
-                            Health = fountInitializeDataCharacter.Health,
-                            Mana = fountInitializeDataCharacter.Mana,
-                            PosX = fountInitializeDataCharacter.PosX,
-                            PosY = fountInitializeDataCharacter.PosY,
-                            PosZ = fountInitializeDataCharacter.PosZ,
-                            RotationYaw = fountInitializeDataCharacter.RotationYaw,
-                            EquipChest = fountInitializeDataCharacter.EquipChest,
-                            EquipFeet = fountInitializeDataCharacter.EquipFeet,
-                            EquipHands = fountInitializeDataCharacter.EquipHands,
-                            EquipHead = fountInitializeDataCharacter.EquipHead,
-                            EquipLegs = fountInitializeDataCharacter.EquipLegs,
-                            Hotbar0 = fountInitializeDataCharacter.Hotbar0,
-                            Hotbar1 = fountInitializeDataCharacter.Hotbar1,
-                            Hotbar2 = fountInitializeDataCharacter.Hotbar2,
-                            Hotbar3 = fountInitializeDataCharacter.Hotbar3
+                            RaceId = foundInitializeDataCharacter.RaceId,
+                            ClassId = foundInitializeDataCharacter.ClassId,
+                            Health = foundInitializeDataCharacter.Health,
+                            Mana = foundInitializeDataCharacter.Mana,
+                            PosX = foundInitializeDataCharacter.PosX,
+                            PosY = foundInitializeDataCharacter.PosY,
+                            PosZ = foundInitializeDataCharacter.PosZ,
+                            RotationYaw = foundInitializeDataCharacter.RotationYaw,
+                            EquipChest = foundInitializeDataCharacter.EquipChest,
+                            EquipFeet = foundInitializeDataCharacter.EquipFeet,
+                            EquipHands = foundInitializeDataCharacter.EquipHands,
+                            EquipHead = foundInitializeDataCharacter.EquipHead,
+                            EquipLegs = foundInitializeDataCharacter.EquipLegs,
+                            Hotbar0 = foundInitializeDataCharacter.Hotbar0,
+                            Hotbar1 = foundInitializeDataCharacter.Hotbar1,
+                            Hotbar2 = foundInitializeDataCharacter.Hotbar2,
+                            Hotbar3 = foundInitializeDataCharacter.Hotbar3
                         };
 
                         await context.Characters.AddAsync(character, cancellationToken);
 
-                        await context.SaveChangesAsync();
+                        await context.SaveChangesAsync(cancellationToken);
 
                         return "OK";
                     }

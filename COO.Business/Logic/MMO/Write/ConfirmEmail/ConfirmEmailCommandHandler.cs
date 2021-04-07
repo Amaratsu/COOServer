@@ -21,7 +21,7 @@ namespace COO.Business.Logic.MMO.Write.ConfirmEmail
         {
             await using var context = _contextFactory.CreateDbContext();
 
-            var user = await context.Users.FirstOrDefaultAsync(user => user.Id == request.UserId && user.Token == request.Token);
+            var user = await context.Users.FirstOrDefaultAsync(u => u.Id == request.UserId && u.Token == request.Token, cancellationToken);
 
             if (user == null)
             {

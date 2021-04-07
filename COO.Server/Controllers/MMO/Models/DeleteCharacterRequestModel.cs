@@ -3,7 +3,7 @@
     public class DeleteCharacterRequestModel
     {
         public int UserId { get; set; }
-        public string SessionKey { get; set; }
+        public string Token { get; set; }
         public int CharacterId { get; set; }
     }
 }

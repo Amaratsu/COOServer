@@ -19,7 +19,7 @@ namespace COO.Business.Logic.MMO.Write.CreateCharacter
         public string Name { get; set; }
         // 0 - male, 1 - female
         public int Gender { get; set; }
-        // 0 - humman, 1 - elf, 2 - dark elf, 3 - Dwarf, 4 - Orc
+        // 0 - human, 1 - elf, 2 - dark elf, 3 - Dwarf, 4 - Orc
         public int RaceId { get; set; }
         public int ClassId { get; set; }
     }

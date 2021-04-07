@@ -26,7 +26,7 @@ namespace COO.Business.Logic.MMO.Write.Registration
         {
             await using var context = _contextFactory.CreateDbContext();
 
-            var foundUser = await context.Users.FirstOrDefaultAsync(user => user.Name == request.Login || user.Email == request.Email);
+            var foundUser = await context.Users.FirstOrDefaultAsync(u => u.Name == request.Login || u.Email == request.Email, cancellationToken);
 
             if (foundUser != null)
             {

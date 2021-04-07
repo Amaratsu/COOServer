@@ -25,7 +25,7 @@ namespace COO.Business.Logic.MMO.Write.Authentication
         {
             await using var context = _contextFactory.CreateDbContext();
 
-            var user = await context.Users.FirstOrDefaultAsync(user => user.Name.ToLower() == request.Login.ToLower());
+            var user = await context.Users.FirstOrDefaultAsync(u => u.Name.ToLower() == request.Login.ToLower(), cancellationToken);
 
             if (user == null)
             {
@@ -55,7 +55,7 @@ namespace COO.Business.Logic.MMO.Write.Authentication
 
             context.Users.Update(user);
 
-            await context.SaveChangesAsync();
+            await context.SaveChangesAsync(cancellationToken);
 
             return new AuthenticationResponseModel
             {
