@@ -81,8 +81,8 @@ namespace COO.Server.Controllers.MMO
         }
 
         [HttpPost]
-        [Route(nameof(GetGameServers))]
-        public async Task<ActionResult> GetGameServers()
+        [Route(nameof(GameServers))]
+        public async Task<ActionResult> GameServers()
         {
             return Ok(await _mediator.Send(new GetGameServersQuery(UserId())));
         }
@@ -102,15 +102,15 @@ namespace COO.Server.Controllers.MMO
         }
 
         [HttpPost]
-        [Route(nameof(GetCharacter))]
-        public async Task<ActionResult> GetCharacter(GetCharacterRequestModel model)
+        [Route(nameof(Character))]
+        public async Task<ActionResult> Character(GetCharacterRequestModel model)
         {
             return Ok(await _mediator.Send(new GetCharacterQuery(UserId(), model.CharacterId, model.ServerId)));
         }
 
         [HttpPost]
-        [Route(nameof(GetCharacters))]
-        public async Task<ActionResult> GetCharacters(GetCharactersRequestModel model)
+        [Route(nameof(Characters))]
+        public async Task<ActionResult> Characters(GetCharactersRequestModel model)
         {
             return Ok(await _mediator.Send(new GetCharactersQuery(UserId(), model.ServerId)));
         }
