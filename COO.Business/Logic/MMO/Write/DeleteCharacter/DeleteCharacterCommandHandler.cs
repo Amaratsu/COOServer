@@ -10,10 +10,10 @@ namespace COO.Business.Logic.MMO.Write.DeleteCharacter
 {
     public class DeleteCharacterCommandHandler : IRequestHandler<DeleteCharacterCommand, string>
     {
-        private readonly IDbContextFactory<COODbContext> _contextFactory;
+        private readonly IDbContextFactory<CooDbContext> _contextFactory;
         private readonly IMediator _mediator;
 
-        public DeleteCharacterCommandHandler(IDbContextFactory<COODbContext> contextFactory, IMediator mediator)
+        public DeleteCharacterCommandHandler(IDbContextFactory<CooDbContext> contextFactory, IMediator mediator)
         {
             _contextFactory = contextFactory;
             _mediator = mediator;

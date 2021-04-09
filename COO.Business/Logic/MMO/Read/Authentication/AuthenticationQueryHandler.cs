@@ -11,11 +11,11 @@ namespace COO.Business.Logic.MMO.Read.Authentication
 {
     public class AuthenticationQueryHandler : IRequestHandler<AuthenticationQuery, AuthenticationResponseModel>
     {
-        private readonly IDbContextFactory<COODbContext> _contextFactory;
+        private readonly IDbContextFactory<CooDbContext> _contextFactory;
         private readonly IDataHashService _dataHashService;
         private readonly IMediator _mediator;
 
-        public AuthenticationQueryHandler(IDbContextFactory<COODbContext> contextFactory, IDataHashService dataHashService, IMediator mediator)
+        public AuthenticationQueryHandler(IDbContextFactory<CooDbContext> contextFactory, IDataHashService dataHashService, IMediator mediator)
         {
             _contextFactory = contextFactory;
             _dataHashService = dataHashService;

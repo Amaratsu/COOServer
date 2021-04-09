@@ -33,7 +33,7 @@ namespace COO.Server.Infrastructure.Extensions
             this IServiceCollection services,
             IConfiguration configuration)
             => services
-                .AddDbContextFactory<COODbContext>(options => options
+                .AddDbContextFactory<CooDbContext>(options => options
                 .UseNpgsql(
                     configuration.GetDefaultConnectionString()));
 

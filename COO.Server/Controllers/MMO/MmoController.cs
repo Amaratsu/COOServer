@@ -1,4 +1,5 @@
-﻿using COO.Business.Logic.MMO.Read.Authentication;
+﻿using System.Net.Http;
+using COO.Business.Logic.MMO.Read.Authentication;
 using COO.Business.Logic.MMO.Write.ConfirmEmail;
 using COO.Business.Logic.MMO.Write.CreateCharacter;
 using COO.Business.Logic.MMO.Write.Registration;
@@ -14,17 +15,18 @@ using COO.Server.Infrastructure.Services.Identity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Options;
 using COO.Business.Logic.MMO.Read.GetGameServers;
+using COO.Business.Logic.MMO.Write.UpdateCharacter;
 
 namespace COO.Server.Controllers.MMO
 {
-    public class MMOController : ApiController
+    public class MmoController : ApiController
     {
         private readonly IIdentityService _identityService;
         private readonly AppSettings _appSettings;
         private readonly IEmailService _emailService;
         private readonly IMediator _mediator;
 
-        public MMOController(
+        public MmoController(
             IIdentityService identityService,
             IOptions<AppSettings> appSettings,
             IEmailService emailService,
@@ -45,7 +47,7 @@ namespace COO.Server.Controllers.MMO
 
             var callbackUrl = Url.Action(
                     "ConfirmEmail",
-                    "MMO",
+                    "Mmo",
                     new { userId = user.UserId, token = user.Token },
                     protocol: HttpContext.Request.Scheme);
 
@@ -115,84 +117,31 @@ namespace COO.Server.Controllers.MMO
             return Ok(await _mediator.Send(new GetCharactersQuery(UserId(), model.ServerId)));
         }
 
-        //        [HttpPost]
-        //        [Route(nameof(SaveCharacter))]
-        //        public async Task<ActionResult> SaveCharacter(SaveCharacterRequestModel model)
-        //        {
-        //            await this.mmoService.UpdateCharacterAsync(
-        //                model.CharacterId, model.Health, model.Mana, model.Experience,
-        //                model.Level, model.PosX, model.PosY, model.PosZ,
-        //                model.RotationYaw, model.EquipChest, model.EquipFeet,
-        //                model.EquipHands, model.EquipHead, model.EquipLegs,
-        //                model.Hotbar0, model.Hotbar1, model.Hotbar2, model.Hotbar3
-        //                );
+        [HttpPost]
+        [Route(nameof(UpdateCharacter))]
+        public async Task<ActionResult> UpdateCharacter(UpdateCharacterRequestModel model)
+        {
+            return Ok(await _mediator.Send(
+                new UpdateCharacterCommand(
+                    UserId(), model.CharacterId, model.ClassId, model.Health, model.Mana,
+                    model.Experience, model.Level, model.PosX, model.PosY, model.PosZ,
+                    model.RotationYaw, model.EquipChest, model.EquipFeet, model.EquipHands,
+                    model.EquipHead, model.EquipLegs, model.Hotbar0, model.Hotbar1, model.Hotbar2,
+                    model.Hotbar3, model.Inventory, model.Quests
+            )));
+        }
 
-        //            await this.mmoService.DeleteRangeInventoryByCharacterIdAsync(model.CharacterId);
-
-        //            await this.mmoService.DeleteRangeQuestsByCharacterIdAsync(model.CharacterId);
-
-        //            if (model.Inventory.Count > 0)
-        //            {
-        //                var inventory = new List<Inventory>();
-        //                model.Inventory.ForEach(i => {
-        //                    inventory.Add(new Inventory {
-        //                        CharacterId = model.CharacterId,
-        //                        Slot = i.Slot,
-        //                        Item = i.Item,
-        //                        Amount = i.Amount
-        //                    });
-        //                });
-        //                await this.mmoService.AddRangeInventoryAsync(inventory);
-        //            }
-
-        //            if (model.Quests.Count > 0)
-        //            {
-        //                var quests = new List<Quest>();
-        //                model.Quests.ForEach(q => {
-        //                    if (q.Completed)
-        //                    {
-        //                        quests.Add(new Quest
-        //                        {
-        //                            CharacterId = model.CharacterId,
-        //                            Name = q.Name,
-        //                            Completed = q.Completed,
-        //                            Task1 = 0,
-        //                            Task2 = 0,
-        //                            Task3 = 0,
-        //                            Task4 = 0
-        //                        });
-        //                    }
-        //                    else
-        //                    {
-        //                        quests.Add(new Quest
-        //                        {
-        //                            CharacterId = model.CharacterId,
-        //                            Name = q.Name,
-        //                            Completed = q.Completed,
-        //                            Task1 = q.Task1,
-        //                            Task2 = q.Task2,
-        //                            Task3 = q.Task3,
-        //                            Task4 = q.Task4
-        //                        });
-        //                    }
-
-        //                });
-        //                await this.mmoService.AddRangeQuestsAsync(quests);
-        //            }
-
-        //            return Ok(new { Status = "OK" });
-        //        }
-
-        //        [HttpPost]
-        //        [Route(nameof(GetServer))]
-        //        public async Task<ActionResult> GetServer()
-        //        {
-        //            var address = await this.mmoService.GetServer();
-        //#if DEBUG
-        //            address = "127.0.0.1";
-        //#endif
-        //            return Ok(new { Status = "OK", Address = address });
-        //        }
+        [HttpPost]
+        [Route(nameof(GetServer))]
+        public async Task<ActionResult> GetServer()
+        {
+            var httpClient = new HttpClient();
+            var address = await httpClient.GetStringAsync("https://api.ipify.org");
+#if DEBUG
+            address = "127.0.0.1";
+#endif
+            return Ok(address);
+        }
 
         //        [HttpPost]
         //        [Route(nameof(AddCharacterToClan))]

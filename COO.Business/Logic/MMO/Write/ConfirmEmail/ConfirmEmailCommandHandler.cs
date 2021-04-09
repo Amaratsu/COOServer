@@ -10,9 +10,9 @@ namespace COO.Business.Logic.MMO.Write.ConfirmEmail
 {
     public class ConfirmEmailCommandHandler : IRequestHandler<ConfirmEmailCommand, string>
     {
-        private readonly IDbContextFactory<COODbContext> _contextFactory;
+        private readonly IDbContextFactory<CooDbContext> _contextFactory;
 
-        public ConfirmEmailCommandHandler(IDbContextFactory<COODbContext> contextFactory)
+        public ConfirmEmailCommandHandler(IDbContextFactory<CooDbContext> contextFactory)
         {
             _contextFactory = contextFactory;
         }

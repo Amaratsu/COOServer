@@ -11,10 +11,10 @@ namespace COO.Business.Logic.MMO.Read.GetGameServers
 {
     public class GetGameServersQueryHandler : IRequestHandler<GetGameServersQuery, GetGameServersResponseModel>
     {
-        private readonly IDbContextFactory<COODbContext> _contextFactory;
+        private readonly IDbContextFactory<CooDbContext> _contextFactory;
         private readonly IMediator _mediator;
 
-        public GetGameServersQueryHandler(IDbContextFactory<COODbContext> contextFactory, IMediator mediator)
+        public GetGameServersQueryHandler(IDbContextFactory<CooDbContext> contextFactory, IMediator mediator)
         {
             _contextFactory = contextFactory;
             _mediator = mediator;

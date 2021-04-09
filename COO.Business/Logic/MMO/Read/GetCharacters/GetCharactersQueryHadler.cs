@@ -13,10 +13,10 @@ namespace COO.Business.Logic.MMO.Read.GetCharacters
 {
     public class GetCharactersQueryHadler : IRequestHandler<GetCharactersQuery, GetCharactersResponseModel>
     {
-        private readonly IDbContextFactory<COODbContext> _contextFactory;
+        private readonly IDbContextFactory<CooDbContext> _contextFactory;
         private readonly IMediator _mediator;
 
-        public GetCharactersQueryHadler(IDbContextFactory<COODbContext> contextFactory, IMediator mediator)
+        public GetCharactersQueryHadler(IDbContextFactory<CooDbContext> contextFactory, IMediator mediator)
         {
             _contextFactory = contextFactory;
             _mediator = mediator;
@@ -64,7 +64,6 @@ namespace COO.Business.Logic.MMO.Read.GetCharacters
                 await _mediator.Send(new UpdateActivityCommand(request.UserId), cancellationToken);
 
                 return response;
-
             }
             else
             {

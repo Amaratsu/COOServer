@@ -6,8 +6,7 @@ namespace COO.Server.Controllers.MMO.Models
     public class UpdateCharacterRequestModel
     {
         public int CharacterId { get; set; }
-        public List<Inventory> Inventory { get; set; }
-        public List<Quest> Quests { get; set; }
+        public int ClassId { get; set; }
         public int Health { get; set; }
         public int Mana { get; set; }
         public int Experience { get; set; }
@@ -25,5 +24,7 @@ namespace COO.Server.Controllers.MMO.Models
         public string Hotbar1 { get; set; }
         public string Hotbar2 { get; set; }
         public string Hotbar3 { get; set; }
+        public List<InventoryItem> Inventory { get; set; }
+        public List<Quest> Quests { get; set; }
     }
 }

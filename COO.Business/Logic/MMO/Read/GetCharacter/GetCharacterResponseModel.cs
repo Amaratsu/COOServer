@@ -15,7 +15,7 @@ namespace COO.Business.Logic.MMO.Read.GetCharacter
         public int Level { get; set; }
         public int Experience { get; set; }
         public string ClanName { get; set; }
-        public List<Inventory> Inventory { get; set; }
+        public List<InventoryItem> Inventory { get; set; }
         public List<Quest> Quests { get; set; }
         public double PosX { get; set; }
         public double PosY { get; set; }

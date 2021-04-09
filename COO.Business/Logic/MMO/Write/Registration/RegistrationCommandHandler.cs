@@ -13,10 +13,10 @@ namespace COO.Business.Logic.MMO.Write.Registration
 {
     public class RegistrationCommandHandler : IRequestHandler<RegistrationCommand, RegistrationResponseModel>
     {
-        private readonly IDbContextFactory<COODbContext> _contextFactory;
+        private readonly IDbContextFactory<CooDbContext> _contextFactory;
         private readonly IDataHashService _dataHashService;
 
-        public RegistrationCommandHandler(IDbContextFactory<COODbContext> contextFactory, IDataHashService dataHashService)
+        public RegistrationCommandHandler(IDbContextFactory<CooDbContext> contextFactory, IDataHashService dataHashService)
         {
             _contextFactory = contextFactory;
             _dataHashService = dataHashService;

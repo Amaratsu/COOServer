@@ -9,6 +9,6 @@ namespace COO.Business.Logic.MMO.Write.UpdateActivity
             UserId = userId;
         }
 
-        public int UserId { get; set; }
+        public int UserId { get; }
     }
 }

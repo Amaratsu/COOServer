@@ -3,16 +3,16 @@ using Microsoft.EntityFrameworkCore;
 
 namespace COO.DataAccess.Contexts
 {
-    public class COODbContext : DbContext
+    public class CooDbContext : DbContext
     {
-        public COODbContext(
-            DbContextOptions<COODbContext> options)
+        public CooDbContext(
+            DbContextOptions<CooDbContext> options)
             : base(options) { }
 
         public DbSet<User> Users { get; set; }
         public DbSet<Character> Characters { get; set; }
         public DbSet<Clan> Clans { get; set; }
-        public DbSet<Inventory> Inventories { get; set; }
+        public DbSet<InventoryItem> InventoryItems { get; set; }
         public DbSet<Quest> Quests { get; set; }
         public DbSet<InfoServer> InfoServers { get; set; }
         public DbSet<InitializeDataCharacter> InitializeDataCharacters { get; set; }

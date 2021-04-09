@@ -1,6 +1,6 @@
 ﻿namespace COO.Server.Controllers.MMO
 {
-    public class MMOService
+    public class MmoService
     {
         //private readonly COODbContext data;
 

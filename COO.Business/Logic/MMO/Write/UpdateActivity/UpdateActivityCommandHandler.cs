@@ -10,9 +10,9 @@ namespace COO.Business.Logic.MMO.Write.UpdateActivity
 {
     public class UpdateActivityCommandHandler : IRequestHandler<UpdateActivityCommand, bool>
     {
-        private readonly IDbContextFactory<COODbContext> _contextFactory;
+        private readonly IDbContextFactory<CooDbContext> _contextFactory;
 
-        public UpdateActivityCommandHandler(IDbContextFactory<COODbContext> contextFactory)
+        public UpdateActivityCommandHandler(IDbContextFactory<CooDbContext> contextFactory)
         {
             _contextFactory = contextFactory;
         }

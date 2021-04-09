@@ -11,10 +11,10 @@ namespace COO.Business.Logic.MMO.Read.GetCharacter
 {
     public class GetCharacterQueryHandler : IRequestHandler<GetCharacterQuery, GetCharacterResponseModel>
     {
-        private readonly IDbContextFactory<COODbContext> _contextFactory;
+        private readonly IDbContextFactory<CooDbContext> _contextFactory;
         private readonly IMediator _mediator;
 
-        public GetCharacterQueryHandler(IDbContextFactory<COODbContext> contextFactory, IMediator mediator)
+        public GetCharacterQueryHandler(IDbContextFactory<CooDbContext> contextFactory, IMediator mediator)
         {
             _contextFactory = contextFactory;
             _mediator = mediator;
@@ -36,7 +36,7 @@ namespace COO.Business.Logic.MMO.Read.GetCharacter
 
                 if (foundCharacter != null)
                 {
-                    var inventories = await context.Inventories
+                    var inventories = await context.InventoryItems
                         .Where(i => i.CharacterId == foundCharacter.Id)
                         .ToListAsync(cancellationToken);
 

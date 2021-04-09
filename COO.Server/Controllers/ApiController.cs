@@ -14,7 +14,7 @@ namespace COO.Server.Controllers
         protected int UserId()
         {
             var claimsIdentity = User.Identity as ClaimsIdentity;
-            var id = claimsIdentity?.FindFirst(ClaimTypes.Sid)?.Value;
+            var id = claimsIdentity?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             return id != null ? int.Parse(id) : default;
         }
     }

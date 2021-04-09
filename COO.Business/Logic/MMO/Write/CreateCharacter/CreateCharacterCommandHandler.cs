@@ -11,10 +11,10 @@ namespace COO.Business.Logic.MMO.Write.CreateCharacter
 {
     public class CreateCharacterCommandHandler : IRequestHandler<CreateCharacterCommand, string>
     {
-        private readonly IDbContextFactory<COODbContext> _contextFactory;
+        private readonly IDbContextFactory<CooDbContext> _contextFactory;
         private readonly IMediator _mediator;
 
-        public CreateCharacterCommandHandler(IDbContextFactory<COODbContext> contextFactory, IMediator mediator)
+        public CreateCharacterCommandHandler(IDbContextFactory<CooDbContext> contextFactory, IMediator mediator)
         {
             _contextFactory = contextFactory;
             _mediator = mediator;
