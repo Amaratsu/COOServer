@@ -24,7 +24,8 @@ namespace COO.Business.Logic.MMO.Write.CreateClan
         {
             await using var context = _contextFactory.CreateDbContext();
 
-            var foundUser = await context.Users.FirstOrDefaultAsync(user => user.Id == request.UserId, cancellationToken);
+            var foundUser =
+                await context.Users.FirstOrDefaultAsync(user => user.Id == request.UserId, cancellationToken);
 
             if (foundUser != null)
             {
@@ -81,4 +82,5 @@ namespace COO.Business.Logic.MMO.Write.CreateClan
                 throw new AppException("You are not logged in.");
             }
         }
+    }
 }

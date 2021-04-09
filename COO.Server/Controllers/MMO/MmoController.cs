@@ -74,8 +74,8 @@ namespace COO.Server.Controllers.MMO
         }
 
         [HttpPost]
-        [Route(nameof(GetServer))]
-        public async Task<ActionResult> GetServer()
+        [Route(nameof(GetServerIP))]
+        public async Task<ActionResult> GetServerIP()
         {
             var httpClient = new HttpClient();
             var address = await httpClient.GetStringAsync("https://api.ipify.org");
