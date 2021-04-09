@@ -6,7 +6,7 @@ using COO.Infrastructure.Exceptions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace COO.Business.Logic.MMO.Write.UpdateActivity
+namespace COO.Business.Logic.Account.Write.UpdateActivity
 {
     public class UpdateActivityCommandHandler : IRequestHandler<UpdateActivityCommand, bool>
     {

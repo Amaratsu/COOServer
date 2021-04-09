@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using COO.Business.Logic.MMO.Write.UpdateActivity;
+using COO.Business.Logic.Account.Write.UpdateActivity;
 using COO.DataAccess.Contexts;
 using COO.Domain.Core;
 using COO.Infrastructure.Exceptions;

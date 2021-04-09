@@ -1,8 +1,5 @@
 ﻿using System.Net.Http;
-using COO.Business.Logic.MMO.Read.Authentication;
-using COO.Business.Logic.MMO.Write.ConfirmEmail;
 using COO.Business.Logic.MMO.Write.CreateCharacter;
-using COO.Business.Logic.MMO.Write.Registration;
 using COO.Server.Controllers.MMO.Models;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -10,76 +7,21 @@ using System.Threading.Tasks;
 using COO.Business.Logic.MMO.Read.GetCharacter;
 using COO.Business.Logic.MMO.Read.GetCharacters;
 using COO.Business.Logic.MMO.Write.DeleteCharacter;
-using COO.Server.Infrastructure.Services.Email;
-using COO.Server.Infrastructure.Services.Identity;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.Extensions.Options;
 using COO.Business.Logic.MMO.Read.GetGameServers;
+using COO.Business.Logic.MMO.Write.AddCharacterToClan;
+using COO.Business.Logic.MMO.Write.CreateClan;
 using COO.Business.Logic.MMO.Write.UpdateCharacter;
 
 namespace COO.Server.Controllers.MMO
 {
     public class MmoController : ApiController
     {
-        private readonly IIdentityService _identityService;
-        private readonly AppSettings _appSettings;
-        private readonly IEmailService _emailService;
         private readonly IMediator _mediator;
 
         public MmoController(
-            IIdentityService identityService,
-            IOptions<AppSettings> appSettings,
-            IEmailService emailService,
             IMediator mediator)
         {
-            _identityService = identityService;
-            _appSettings = appSettings.Value;
-            _emailService = emailService;
             _mediator = mediator;
-        }
-
-        [HttpPost]
-        [AllowAnonymous]
-        [Route(nameof(Registration))]
-        public async Task<ActionResult> Registration(RegistrationRequestModel model)
-        {
-            var user = await _mediator.Send(new RegistrationCommand(model.Login, model.Email, model.Password));
-
-            var callbackUrl = Url.Action(
-                    "ConfirmEmail",
-                    "Mmo",
-                    new { userId = user.UserId, token = user.Token },
-                    protocol: HttpContext.Request.Scheme);
-
-            await _emailService.SendAsync(
-                to: user.Email,
-                subject: "ConfirmEmail",
-                html: $"Confirm registration by clicking on the link: <a href='{callbackUrl}'>link</a>"
-                );
-
-            return Ok(new { Message = $"The account was created successfully, a confirmation email {user.Email} was sent to your email." }) ;
-        }
-
-        [HttpGet]
-        [AllowAnonymous]
-        [Route(nameof(ConfirmEmail))]
-        public async Task<ActionResult> ConfirmEmail(int userId, string token)
-        {
-            return Ok(await _mediator.Send(new ConfirmEmailCommand(userId, token)));
-        }
-
-        [HttpPost]
-        [AllowAnonymous]
-        [Route(nameof(Login))]
-        public async Task<ActionResult> Login(string login, string password)
-        {
-            var user = await _mediator.Send(new AuthenticationQuery(login, password));
-
-            var token = _identityService.GenerateJwtToken(
-                user.Id.ToString(),
-                user.UserName,
-                _appSettings.Secret);
-            return Ok( new { token, user.UserName } );
         }
 
         [HttpPost]
@@ -143,62 +85,19 @@ namespace COO.Server.Controllers.MMO
             return Ok(address);
         }
 
-        //        [HttpPost]
-        //        [Route(nameof(AddCharacterToClan))]
-        //        public async Task<ActionResult> AddCharacterToClan(AddCharacterToClanRequestModel model)
-        //        {
-        //            var character = await this.mmoService.FindCharacterByNameAsync(model.CharacterName);
-        //            if (character != null)
-        //            {
-        //                if (character.ClanId != 0)
-        //                {
-        //                    return Ok(new { Status = "character is already in a clan" });
-        //                }
-        //                else
-        //                {
-        //                    await this.mmoService.UpdateCharacterClanAsync(character, model.ClanId);
-        //                    return Ok(new { Status = "OK" });
-        //                }
-        //            }
-        //            else
-        //            {
-        //                return Ok(new { Status = "character not found" });
-        //            }
-        //        }
+        [HttpPost]
+        [Route(nameof(CreateClan))]
+        public async Task<ActionResult> CreateClan(CreateClanRequestModel model)
+        {
+            return Ok(await _mediator.Send(new CreateClanCommand(UserId(), model.CharacterId, model.ClanName)));
+        }
 
-        //        [HttpPost]
-        //        [Route(nameof(CreateClan))]
-        //        public async Task<ActionResult> CreateClan(CreateClanRequestModel model)
-        //        {
-        //            var clan = await this.mmoService.FindClanByNameAsync(model.ClanName);
-        //            if (clan != null)
-        //            {
-        //                return Ok(new { ststus = "This clan name is unavailable" });
-        //            }
-        //            else
-        //            {
-        //                var character = await this.mmoService.FindCharacterByNameAsync(model.CharacterName);
-        //                if (character != null)
-        //                {
-        //                    if (character.ClanId != 0)
-        //                    {
-        //                        return Ok(new { Status = "character already has a clan" });
-        //                    }
-        //                    else
-        //                    {
-        //                        var clanId = await this.mmoService.CreateClanAsync(character.Id, model.ClanName);
-
-        //                        await this.mmoService.UpdateCharacterClanAsync(character, clanId);
-
-        //                        return Ok(new { Status = "OK" });
-        //                    }
-        //                }
-        //                else
-        //                {
-        //                    return Ok(new { Status = "character not found" });
-        //                }
-        //            }
-        //        }
+        [HttpPost]
+        [Route(nameof(AddCharacterToClan))]
+        public async Task<ActionResult> AddCharacterToClan(AddCharacterToClanRequestModel model)
+        {
+            return Ok(await _mediator.Send(new AddCharacterToClanCommand(UserId(), model.ClanId, model.CharacterName)));
+        }
 
         //        [HttpPost]
         //        [Route(nameof(DisbandClan))]

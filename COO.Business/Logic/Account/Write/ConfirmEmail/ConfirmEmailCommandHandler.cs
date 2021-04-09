@@ -6,7 +6,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace COO.Business.Logic.MMO.Write.ConfirmEmail
+namespace COO.Business.Logic.Account.Write.ConfirmEmail
 {
     public class ConfirmEmailCommandHandler : IRequestHandler<ConfirmEmailCommand, string>
     {

@@ -1,6 +1,6 @@
 using COO.Server.Middleware;
 using FluentValidation;
-using COO.Business.Logic.MMO.Write.Registration;
+using COO.Business.Logic.Account.Write.Registration;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;

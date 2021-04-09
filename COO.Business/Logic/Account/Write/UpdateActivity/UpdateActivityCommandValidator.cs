@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 
-namespace COO.Business.Logic.MMO.Write.UpdateActivity
+namespace COO.Business.Logic.Account.Write.UpdateActivity
 {
     public class UpdateActivityCommandValidator : AbstractValidator<UpdateActivityCommand>
     {

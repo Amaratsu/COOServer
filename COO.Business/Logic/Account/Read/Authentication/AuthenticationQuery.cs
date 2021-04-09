@@ -1,6 +1,6 @@
 ﻿using MediatR;
 
-namespace COO.Business.Logic.MMO.Read.Authentication
+namespace COO.Business.Logic.Account.Read.Authentication
 {
     public sealed class AuthenticationQuery : IRequest<AuthenticationResponseModel>
     {

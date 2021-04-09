@@ -9,7 +9,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace COO.Business.Logic.MMO.Write.Registration
+namespace COO.Business.Logic.Account.Write.Registration
 {
     public class RegistrationCommandHandler : IRequestHandler<RegistrationCommand, RegistrationResponseModel>
     {

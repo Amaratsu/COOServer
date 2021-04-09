@@ -1,6 +1,6 @@
 ﻿using MediatR;
 
-namespace COO.Business.Logic.MMO.Write.UpdateActivity
+namespace COO.Business.Logic.Account.Write.UpdateActivity
 {
     public sealed class UpdateActivityCommand : IRequest<bool>
     {

@@ -1,6 +1,6 @@
 ﻿using MediatR;
 
-namespace COO.Business.Logic.MMO.Write.Registration
+namespace COO.Business.Logic.Account.Write.Registration
 {
     public sealed class RegistrationCommand : IRequest<RegistrationResponseModel>
     {

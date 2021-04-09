@@ -1,4 +1,4 @@
-﻿namespace COO.Server.Controllers.MMO.Models
+﻿namespace COO.Server.Controllers.Account.Models
 {
     public class RegistrationRequestModel
     {

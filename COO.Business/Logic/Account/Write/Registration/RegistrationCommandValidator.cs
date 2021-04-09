@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 
-namespace COO.Business.Logic.MMO.Write.Registration
+namespace COO.Business.Logic.Account.Write.Registration
 {
     public class RegistrationCommandValidator : AbstractValidator<RegistrationCommand>
     {

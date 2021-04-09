@@ -1,4 +1,4 @@
-﻿namespace COO.Business.Logic.MMO.Read.Authentication
+﻿namespace COO.Business.Logic.Account.Read.Authentication
 {
     public class AuthenticationResponseModel
     {

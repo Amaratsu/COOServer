@@ -1,6 +1,6 @@
 ﻿using MediatR;
 
-namespace COO.Business.Logic.MMO.Write.ConfirmEmail
+namespace COO.Business.Logic.Account.Write.ConfirmEmail
 {
     public sealed class ConfirmEmailCommand : IRequest<string>
     {

@@ -2,7 +2,7 @@
 {
     public class CreateClanRequestModel
     {
-        public string CharacterName { get; set; }
+        public int CharacterId { get; set; }
         public string ClanName { get; set; }
     }
 }

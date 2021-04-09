@@ -4,7 +4,7 @@ using MediatR;
 
 namespace COO.Business.Logic.MMO.Write.UpdateCharacter
 {
-    public class UpdateCharacterCommand : IRequest<string>
+    public sealed class UpdateCharacterCommand : IRequest<string>
     {
         public UpdateCharacterCommand(
             int userId, int characterId, int classId, int health, 

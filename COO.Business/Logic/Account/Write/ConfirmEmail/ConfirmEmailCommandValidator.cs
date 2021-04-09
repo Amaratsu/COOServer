@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 
-namespace COO.Business.Logic.MMO.Write.ConfirmEmail
+namespace COO.Business.Logic.Account.Write.ConfirmEmail
 {
     public class ConfirmEmailCommandValidator : AbstractValidator<ConfirmEmailCommand>
     {

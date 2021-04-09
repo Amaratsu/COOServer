@@ -5,7 +5,7 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System.Threading;
 using System.Threading.Tasks;
-using COO.Business.Logic.MMO.Write.UpdateActivity;
+using COO.Business.Logic.Account.Write.UpdateActivity;
 
 namespace COO.Business.Logic.MMO.Write.CreateCharacter
 {
