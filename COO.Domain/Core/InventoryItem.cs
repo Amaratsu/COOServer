@@ -1,6 +1,6 @@
 ﻿namespace COO.Domain.Core
 {
-    public class Inventory
+    public class InventoryItem
     {
         public int Id { get; set; }
         public int CharacterId { get; set; }
