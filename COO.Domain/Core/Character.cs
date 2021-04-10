@@ -27,5 +27,6 @@
         public string Hotbar1 { get; set; }
         public string Hotbar2 { get; set; }
         public string Hotbar3 { get; set; }
+        public bool IsOnline { get; set; }
     }
 }

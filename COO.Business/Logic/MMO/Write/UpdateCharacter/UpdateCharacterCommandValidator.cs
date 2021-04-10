@@ -16,6 +16,7 @@ namespace COO.Business.Logic.MMO.Write.UpdateCharacter
             RuleFor(x => x.PosY).NotNull().NotEmpty();
             RuleFor(x => x.PosZ).NotNull().NotEmpty();
             RuleFor(x => x.RotationYaw).NotNull().NotEmpty();
+            RuleFor(x => x.IsOnline).NotNull().NotEmpty();
         }
     }
 }

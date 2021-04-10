@@ -26,5 +26,6 @@ namespace COO.Server.Controllers.MMO.Models
         public string Hotbar3 { get; set; }
         public List<InventoryItem> Inventory { get; set; }
         public List<Quest> Quests { get; set; }
+        public bool IsOnline { get; set; }
     }
 }

@@ -6,10 +6,13 @@ using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using COO.Business.Logic.MMO.Read.GetCharacter;
 using COO.Business.Logic.MMO.Read.GetCharacters;
+using COO.Business.Logic.MMO.Read.GetClanCharacters;
 using COO.Business.Logic.MMO.Write.DeleteCharacter;
 using COO.Business.Logic.MMO.Read.GetGameServers;
 using COO.Business.Logic.MMO.Write.AddCharacterToClan;
 using COO.Business.Logic.MMO.Write.CreateClan;
+using COO.Business.Logic.MMO.Write.DeleteCharacterFromClan;
+using COO.Business.Logic.MMO.Write.DisbandClan;
 using COO.Business.Logic.MMO.Write.UpdateCharacter;
 
 namespace COO.Server.Controllers.MMO
@@ -69,7 +72,7 @@ namespace COO.Server.Controllers.MMO
                     model.Experience, model.Level, model.PosX, model.PosY, model.PosZ,
                     model.RotationYaw, model.EquipChest, model.EquipFeet, model.EquipHands,
                     model.EquipHead, model.EquipLegs, model.Hotbar0, model.Hotbar1, model.Hotbar2,
-                    model.Hotbar3, model.Inventory, model.Quests
+                    model.Hotbar3, model.Inventory, model.Quests, model.IsOnline
             )));
         }
 
@@ -99,68 +102,25 @@ namespace COO.Server.Controllers.MMO
             return Ok(await _mediator.Send(new AddCharacterToClanCommand(UserId(), model.ClanId, model.CharacterName)));
         }
 
-        //        [HttpPost]
-        //        [Route(nameof(DisbandClan))]
-        //        public async Task<ActionResult> DisbandClan(DisbandClanRequestModel model)
-        //        {
-        //            var character = await this.mmoService.FindCharacterByCharacterIdAsync(model.CharacterId);
-        //            if (character != null)
-        //            {
-        //                if (character.ClanId == 0)
-        //                {
-        //                    return Ok(new { Status = "Character is not in a clan" });
-        //                }
-        //                else
-        //                {
-        //                    var clan = await this.mmoService.FindClanByIdAsync(character.ClanId);
-        //                    if (clan.LeaderId != model.CharacterId)
-        //                    {
-        //                        return Ok(new { Status = "Character is not the clan leader." });
-        //                    }
-        //                    else
-        //                    {
-        //                        var clanId = character.ClanId;
-        //                        await this.mmoService.DeleteClanAsync(clanId);
-        //                        await this.mmoService.UpdateCharactersClanAsync(clanId);
-        //                        return Ok(new { Status = "OK" });
-        //                    }
-        //                }
-        //            }
-        //            else
-        //            {
-        //                return Ok(new { Status = "character not found" });
-        //            }
-        //        }
+        [HttpPost]
+        [Route(nameof(DisbandClan))]
+        public async Task<ActionResult> DisbandClan(DisbandClanRequestModel model)
+        {
+            return Ok(await _mediator.Send(new DisbandClanCommand(UserId(), model.CharacterId)));
+        }
 
-        //        [HttpPost]
-        //        [Route(nameof(GetClanCharacters))]
-        //        public async Task<ActionResult> GetClanCharacters()
-        //        {
-        //            var clans = await this.mmoService.GetClans();
-        //            return Ok(new { Status = "OK", Clans = clans });
-        //        }
+        [HttpPost]
+        [Route(nameof(ClanCharacters))]
+        public async Task<ActionResult> ClanCharacters(ClanCharactersRequestModel model)
+        {
+            return Ok(await _mediator.Send(new GetClanCharactersCommand(UserId(), model.CharacterId)));
+        }
 
-        //        [HttpPost]
-        //        [Route(nameof(DeleteCharacterFromClan))]
-        //        public async Task<ActionResult> DeleteCharacterFromClan(DeleteCharacterFromClanRequestModel model)
-        //        {
-        //            var character = await this.mmoService.FindCharacterByCharacterIdAsync(model.CharacterId);
-        //            if (character != null)
-        //            {
-        //                if (character.ClanId != 0)
-        //                {
-        //                    await this.mmoService.UpdateCharacterClanAsync(character, 0);
-        //                    return Ok(new { Status = "OK" });
-        //                }
-        //                else
-        //                {
-        //                    return Ok(new { Status = "character is not in a clan" });
-        //                }
-        //            }
-        //            else
-        //            {
-        //                return Ok(new { Status = "character not found" });
-        //            }
-        //        }
+        [HttpPost]
+        [Route(nameof(DeleteCharacterFromClan))]
+        public async Task<ActionResult> DeleteCharacterFromClan(DeleteCharacterFromClanRequestModel model)
+        {
+            return Ok(await _mediator.Send(new DeleteCharacterFromClanCommand(UserId(), model.CharacterId)));
+        }
     }
 }

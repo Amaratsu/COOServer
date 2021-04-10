@@ -31,6 +31,19 @@ namespace COO.Business.Logic.Account.Write.UpdateActivity
 
                 context.Users.Update(foundUser);
 
+                if (request.CharacterId != null)
+                {
+                    var character =
+                        await context.Characters.FirstOrDefaultAsync(c => c.Id == request.CharacterId,
+                            cancellationToken);
+
+                    if (character != null)
+                    {
+                        character.IsOnline = true;
+                        context.Characters.Update(character);
+                    }
+                }
+
                 await context.SaveChangesAsync(cancellationToken);
 
                 return true;

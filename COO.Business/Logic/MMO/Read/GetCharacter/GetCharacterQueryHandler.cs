@@ -47,7 +47,7 @@ namespace COO.Business.Logic.MMO.Read.GetCharacter
                     var clan = await context.Clans
                         .FirstOrDefaultAsync(c => c.Id == foundCharacter.ClanId, cancellationToken);
 
-                    await _mediator.Send(new UpdateActivityCommand(request.UserId), cancellationToken);
+                    await _mediator.Send(new UpdateActivityCommand(request.UserId, foundCharacter.Id), cancellationToken);
 
                     return new GetCharacterResponseModel
                     {

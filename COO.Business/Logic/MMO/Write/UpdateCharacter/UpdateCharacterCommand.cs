@@ -12,7 +12,7 @@ namespace COO.Business.Logic.MMO.Write.UpdateCharacter
             double yaw, string equipChest, string equipFeet, string equipHands, 
             string equipHead, string equipLegs, string hotbar0, 
             string hotbar1, string hotbar2, string hotbar3, List<InventoryItem> inventory,
-            List<Quest> quests
+            List<Quest> quests, bool isOnline
         )
         {
             UserId = userId;
@@ -37,6 +37,7 @@ namespace COO.Business.Logic.MMO.Write.UpdateCharacter
             Hotbar3 = hotbar3;
             Inventory = inventory;
             Quests = quests;
+            IsOnline = isOnline;
         }
 
         public int UserId { get; }
@@ -61,5 +62,6 @@ namespace COO.Business.Logic.MMO.Write.UpdateCharacter
         public string Hotbar3 { get; }
         public List<InventoryItem> Inventory { get; }
         public List<Quest> Quests { get; }
+        public bool IsOnline { get; set; }
     }
 }

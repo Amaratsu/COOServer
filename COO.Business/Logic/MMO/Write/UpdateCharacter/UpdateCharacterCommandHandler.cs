@@ -57,6 +57,7 @@ namespace COO.Business.Logic.MMO.Write.UpdateCharacter
                     foundCharacter.Hotbar1 = request.Hotbar1;
                     foundCharacter.Hotbar2 = request.Hotbar2;
                     foundCharacter.Hotbar3 = request.Hotbar3;
+                    foundCharacter.IsOnline = request.IsOnline;
                     
                     await context.Characters.AddAsync(foundCharacter, cancellationToken);
 
