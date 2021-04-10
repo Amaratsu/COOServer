@@ -60,7 +60,7 @@ namespace COO.Business.Logic.MMO.Read.GetClanCharacters
                                 {
                                     Name = fcc.Name,
                                     IsOnline = fcc.IsOnline,
-                                    IsLeader = clan != null ? true : false,
+                                    IsLeader = clan != null,
                                     ClassId = fcc.ClassId,
                                     Level = fcc.Level,
                                     RaceId = fcc.RaceId
