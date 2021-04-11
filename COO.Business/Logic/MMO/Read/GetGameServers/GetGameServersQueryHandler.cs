@@ -30,7 +30,7 @@ namespace COO.Business.Logic.MMO.Read.GetGameServers
 
             if (foundUser != null)
             {
-                var response = new GetGameServersResponseModel { GameServers = new List<GameServer>() };
+                var response = new GetGameServersResponseModel { GameServers = new List<GameServerModel>() };
 
                 var gameServers = await context.InfoServers
                     .ToListAsync(cancellationToken);
@@ -39,7 +39,7 @@ namespace COO.Business.Logic.MMO.Read.GetGameServers
                 {
                     gameServers.ForEach(s =>
                     {
-                        var gameServer = new GameServer
+                        response.GameServers.Add(new GameServerModel
                         {
                             Id = s.Id,
                             Name = s.Name,
@@ -47,8 +47,7 @@ namespace COO.Business.Logic.MMO.Read.GetGameServers
                             Status = s.Status,
                             CurrentCount = s.CurrentCount,
                             MaxCount = s.MaxCount
-                        };
-                        response.GameServers.Add(gameServer);
+                        });
                     });
                 }
 

@@ -1,5 +1,6 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
+using COO.Business.Logic.Account.Write.UpdateActivity;
 using COO.DataAccess.Contexts;
 using COO.Infrastructure.Exceptions;
 using MediatR;
@@ -39,13 +40,36 @@ namespace COO.Business.Logic.MMO.Write.AddCharacterToClan
                     }
                     else
                     {
-                        foundCharacter.ClanId = request.ClanId;
+                        var foundClan =
+                            await context.Clans.FirstOrDefaultAsync(c => c.Id == request.ClanId, cancellationToken);
 
-                        context.Characters.Update(foundCharacter);
+                        if (foundClan != null)
+                        {
+                            if (foundClan.CurrentCountCharacters + 1 > foundClan.MaxCountCharacters)
+                            {
+                                throw new AppException("The clan has a maximum number of players.");
+                            }
+                            else
+                            {
+                                foundCharacter.ClanId = request.ClanId;
 
-                        await context.SaveChangesAsync(cancellationToken);
+                                context.Characters.Update(foundCharacter);
 
-                        return "OK";
+                                foundClan.CurrentCountCharacters++;
+
+                                context.Clans.Update(foundClan);
+
+                                await context.SaveChangesAsync(cancellationToken);
+
+                                await _mediator.Send(new UpdateActivityCommand(request.UserId), cancellationToken);
+
+                                return "OK";
+                            }
+                        }
+                        else
+                        {
+                            throw new AppException("The clan not found.");
+                        }
                     }
                 }
                 else

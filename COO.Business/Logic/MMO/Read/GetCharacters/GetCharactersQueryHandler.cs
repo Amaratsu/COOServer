@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -11,12 +10,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace COO.Business.Logic.MMO.Read.GetCharacters
 {
-    public class GetCharactersQueryHadler : IRequestHandler<GetCharactersQuery, GetCharactersResponseModel>
+    public class GetCharactersQueryHandler : IRequestHandler<GetCharactersQuery, GetCharactersResponseModel>
     {
         private readonly IDbContextFactory<CooDbContext> _contextFactory;
         private readonly IMediator _mediator;
 
-        public GetCharactersQueryHadler(IDbContextFactory<CooDbContext> contextFactory, IMediator mediator)
+        public GetCharactersQueryHandler(IDbContextFactory<CooDbContext> contextFactory, IMediator mediator)
         {
             _contextFactory = contextFactory;
             _mediator = mediator;
@@ -40,7 +39,7 @@ namespace COO.Business.Logic.MMO.Read.GetCharacters
                 {
                     foundCharacters.ForEach(c =>
                     {
-                        var character = new CharacterModel
+                        response.Characters.Add(new CharacterModel
                         {
                             CharacterId = c.Id,
                             Name = c.Name,
@@ -56,8 +55,7 @@ namespace COO.Business.Logic.MMO.Read.GetCharacters
                             EquipHands = c.EquipHands,
                             EquipHead = c.EquipHead,
                             EquipLegs = c.EquipLegs
-                        };
-                        response.Characters.Add(character);
+                        });
                     });
                 }
 

@@ -8,6 +8,7 @@ namespace COO.Business.Logic.MMO.Write.DeleteCharacterFromClan
         {
             RuleFor(x => x.UserId).NotNull().NotEmpty();
             RuleFor(x => x.CharacterId).NotNull().NotEmpty();
+            RuleFor(x => x.CharacterName).NotNull().NotEmpty();
         }
     }
 }

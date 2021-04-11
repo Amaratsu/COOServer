@@ -6,43 +6,41 @@ using COO.Infrastructure.Exceptions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace COO.Business.Logic.MMO.Write.DeleteCharacterFromClan
+namespace COO.Business.Logic.MMO.Write.LeaveFromClan
 {
-    public class DeleteCharacterFromClanCommandHandler : IRequestHandler<DeleteCharacterFromClanCommand, string>
+    public class LeaveFromClanCommandHandler : IRequestHandler<LeaveFromClanCommand, string>
     {
         private readonly IDbContextFactory<CooDbContext> _contextFactory;
         private readonly IMediator _mediator;
 
-        public DeleteCharacterFromClanCommandHandler(IDbContextFactory<CooDbContext> contextFactory, IMediator mediator)
+        public LeaveFromClanCommandHandler(IDbContextFactory<CooDbContext> contextFactory, IMediator mediator)
         {
             _contextFactory = contextFactory;
             _mediator = mediator;
         }
 
-        public async Task<string> Handle(DeleteCharacterFromClanCommand request, CancellationToken cancellationToken)
+        public async Task<string> Handle(LeaveFromClanCommand request, CancellationToken cancellationToken)
         {
             await using var context = _contextFactory.CreateDbContext();
 
-            var foundUser = await context.Users.FirstOrDefaultAsync(user => user.Id == request.UserId, cancellationToken);
+            var foundUser =
+                await context.Users.FirstOrDefaultAsync(user => user.Id == request.UserId, cancellationToken);
 
             if (foundUser != null)
             {
                 var foundCharacter = await context.Characters
                     .FirstOrDefaultAsync(character => character.Id == request.CharacterId, cancellationToken);
 
+                var foundClan = await context.Clans.FirstOrDefaultAsync(c => c.LeaderId == foundCharacter.Id, cancellationToken);
+
                 if (foundCharacter != null)
                 {
-                    var foundClan = await context.Clans.FirstOrDefaultAsync(c => c.LeaderId == foundCharacter.Id, cancellationToken);
 
-                    if (foundClan != null)
-                    {
-                        var deleteCharacterFromClan = await context
-                            .Characters
-                            .FirstOrDefaultAsync(c => c.ClanId == foundClan.Id && c.Name.ToLower() == request.CharacterName.ToLower(), cancellationToken);
+                    if (foundClan != null) {
 
-                        if (deleteCharacterFromClan != null)
+                        if (foundCharacter.ClanId != null)
                         {
-                            deleteCharacterFromClan.ClanId = null;
+                            foundCharacter.ClanId = null;
 
                             context.Characters.Update(foundCharacter);
 
@@ -63,7 +61,7 @@ namespace COO.Business.Logic.MMO.Write.DeleteCharacterFromClan
                     }
                     else
                     {
-                        throw new AppException("Only the clan leader can remove a player.");
+                        throw new AppException("Clan leader cannot leave the clan.");
                     }
                 }
                 else

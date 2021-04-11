@@ -7,20 +7,20 @@ using COO.Infrastructure.Exceptions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace COO.Business.Logic.MMO.Write.CreateClan
+namespace COO.Business.Logic.MMO.Write.CreateAlliance
 {
-    public class CreateClanCommandHandler : IRequestHandler<CreateClanCommand, string>
+    public class CreateAllianceCommandHandler : IRequestHandler<CreateAllianceCommand, string>
     {
         private readonly IDbContextFactory<CooDbContext> _contextFactory;
         private readonly IMediator _mediator;
 
-        public CreateClanCommandHandler(IDbContextFactory<CooDbContext> contextFactory, IMediator mediator)
+        public CreateAllianceCommandHandler(IDbContextFactory<CooDbContext> contextFactory, IMediator mediator)
         {
             _contextFactory = contextFactory;
             _mediator = mediator;
         }
 
-        public async Task<string> Handle(CreateClanCommand request, CancellationToken cancellationToken)
+        public async Task<string> Handle(CreateAllianceCommand request, CancellationToken cancellationToken)
         {
             await using var context = _contextFactory.CreateDbContext();
 
@@ -36,36 +36,46 @@ namespace COO.Business.Logic.MMO.Write.CreateClan
                 if (foundCharacter != null)
                 {
 
-                    var clan = await context
-                        .Clans
-                        .FirstOrDefaultAsync(c => c.Name.ToLower() == request.ClanName.ToLower(), cancellationToken);
+                    var foundAlliance = await context
+                        .Alliances
+                        .FirstOrDefaultAsync(c => c.Name.ToLower() == request.AllianceName.ToLower(), cancellationToken);
 
-                    if (clan != null)
+                    var foundClanLeader = await context
+                        .Clans
+                        .FirstOrDefaultAsync(c => c.LeaderId == request.CharacterId, cancellationToken);
+
+                    if (foundAlliance != null)
                     {
-                        throw new AppException("This clan name is unavailable.");
+                        throw new AppException("This alliance name is unavailable.");
                     }
                     else
                     {
-                        if (foundCharacter.ClanId != null)
+                        if (foundClanLeader != null)
                         {
-                            throw new AppException("The character already has a clan");
-                        }
-                        else
-                        {
-                            var newClan = new Clan
+                            if (foundClanLeader.AllianceId != null)
+                            {
+                                throw new AppException("The clan is already in an alliance.");
+                            }
+
+                            var newAlliance = new Alliance
                             {
                                 LeaderId = foundCharacter.Id,
-                                LeaderName = foundCharacter.Name,
-                                Name = request.ClanName,
-                                CurrentCountCharacters = 1,
-                                MaxCountCharacters = 10
+                                Name = foundCharacter.Name,
+                                CurrentCountClans = 1,
+                                MaxCountClans = 3
                             };
 
-                            await context.Clans.AddAsync(newClan, cancellationToken);
+                            context.Alliances.Update(newAlliance);
 
                             await context.SaveChangesAsync(cancellationToken);
 
-                            foundCharacter.ClanId = newClan.Id;
+                            foundClanLeader.AllianceId = newAlliance.Id;
+
+                            context.Clans.Update(foundClanLeader);
+
+                            await context.SaveChangesAsync(cancellationToken);
+
+                            foundCharacter.AllianceId = newAlliance.Id;
 
                             context.Characters.Update(foundCharacter);
 
@@ -74,6 +84,10 @@ namespace COO.Business.Logic.MMO.Write.CreateClan
                             await _mediator.Send(new UpdateActivityCommand(request.UserId), cancellationToken);
 
                             return "OK";
+                        }
+                        else
+                        {
+                            throw new AppException("Only the clan leader can create a alliance.");
                         }
                     }
                 }

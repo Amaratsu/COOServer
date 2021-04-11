@@ -7,11 +7,14 @@ using System.Threading.Tasks;
 using COO.Business.Logic.MMO.Read.GetCharacter;
 using COO.Business.Logic.MMO.Read.GetCharacters;
 using COO.Business.Logic.MMO.Read.GetClanCharacters;
+using COO.Business.Logic.MMO.Read.GetClans;
 using COO.Business.Logic.MMO.Write.DeleteCharacter;
 using COO.Business.Logic.MMO.Read.GetGameServers;
 using COO.Business.Logic.MMO.Write.AddCharacterToClan;
+using COO.Business.Logic.MMO.Write.CreateAlliance;
 using COO.Business.Logic.MMO.Write.CreateClan;
 using COO.Business.Logic.MMO.Write.DeleteCharacterFromClan;
+using COO.Business.Logic.MMO.Write.LeaveFromClan;
 using COO.Business.Logic.MMO.Write.DisbandClan;
 using COO.Business.Logic.MMO.Write.UpdateCharacter;
 
@@ -117,10 +120,31 @@ namespace COO.Server.Controllers.MMO
         }
 
         [HttpPost]
+        [Route(nameof(LeaveFromClan))]
+        public async Task<ActionResult> LeaveFromClan(LeaveFromClanRequestModel model)
+        {
+            return Ok(await _mediator.Send(new LeaveFromClanCommand(UserId(), model.CharacterId)));
+        }
+
+        [HttpPost]
         [Route(nameof(DeleteCharacterFromClan))]
         public async Task<ActionResult> DeleteCharacterFromClan(DeleteCharacterFromClanRequestModel model)
         {
-            return Ok(await _mediator.Send(new DeleteCharacterFromClanCommand(UserId(), model.CharacterId)));
+            return Ok(await _mediator.Send(new DeleteCharacterFromClanCommand(UserId(), model.CharacterId, model.CharacterName)));
+        }
+
+        [HttpPost]
+        [Route(nameof(Clans))]
+        public async Task<ActionResult> Clans()
+        {
+            return Ok(await _mediator.Send(new GetClansQuery(UserId())));
+        }
+
+        [HttpPost]
+        [Route(nameof(CreateAlliance))]
+        public async Task<ActionResult> CreateAlliance(CreateAllianceRequetModel model)
+        {
+            return Ok(await _mediator.Send(new CreateAllianceCommand(UserId(), model.CharacterId, model.AllianceName)));
         }
     }
 }

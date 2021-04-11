@@ -56,7 +56,7 @@ namespace COO.Business.Logic.MMO.Read.GetClanCharacters
                         {
                             foundClanCharacters.ForEach(fcc =>
                             {
-                                var clanCharacter = new ClanCharacterModel
+                                response.ClanCharacters.Add(new ClanCharacterModel
                                 {
                                     Name = fcc.Name,
                                     IsOnline = fcc.IsOnline,
@@ -64,8 +64,7 @@ namespace COO.Business.Logic.MMO.Read.GetClanCharacters
                                     ClassId = fcc.ClassId,
                                     Level = fcc.Level,
                                     RaceId = fcc.RaceId
-                                };
-                                response.ClanCharacters.Add(clanCharacter);
+                                });
                             });
                         }
 

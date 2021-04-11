@@ -1,6 +1,6 @@
 ﻿namespace COO.Business.Logic.MMO.Read.GetGameServers
 {
-    public class GameServer
+    public class GameServerModel
     {
         public int Id { get; set; }
         public string Name { get; set; }

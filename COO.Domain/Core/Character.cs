@@ -8,6 +8,7 @@
         public string Name { get; set; }
         public int Gender { get; set; }
         public int? ClanId { get; set; }
+        public int? AllianceId { get; set; }
         public int RaceId { get; set; }
         public int ClassId { get; set; }
         public int Level { get; set; }
