@@ -6,14 +6,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Remove="Properties\serviceDependencies.COOServer - Web Deploy.json" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <_WebToolingArtifacts Remove="Properties\serviceDependencies.COOServer - Web Deploy.json" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="EFCore.NamingConventions" Version="5.0.2" />
     <PackageReference Include="FluentValidation" Version="10.0.0" />
     <PackageReference Include="FluentValidation.AspNetCore" Version="10.0.0" />

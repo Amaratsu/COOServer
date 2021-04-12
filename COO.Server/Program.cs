@@ -5,10 +5,12 @@ namespace COO.Server
 
     public class Program
     {
-        public static void Main(string[] args) 
-            => CreateHostBuilder(args)
+        public static void Main(string[] args)
+        {
+            CreateHostBuilder(args)
                 .Build()
                 .Run();
+        }
 
         public static IHostBuilder CreateHostBuilder(string[] args) 
             => Host
