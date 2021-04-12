@@ -75,12 +75,6 @@ namespace COO.Business.Logic.MMO.Write.CreateAlliance
 
                             await context.SaveChangesAsync(cancellationToken);
 
-                            foundCharacter.AllianceId = newAlliance.Id;
-
-                            context.Characters.Update(foundCharacter);
-
-                            await context.SaveChangesAsync(cancellationToken);
-
                             await _mediator.Send(new UpdateActivityCommand(request.UserId), cancellationToken);
 
                             return "OK";

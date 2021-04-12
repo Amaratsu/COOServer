@@ -1,8 +1,7 @@
-﻿using System.Threading;
+﻿using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using COO.Business.Logic.Account.Write.UpdateActivity;
-using COO.Business.Logic.MMO.Write.DisbandClan;
-using COO.Business.Logic.MMO.Write.LeaveFromClan;
 using COO.DataAccess.Contexts;
 using COO.Infrastructure.Exceptions;
 using MediatR;
@@ -34,20 +33,39 @@ namespace COO.Business.Logic.MMO.Write.DeleteCharacter
 
                 if (foundCharacter != null)
                 {
-                    var foundClanLeader = await context.Clans.FirstOrDefaultAsync(c => c.LeaderId == foundCharacter.Id, cancellationToken);
-
-                    if (foundClanLeader != null)
+                    var allianceLeaderInAlliance = await context.Alliances.FirstOrDefaultAsync(a => a.LeaderId == foundCharacter.Id, cancellationToken);
+                    if (allianceLeaderInAlliance != null)
                     {
-                        await _mediator.Send(new DisbandClanCommand(foundUser.Id, foundCharacter.Id), cancellationToken);
+                        var foundClans = await context.Clans.Where(c => c.AllianceId == allianceLeaderInAlliance.Id)
+                            .ToListAsync(cancellationToken);
+                        if (foundClans.Count > 0)
+                        {
+                            foundClans.ForEach(fc => fc.AllianceId = null);
+                            context.Clans.UpdateRange(foundClans);
+                        }
+                        context.Alliances.Remove(allianceLeaderInAlliance);
                     }
 
-                    var foundCharacterClan = await context.Clans.FirstOrDefaultAsync(c => c.Id == foundCharacter.ClanId, cancellationToken);
-
-                    if (foundCharacterClan != null)
+                    var clanLeaderInClan = await context.Clans.FirstOrDefaultAsync(c => c.LeaderId == foundCharacter.Id, cancellationToken);
+                    if (clanLeaderInClan != null)
                     {
-                        await _mediator.Send(new LeaveFromClanCommand(foundUser.Id, foundCharacter.Id), cancellationToken);
+                        var foundClanCharacters = await context.Characters.Where(c => c.ClanId == clanLeaderInClan.Id)
+                            .ToListAsync(cancellationToken);
+                        if (foundClanCharacters.Count > 0)
+                        {
+                            foundClanCharacters.ForEach(fcc => fcc.ClanId = null);
+                            context.Characters.UpdateRange(foundClanCharacters);
+                        }
+                        context.Clans.Remove(clanLeaderInClan);
                     }
 
+                    var clanMemberInClan = await context.Clans.FirstOrDefaultAsync(c => c.Id == foundCharacter.ClanId, cancellationToken);
+                    if (clanMemberInClan != null)
+                    {
+                        clanMemberInClan.CurrentCountCharacters--;
+                        context.Clans.Update(clanMemberInClan);
+                    }
+                    
                     context.Characters.Remove(foundCharacter);
 
                     await context.SaveChangesAsync(cancellationToken);
