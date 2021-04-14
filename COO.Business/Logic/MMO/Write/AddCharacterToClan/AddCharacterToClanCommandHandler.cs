@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using COO.Business.Logic.Account.Write.UpdateActivity;
 using COO.DataAccess.Contexts;
@@ -30,7 +31,7 @@ namespace COO.Business.Logic.MMO.Write.AddCharacterToClan
             {
                 var foundCharacter = await context
                     .Characters
-                    .FirstOrDefaultAsync(c => c.Name.ToLower() == request.CharacterName.ToLower(), cancellationToken);
+                    .FirstOrDefaultAsync(c => string.Equals(c.Name, request.CharacterName, StringComparison.CurrentCultureIgnoreCase), cancellationToken);
 
                 if (foundCharacter != null)
                 {
