@@ -14,6 +14,7 @@ using COO.Business.Logic.MMO.Read.GetClans;
 using COO.Business.Logic.MMO.Write.DeleteCharacter;
 using COO.Business.Logic.MMO.Read.GetGameServers;
 using COO.Business.Logic.MMO.Write.AddCharacterToClan;
+using COO.Business.Logic.MMO.Write.AddClanToAlliance;
 using COO.Business.Logic.MMO.Write.CreateAlliance;
 using COO.Business.Logic.MMO.Write.CreateClan;
 using COO.Business.Logic.MMO.Write.DeleteCharacterFromClan;
@@ -165,6 +166,14 @@ namespace COO.Server.Controllers.MMO
         {
             await _mediator.Send(new UpdateActivityCommand(UserId()));
             return Ok(await _mediator.Send(new CreateAllianceCommand(model.CharacterId, model.AllianceName)));
+        }
+
+        [HttpPost]
+        [Route(nameof(AddClanToAlliance))]
+        public async Task<ActionResult> AddClanToAlliance(AddClanToAllianceRequestModel model)
+        {
+            await _mediator.Send(new UpdateActivityCommand(UserId()));
+            return Ok(await _mediator.Send(new AddClanToAllianceCommand(model.CharacterId, model.ClanName)));
         }
 
         [HttpPost]
