@@ -4,11 +4,8 @@ namespace COO.Business.Logic.MMO.Read.GetGameServers
 {
     public sealed class GetGameServersQuery : IRequest<GetGameServersResponseModel>
     {
-        public GetGameServersQuery(int userId)
+        public GetGameServersQuery()
         {
-            UserId = userId;
         }
-
-        public int UserId { get; }
     }
 }

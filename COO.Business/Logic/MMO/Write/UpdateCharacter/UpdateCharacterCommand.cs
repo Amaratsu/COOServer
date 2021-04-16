@@ -7,7 +7,7 @@ namespace COO.Business.Logic.MMO.Write.UpdateCharacter
     public sealed class UpdateCharacterCommand : IRequest<string>
     {
         public UpdateCharacterCommand(
-            int userId, int characterId, int classId, int health, 
+            int characterId, int classId, int health, 
             int mana, int experience, int level, double posx, double posy, double posz, 
             double yaw, string equipChest, string equipFeet, string equipHands, 
             string equipHead, string equipLegs, string hotbar0, 
@@ -15,7 +15,6 @@ namespace COO.Business.Logic.MMO.Write.UpdateCharacter
             List<Quest> quests, bool isOnline
         )
         {
-            UserId = userId;
             CharacterId = characterId;
             ClassId = classId;
             Health = health;
@@ -40,7 +39,6 @@ namespace COO.Business.Logic.MMO.Write.UpdateCharacter
             IsOnline = isOnline;
         }
 
-        public int UserId { get; }
         public int CharacterId { get; }
         public int ClassId { get; }
         public int Level { get; }

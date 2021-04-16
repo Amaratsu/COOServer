@@ -6,7 +6,6 @@ namespace COO.Business.Logic.MMO.Write.UpdateCharacter
     {
         public UpdateCharacterCommandValidator()
         {
-            RuleFor(x => x.UserId).NotNull().NotEmpty();
             RuleFor(x => x.Health).NotNull().NotEmpty();
             RuleFor(x => x.Mana).NotNull().NotEmpty();
             RuleFor(x => x.Level).NotNull().NotEmpty();

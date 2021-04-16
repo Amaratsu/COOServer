@@ -6,7 +6,6 @@ namespace COO.Business.Logic.MMO.Read.GetGameServers
     {
         public GetGameServersQueryValidator()
         {
-            RuleFor(x => x.UserId).NotNull().NotEmpty();
         }
     }
 }

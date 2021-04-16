@@ -11,73 +11,60 @@ namespace COO.Business.Logic.MMO.Write.DeleteClanFromAlliance
     public class DeleteClanFromAllianceCommandHandler : IRequestHandler<DeleteClanFromAllianceCommand, string>
     {
         private readonly IDbContextFactory<CooDbContext> _contextFactory;
-        private readonly IMediator _mediator;
 
-        public DeleteClanFromAllianceCommandHandler(IDbContextFactory<CooDbContext> contextFactory, IMediator mediator)
+        public DeleteClanFromAllianceCommandHandler(IDbContextFactory<CooDbContext> contextFactory)
         {
             _contextFactory = contextFactory;
-            _mediator = mediator;
         }
 
         public async Task<string> Handle(DeleteClanFromAllianceCommand request, CancellationToken cancellationToken)
         {
             await using var context = _contextFactory.CreateDbContext();
 
-            var foundUser =
-                await context.Users.FirstOrDefaultAsync(user => user.Id == request.UserId, cancellationToken);
+            var foundCharacter = await context.Characters
+                .FirstOrDefaultAsync(character => character.Id == request.CharacterId, cancellationToken);
 
-            if (foundUser != null)
+            if (foundCharacter != null)
             {
-                var foundCharacter = await context.Characters
-                    .FirstOrDefaultAsync(character => character.Id == request.CharacterId, cancellationToken);
-
-                if (foundCharacter != null)
+                var allianceLeaderInAlliance = await context.Alliances.FirstOrDefaultAsync(a => a.LeaderId == foundCharacter.Id, cancellationToken);
+                if (allianceLeaderInAlliance != null)
                 {
-                    var allianceLeaderInAlliance = await context.Alliances.FirstOrDefaultAsync(a => a.LeaderId == foundCharacter.Id, cancellationToken);
-                    if (allianceLeaderInAlliance != null)
+                    var deleteClanFromAlliance = await context
+                        .Clans
+                        .FirstOrDefaultAsync(c => c.Name.ToLower() == request.ClanName.ToLower(), cancellationToken);
+
+                    if (deleteClanFromAlliance != null)
                     {
-                        var deleteClanFromAlliance = await context
-                            .Clans
-                            .FirstOrDefaultAsync(c => c.Name.ToLower() == request.ClanName.ToLower(), cancellationToken);
-
-                        if (deleteClanFromAlliance != null)
+                        if (deleteClanFromAlliance.LeaderId == foundCharacter.Id)
                         {
-                            if (deleteClanFromAlliance.LeaderId == foundCharacter.Id)
-                            {
-                                deleteClanFromAlliance.AllianceId = null;
-                                context.Clans.Update(deleteClanFromAlliance);
+                            deleteClanFromAlliance.AllianceId = null;
+                            context.Clans.Update(deleteClanFromAlliance);
 
-                                allianceLeaderInAlliance.CurrentCountClans--;
-                                context.Alliances.Update(allianceLeaderInAlliance);
+                            allianceLeaderInAlliance.CurrentCountClans--;
+                            context.Alliances.Update(allianceLeaderInAlliance);
 
-                                await context.SaveChangesAsync(cancellationToken);
+                            await context.SaveChangesAsync(cancellationToken);
 
-                                await _mediator.Send(new UpdateActivityCommand(request.UserId), cancellationToken);
-                                return "OK";
-                            }
-                            else
-                            {
-                                throw new AppException("The main clan in an alliance cannot be removed..");
-                            }
+                            return "OK";
                         }
                         else
                         {
-                            throw new AppException("Only the alliance leader can remove a clan.");
+                            throw new AppException("The main clan in an alliance cannot be removed..");
                         }
                     }
                     else
                     {
-                        throw new AppException("The character is not the alliance leader.");
+                        throw new AppException("Only the alliance leader can remove a clan.");
                     }
                 }
                 else
                 {
-                    throw new AppException("The character not found.");
+                    throw new AppException("The character is not the alliance leader.");
                 }
             }
             else
             {
-                throw new AppException("You are not logged in.");
+                throw new AppException("The character not found.");
             }
         }
     }

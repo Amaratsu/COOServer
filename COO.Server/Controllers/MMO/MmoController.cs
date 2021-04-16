@@ -4,6 +4,9 @@ using COO.Server.Controllers.MMO.Models;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
+using COO.Business.Logic.Account.Write.UpdateActivity;
+using COO.Business.Logic.MMO.Read.GetAllianceClans;
+using COO.Business.Logic.MMO.Read.GetAlliances;
 using COO.Business.Logic.MMO.Read.GetCharacter;
 using COO.Business.Logic.MMO.Read.GetCharacters;
 using COO.Business.Logic.MMO.Read.GetClanCharacters;
@@ -14,6 +17,7 @@ using COO.Business.Logic.MMO.Write.AddCharacterToClan;
 using COO.Business.Logic.MMO.Write.CreateAlliance;
 using COO.Business.Logic.MMO.Write.CreateClan;
 using COO.Business.Logic.MMO.Write.DeleteCharacterFromClan;
+using COO.Business.Logic.MMO.Write.DeleteClanFromAlliance;
 using COO.Business.Logic.MMO.Write.DisbandAlliance;
 using COO.Business.Logic.MMO.Write.LeaveFromClan;
 using COO.Business.Logic.MMO.Write.DisbandClan;
@@ -35,13 +39,15 @@ namespace COO.Server.Controllers.MMO
         [Route(nameof(GameServers))]
         public async Task<ActionResult> GameServers()
         {
-            return Ok(await _mediator.Send(new GetGameServersQuery(UserId())));
+            await _mediator.Send(new UpdateActivityCommand(UserId()));
+            return Ok(await _mediator.Send(new GetGameServersQuery()));
         }
 
         [HttpPost]
         [Route(nameof(CreateCharacter))]
         public async Task<ActionResult> CreateCharacter(CreateCharacterRequestModel model)
         {
+            await _mediator.Send(new UpdateActivityCommand(UserId()));
             return Ok(await _mediator.Send(new CreateCharacterCommand(UserId(), model.Name, model.Gender, model.RaceId, model.ClassId, model.ServerId)));
         }
 
@@ -49,20 +55,23 @@ namespace COO.Server.Controllers.MMO
         [Route(nameof(DeleteCharacter))]
         public async Task<ActionResult> DeleteCharacter(DeleteCharacterRequestModel model)
         {
-            return Ok(await _mediator.Send(new DeleteCharacterCommand(UserId(), model.CharacterId)));
+            await _mediator.Send(new UpdateActivityCommand(UserId()));
+            return Ok(await _mediator.Send(new DeleteCharacterCommand(model.CharacterId)));
         }
 
         [HttpPost]
         [Route(nameof(Character))]
         public async Task<ActionResult> Character(GetCharacterRequestModel model)
         {
-            return Ok(await _mediator.Send(new GetCharacterQuery(UserId(), model.CharacterId, model.ServerId)));
+            await _mediator.Send(new UpdateActivityCommand(UserId(), model.CharacterId));
+            return Ok(await _mediator.Send(new GetCharacterQuery(model.CharacterId, model.ServerId)));
         }
 
         [HttpPost]
         [Route(nameof(Characters))]
         public async Task<ActionResult> Characters(GetCharactersRequestModel model)
         {
+            await _mediator.Send(new UpdateActivityCommand(UserId()));
             return Ok(await _mediator.Send(new GetCharactersQuery(UserId(), model.ServerId)));
         }
 
@@ -70,9 +79,10 @@ namespace COO.Server.Controllers.MMO
         [Route(nameof(UpdateCharacter))]
         public async Task<ActionResult> UpdateCharacter(UpdateCharacterRequestModel model)
         {
+            await _mediator.Send(new UpdateActivityCommand(UserId()));
             return Ok(await _mediator.Send(
                 new UpdateCharacterCommand(
-                    UserId(), model.CharacterId, model.ClassId, model.Health, model.Mana,
+                    model.CharacterId, model.ClassId, model.Health, model.Mana,
                     model.Experience, model.Level, model.PosX, model.PosY, model.PosZ,
                     model.RotationYaw, model.EquipChest, model.EquipFeet, model.EquipHands,
                     model.EquipHead, model.EquipLegs, model.Hotbar0, model.Hotbar1, model.Hotbar2,
@@ -96,48 +106,56 @@ namespace COO.Server.Controllers.MMO
         [Route(nameof(CreateClan))]
         public async Task<ActionResult> CreateClan(CreateClanRequestModel model)
         {
-            return Ok(await _mediator.Send(new CreateClanCommand(UserId(), model.CharacterId, model.ClanName)));
+            await _mediator.Send(new UpdateActivityCommand(UserId()));
+            return Ok(await _mediator.Send(new CreateClanCommand(model.CharacterId, model.ClanName)));
         }
 
         [HttpPost]
         [Route(nameof(AddCharacterToClan))]
         public async Task<ActionResult> AddCharacterToClan(AddCharacterToClanRequestModel model)
         {
-            return Ok(await _mediator.Send(new AddCharacterToClanCommand(UserId(), model.ClanId, model.CharacterName)));
+            await _mediator.Send(new UpdateActivityCommand(UserId()));
+            return Ok(await _mediator.Send(new AddCharacterToClanCommand(model.ClanId, model.CharacterName)));
         }
 
         [HttpPost]
         [Route(nameof(DisbandClan))]
         public async Task<ActionResult> DisbandClan(DisbandClanRequestModel model)
         {
-            return Ok(await _mediator.Send(new DisbandClanCommand(UserId(), model.CharacterId)));
+            await _mediator.Send(new UpdateActivityCommand(UserId()));
+            return Ok(await _mediator.Send(new DisbandClanCommand(model.CharacterId)));
         }
 
         [HttpPost]
         [Route(nameof(ClanCharacters))]
         public async Task<ActionResult> ClanCharacters(ClanCharactersRequestModel model)
         {
-            return Ok(await _mediator.Send(new GetClanCharactersCommand(UserId(), model.CharacterId)));
+            await _mediator.Send(new UpdateActivityCommand(UserId()));
+            return Ok(await _mediator.Send(new GetClanCharactersQuery(model.CharacterId)));
         }
 
         [HttpPost]
         [Route(nameof(LeaveFromClan))]
         public async Task<ActionResult> LeaveFromClan(LeaveFromClanRequestModel model)
         {
-            return Ok(await _mediator.Send(new LeaveFromClanCommand(UserId(), model.CharacterId)));
+            await _mediator.Send(new UpdateActivityCommand(UserId()));
+            return Ok(await _mediator.Send(new LeaveFromClanCommand(model.CharacterId)));
         }
 
         [HttpPost]
         [Route(nameof(DeleteCharacterFromClan))]
         public async Task<ActionResult> DeleteCharacterFromClan(DeleteCharacterFromClanRequestModel model)
         {
-            return Ok(await _mediator.Send(new DeleteCharacterFromClanCommand(UserId(), model.CharacterId, model.CharacterName)));
+            await _mediator.Send(new UpdateActivityCommand(UserId()));
+            return Ok(await _mediator.Send(new DeleteCharacterFromClanCommand(model.CharacterId, model.CharacterName)));
         }
 
         [HttpPost]
         [Route(nameof(Clans))]
         public async Task<ActionResult> Clans()
         {
+
+            await _mediator.Send(new UpdateActivityCommand(UserId()));
             return Ok(await _mediator.Send(new GetClansQuery(UserId())));
         }
 
@@ -145,21 +163,40 @@ namespace COO.Server.Controllers.MMO
         [Route(nameof(CreateAlliance))]
         public async Task<ActionResult> CreateAlliance(CreateAllianceRequetModel model)
         {
-            return Ok(await _mediator.Send(new CreateAllianceCommand(UserId(), model.CharacterId, model.AllianceName)));
+            await _mediator.Send(new UpdateActivityCommand(UserId()));
+            return Ok(await _mediator.Send(new CreateAllianceCommand(model.CharacterId, model.AllianceName)));
         }
 
         [HttpPost]
         [Route(nameof(DisbandAlliance))]
         public async Task<ActionResult> DisbandAlliance(DisbandAllianceRequestModel model)
         {
-            return Ok(await _mediator.Send(new DisbandAllianceCommand(UserId(), model.CharacterId)));
+            await _mediator.Send(new UpdateActivityCommand(UserId()));
+            return Ok(await _mediator.Send(new DisbandAllianceCommand(model.CharacterId)));
         }
 
         [HttpPost]
         [Route(nameof(DeleteClanFromAlliance))]
         public async Task<ActionResult> DeleteClanFromAlliance(DeleteClanFromAllianceRequestModel model)
         {
-            return Ok(await _mediator.Send(new DeleteCharacterFromClanCommand(UserId(), model.CharacterId, model.ClanName)));
+            await _mediator.Send(new UpdateActivityCommand(UserId()));
+            return Ok(await _mediator.Send(new DeleteClanFromAllianceCommand(model.CharacterId, model.ClanName)));
+        }
+
+        [HttpPost]
+        [Route(nameof(AllianceClans))]
+        public async Task<ActionResult> AllianceClans(AllianceClansRequestModel model)
+        {
+            await _mediator.Send(new UpdateActivityCommand(UserId()));
+            return Ok(await _mediator.Send(new GetAllianceClansQuery(model.AllianceName)));
+        }
+
+        [HttpPost]
+        [Route(nameof(Alliances))]
+        public async Task<ActionResult> Alliances(DeleteClanFromAllianceRequestModel model)
+        {
+            await _mediator.Send(new UpdateActivityCommand(UserId()));
+            return Ok(await _mediator.Send(new GetAlliancesQuery()));
         }
     }
 }

@@ -1,6 +1,5 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
-using COO.Business.Logic.Account.Write.UpdateActivity;
 using COO.DataAccess.Contexts;
 using COO.Infrastructure.Exceptions;
 using MediatR;
@@ -11,67 +10,53 @@ namespace COO.Business.Logic.MMO.Write.LeaveFromClan
     public class LeaveFromClanCommandHandler : IRequestHandler<LeaveFromClanCommand, string>
     {
         private readonly IDbContextFactory<CooDbContext> _contextFactory;
-        private readonly IMediator _mediator;
 
-        public LeaveFromClanCommandHandler(IDbContextFactory<CooDbContext> contextFactory, IMediator mediator)
+        public LeaveFromClanCommandHandler(IDbContextFactory<CooDbContext> contextFactory)
         {
             _contextFactory = contextFactory;
-            _mediator = mediator;
         }
 
         public async Task<string> Handle(LeaveFromClanCommand request, CancellationToken cancellationToken)
         {
             await using var context = _contextFactory.CreateDbContext();
 
-            var foundUser =
-                await context.Users.FirstOrDefaultAsync(user => user.Id == request.UserId, cancellationToken);
+            var foundCharacter = await context.Characters
+                .FirstOrDefaultAsync(character => character.Id == request.CharacterId, cancellationToken);
 
-            if (foundUser != null)
+            var foundClan = await context.Clans.FirstOrDefaultAsync(c => c.LeaderId == foundCharacter.Id, cancellationToken);
+
+            if (foundCharacter != null)
             {
-                var foundCharacter = await context.Characters
-                    .FirstOrDefaultAsync(character => character.Id == request.CharacterId, cancellationToken);
 
-                var foundClan = await context.Clans.FirstOrDefaultAsync(c => c.LeaderId == foundCharacter.Id, cancellationToken);
+                if (foundClan != null) {
 
-                if (foundCharacter != null)
-                {
+                    if (foundCharacter.ClanId != null)
+                    {
+                        foundCharacter.ClanId = null;
 
-                    if (foundClan != null) {
+                        context.Characters.Update(foundCharacter);
 
-                        if (foundCharacter.ClanId != null)
-                        {
-                            foundCharacter.ClanId = null;
+                        foundClan.CurrentCountCharacters--;
 
-                            context.Characters.Update(foundCharacter);
+                        context.Clans.Update(foundClan);
 
-                            foundClan.CurrentCountCharacters--;
+                        await context.SaveChangesAsync(cancellationToken);
 
-                            context.Clans.Update(foundClan);
-
-                            await context.SaveChangesAsync(cancellationToken);
-
-                            await _mediator.Send(new UpdateActivityCommand(request.UserId), cancellationToken);
-
-                            return "OK";
-                        }
-                        else
-                        {
-                            throw new AppException("The character is not in a clan.");
-                        }
+                        return "OK";
                     }
                     else
                     {
-                        throw new AppException("Clan leader cannot leave the clan.");
+                        throw new AppException("The character is not in a clan.");
                     }
                 }
                 else
                 {
-                    throw new AppException("The character not found.");
+                    throw new AppException("Clan leader cannot leave the clan.");
                 }
             }
             else
             {
-                throw new AppException("You are not logged in.");
+                throw new AppException("The character not found.");
             }
         }
     }

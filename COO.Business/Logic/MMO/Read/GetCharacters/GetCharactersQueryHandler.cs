@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using COO.Business.Logic.Account.Write.UpdateActivity;
 using COO.DataAccess.Contexts;
 using COO.Infrastructure.Exceptions;
 using MediatR;
@@ -13,12 +12,10 @@ namespace COO.Business.Logic.MMO.Read.GetCharacters
     public class GetCharactersQueryHandler : IRequestHandler<GetCharactersQuery, GetCharactersResponseModel>
     {
         private readonly IDbContextFactory<CooDbContext> _contextFactory;
-        private readonly IMediator _mediator;
 
-        public GetCharactersQueryHandler(IDbContextFactory<CooDbContext> contextFactory, IMediator mediator)
+        public GetCharactersQueryHandler(IDbContextFactory<CooDbContext> contextFactory)
         {
             _contextFactory = contextFactory;
-            _mediator = mediator;
         }
 
         public async Task<GetCharactersResponseModel> Handle(GetCharactersQuery request, CancellationToken cancellationToken)
@@ -58,8 +55,6 @@ namespace COO.Business.Logic.MMO.Read.GetCharacters
                         });
                     });
                 }
-
-                await _mediator.Send(new UpdateActivityCommand(request.UserId), cancellationToken);
 
                 return response;
             }
