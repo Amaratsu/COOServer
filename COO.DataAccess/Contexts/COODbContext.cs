@@ -15,7 +15,7 @@ namespace COO.DataAccess.Contexts
         public DbSet<Alliance> Alliances { get; set; }
         public DbSet<InventoryItem> InventoryItems { get; set; }
         public DbSet<Quest> Quests { get; set; }
-        public DbSet<InfoServer> InfoServers { get; set; }
+        public DbSet<GameServer> InfoServers { get; set; }
         public DbSet<InitializeDataCharacter> InitializeDataCharacters { get; set; }
     }
 }

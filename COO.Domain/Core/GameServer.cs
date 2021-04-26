@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace COO.Domain.Core
 {
-    public class InfoServer
+    public class GameServer
     {
         public int Id { get; set; }
         // 0 - game hub, 1 - open world, 2 - instance
@@ -20,5 +22,12 @@ namespace COO.Domain.Core
         // 0 - off, 1 - work
         public int Status { get; set; }
         public DateTime LastUpdate { get; set; }
+
+        public ICollection<User> Users { get; set; }
+
+        public GameServer()
+        {
+            Users = new HashSet<User>();
+        }
     }
 }

@@ -16,5 +16,10 @@ namespace COO.Domain.Core
         public bool IsBlocked { get; set; }
         public DateTime CreateDate { get; set; }
         public DateTime LastActivity { get; set; }
+
+        public int GameServerId { get; set; }
+        public GameServer GameServer { get; set; }
+
+        public UserCharacter UserCharacter { get; set; }
     }
 }

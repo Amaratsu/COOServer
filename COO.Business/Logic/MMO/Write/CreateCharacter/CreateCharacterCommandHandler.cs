@@ -37,7 +37,7 @@ namespace COO.Business.Logic.MMO.Write.CreateCharacter
                 var character = new Character
                 {
                     UserId = request.UserId,
-                    ServerId = request.ServerId,
+                    GameServerId = request.ServerId,
                     Name = request.Name,
                     Gender = request.Gender,
                     Level = 1,

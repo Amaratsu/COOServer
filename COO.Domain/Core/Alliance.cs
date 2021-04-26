@@ -1,4 +1,7 @@
-﻿namespace COO.Domain.Core
+﻿using System.Collections;
+using System.Collections.Generic;
+
+namespace COO.Domain.Core
 {
     public class Alliance
     {
@@ -8,5 +11,6 @@
         public string Name { get; set; }
         public int CurrentCountClans { get; set; }
         public int MaxCountClans { get; set; }
+        public ICollection<Character> Characters { get; set; }
     }
 }

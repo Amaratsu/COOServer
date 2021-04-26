@@ -29,7 +29,7 @@ namespace COO.Business.Logic.MMO.Read.GetCharacters
                 var response = new GetCharactersResponseModel { Characters = new List<CharacterModel>() };
 
                 var foundCharacters = await context.Characters
-                    .Where(c => c.Id == foundUser.Id && c.ServerId == request.ServerId)
+                    .Where(c => c.Id == foundUser.Id && c.GameServerId == request.ServerId)
                     .ToListAsync(cancellationToken);
 
                 if (foundCharacters.Count > 0)

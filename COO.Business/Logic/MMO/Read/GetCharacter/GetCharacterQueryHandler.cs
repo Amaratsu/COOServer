@@ -23,7 +23,7 @@ namespace COO.Business.Logic.MMO.Read.GetCharacter
             await using var context = _contextFactory.CreateDbContext();
 
             var foundCharacter = await context.Characters
-                .FirstOrDefaultAsync(c => c.Id == request.CharacterId && c.ServerId == request.ServerId, cancellationToken);
+                .FirstOrDefaultAsync(c => c.Id == request.CharacterId && c.GameServerId == request.ServerId, cancellationToken);
 
             if (foundCharacter != null)
             {
@@ -37,6 +37,14 @@ namespace COO.Business.Logic.MMO.Read.GetCharacter
 
                 var clan = await context.Clans
                     .FirstOrDefaultAsync(c => c.Id == foundCharacter.ClanId, cancellationToken);
+
+                var allianceName = "";
+
+                if (clan?.AllianceId != null)
+                {
+                    var alliance = await context.Alliances.FirstOrDefaultAsync(a => a.Id == clan.AllianceId, cancellationToken);
+                    allianceName = alliance.Name;
+                }
 
                 return new GetCharacterResponseModel
                 {
@@ -62,7 +70,8 @@ namespace COO.Business.Logic.MMO.Read.GetCharacter
                     Hotbar1 = foundCharacter.Hotbar1,
                     Hotbar2 = foundCharacter.Hotbar2,
                     Hotbar3 = foundCharacter.Hotbar3,
-                    ClanName = clan.Name,
+                    ClanName = clan?.Name,
+                    AllianceName = allianceName,
                     Inventory = inventories,
                     Quests = quests
                 };

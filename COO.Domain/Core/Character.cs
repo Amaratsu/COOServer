@@ -3,11 +3,8 @@
     public class Character
     {
         public int Id { get; set; }
-        public int UserId { get; set; }
-        public int ServerId { get; set; }
         public string Name { get; set; }
         public int Gender { get; set; }
-        public int? ClanId { get; set; }
         public int RaceId { get; set; }
         public int ClassId { get; set; }
         public int Level { get; set; }
@@ -28,5 +25,20 @@
         public string Hotbar2 { get; set; }
         public string Hotbar3 { get; set; }
         public bool IsOnline { get; set; }
+
+        public int UserId { get; set; }
+
+        public int GameServerId { get; set; }
+
+        public UserCharacter UserCharacter { get; set; }
+
+        public int? GroupId { get; set; }
+        public Group Group { get; set; }
+
+        public int? ClanId { get; set; }
+        public Clan Clan { get; set; }
+
+        public int? AllianceId { get; set; }
+        public Alliance Alliance { get; set; }
     }
 }
