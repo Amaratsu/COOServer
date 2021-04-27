@@ -12,7 +12,7 @@ namespace COO.Business.Logic.MMO.Write.DisbandClan
     {
         private readonly IDbContextFactory<CooDbContext> _contextFactory;
 
-        public DisbandClanCommandHandler(IDbContextFactory<CooDbContext> contextFactory, IMediator mediator)
+        public DisbandClanCommandHandler(IDbContextFactory<CooDbContext> contextFactory)
         {
             _contextFactory = contextFactory;
         }
@@ -21,18 +21,18 @@ namespace COO.Business.Logic.MMO.Write.DisbandClan
         {
             await using var context = _contextFactory.CreateDbContext();
 
-            var foundCharacter = await context.Characters
-                .FirstOrDefaultAsync(character => character.Id == request.CharacterId, cancellationToken);
+            var character = await context.Characters
+                .FirstOrDefaultAsync(c => c.Id == request.CharacterId, cancellationToken);
 
-            if (foundCharacter != null)
+            if (character != null)
             {
-                if (foundCharacter.ClanId == null)
+                if (character.ClanId == null)
                 {
                     throw new AppException("The Character is not in a clan.");
                 }
                 else
                 {
-                    var clan = await context.Clans.FirstOrDefaultAsync(c => c.Id == foundCharacter.ClanId, cancellationToken);
+                    var clan = await context.Clans.FirstOrDefaultAsync(c => c.Id == character.ClanId, cancellationToken);
 
                     if (clan.LeaderId != request.CharacterId)
                     {
@@ -40,22 +40,22 @@ namespace COO.Business.Logic.MMO.Write.DisbandClan
                     }
                     else
                     {
-                        var foundClanCharacters = await context.Characters.Where(c => c.ClanId == clan.Id)
+                        var clanCharacters = await context.Characters.Where(c => c.ClanId == clan.Id)
                             .ToListAsync(cancellationToken);
 
-                        if (foundClanCharacters.Count > 0)
+                        if (clanCharacters.Count > 0)
                         {
 
-                            foundClanCharacters.ForEach(fcc => fcc.ClanId = null);
+                            clanCharacters.ForEach(fcc => fcc.ClanId = null);
 
-                            context.Characters.UpdateRange(foundClanCharacters);
+                            context.Characters.UpdateRange(clanCharacters);
                         }
 
                         context.Clans.Remove(clan);
 
-                        foundCharacter.ClanId = null;
+                        character.ClanId = null;
 
-                        context.Characters.Update(foundCharacter);
+                        context.Characters.Update(character);
 
                         await context.SaveChangesAsync(cancellationToken);
 

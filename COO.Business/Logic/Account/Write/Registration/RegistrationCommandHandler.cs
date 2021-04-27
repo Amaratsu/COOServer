@@ -26,15 +26,15 @@ namespace COO.Business.Logic.Account.Write.Registration
         {
             await using var context = _contextFactory.CreateDbContext();
 
-            var foundUser = await context.Users.FirstOrDefaultAsync(u => u.UserName == request.Login || u.Email == request.Email, cancellationToken);
+            var user = await context.Users.FirstOrDefaultAsync(u => u.UserName == request.Login || u.Email == request.Email, cancellationToken);
 
-            if (foundUser != null)
+            if (user != null)
             {
                 throw new AppException("Login and email are already taken");
             }
 
             var salt = _dataHashService.GenerateSalt();
-            var user = new User
+            var newUser = new User
             {
                 UserName = request.Login,
                 Email = request.Email,
@@ -44,13 +44,13 @@ namespace COO.Business.Logic.Account.Write.Registration
                 Token = Helpers.RandomString(20)
             };
 
-            await context.Users.AddAsync(user, cancellationToken);
+            await context.Users.AddAsync(newUser, cancellationToken);
             await context.SaveChangesAsync(cancellationToken);
 
             return new RegistrationResponseModel { 
-                UserId = user.Id,
-                Email = user.Email,
-                Token = user.Token
+                UserId = newUser.Id,
+                Email = newUser.Email,
+                Token = newUser.Token
             };
         }
     }

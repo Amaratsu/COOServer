@@ -22,21 +22,21 @@ namespace COO.Business.Logic.MMO.Read.GetClanCharacters
         {
             await using var context = _contextFactory.CreateDbContext();
 
-            var foundCharacter = await context.Characters
+            var character = await context.Characters
                 .FirstOrDefaultAsync(character => character.Id == request.CharacterId, cancellationToken);
 
-            if (foundCharacter != null)
+            if (character != null)
             {
-                if (foundCharacter.ClanId == null)
+                if (character.ClanId == null)
                 {
                     throw new AppException("The Character is not in a clan.");
                 }
                 else
                 {
-                    var foundClanCharacters = await context.Characters.Where(c => c.ClanId == foundCharacter.ClanId)
+                    var clanCharacters = await context.Characters.Where(c => c.ClanId == character.ClanId)
                         .ToListAsync(cancellationToken);
 
-                    var clan = await context.Clans.FirstOrDefaultAsync(c => c.LeaderId == foundCharacter.Id,
+                    var clan = await context.Clans.FirstOrDefaultAsync(c => c.LeaderId == character.Id,
                         cancellationToken);
 
                     var response = new GetClanCharactersResponseModel
@@ -44,9 +44,9 @@ namespace COO.Business.Logic.MMO.Read.GetClanCharacters
                         ClanCharacters = new List<ClanCharacterModel>()
                     };
 
-                    if (foundClanCharacters.Count > 0)
+                    if (clanCharacters.Count > 0)
                     {
-                        foundClanCharacters.ForEach(fcc =>
+                        clanCharacters.ForEach(fcc =>
                         {
                             response.ClanCharacters.Add(new ClanCharacterModel
                             {

@@ -23,7 +23,7 @@ namespace COO.SocketServer
 
         public static void PlayerLogin(Socket conn, string characterName)
         {
-            Player newPlayer = new Player(conn, characterName);
+            var newPlayer = new Player(conn, characterName);
 
             // if it's a character that's in some clan, get his id
             if (CharacterIds.ContainsKey(newPlayer.Name))
@@ -128,7 +128,7 @@ namespace COO.SocketServer
             invitedPlayer.PendingInvite = invitingParty;
             invitedPlayer.HasPendingClanInvite = bClanInvite;
             double delay = 20000.0; // 20 seconds, 1000 ms is one second
-            System.Timers.Timer myTimer = new System.Timers.Timer(delay);
+            var myTimer = new System.Timers.Timer(delay);
             myTimer.Elapsed += (sender, args) => ConQue.Enqueue(() => ClearPendingInvite(invitedPlayer));
             myTimer.AutoReset = false; // fire only once
             myTimer.Enabled = true;
@@ -140,7 +140,7 @@ namespace COO.SocketServer
             if (!PendingKicks.ContainsKey(playerToKick.Name))
             {
                 double delay = 30000.0;
-                System.Timers.Timer myTimer = new System.Timers.Timer(delay);
+                var myTimer = new System.Timers.Timer(delay);
                 myTimer.Elapsed += (sender, args) => ConQue.Enqueue(() => ClearPendingKick(playerToKick));
                 myTimer.AutoReset = false; // fire only once
                 myTimer.Enabled = true;

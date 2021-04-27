@@ -24,21 +24,20 @@ namespace COO.Business.Logic.MMO.Read.GetClans
         {
             await using var context = _contextFactory.CreateDbContext();
 
-            var foundUser =
-                await context.Users.FirstOrDefaultAsync(user => user.Id == request.UserId, cancellationToken);
+            var user = await context.Users.FirstOrDefaultAsync(u => u.Id == request.UserId, cancellationToken);
 
-            if (foundUser != null)
+            if (user != null)
             {
                 var response = new GetClansResponseModel
                 {
                     Clans = new List<ClanModel>()
                 };
 
-                var foundClans = await context.Clans.ToListAsync(cancellationToken);
+                var clans = await context.Clans.ToListAsync(cancellationToken);
 
-                if (foundClans.Count > 0)
+                if (clans.Count > 0)
                 {
-                    foundClans.ForEach(fc =>
+                    clans.ForEach(fc =>
                     {
                         response.Clans.Add(new ClanModel
                         {

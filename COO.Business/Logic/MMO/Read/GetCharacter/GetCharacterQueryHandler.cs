@@ -22,21 +22,21 @@ namespace COO.Business.Logic.MMO.Read.GetCharacter
         {
             await using var context = _contextFactory.CreateDbContext();
 
-            var foundCharacter = await context.Characters
+            var character = await context.Characters
                 .FirstOrDefaultAsync(c => c.Id == request.CharacterId && c.GameServerId == request.ServerId, cancellationToken);
 
-            if (foundCharacter != null)
+            if (character != null)
             {
                 var inventories = await context.InventoryItems
-                    .Where(i => i.CharacterId == foundCharacter.Id)
+                    .Where(i => i.CharacterId == character.Id)
                     .ToListAsync(cancellationToken);
 
                 var quests = await context.Quests
-                    .Where(q => q.CharacterId == foundCharacter.Id)
+                    .Where(q => q.CharacterId == character.Id)
                     .ToListAsync(cancellationToken);
 
                 var clan = await context.Clans
-                    .FirstOrDefaultAsync(c => c.Id == foundCharacter.ClanId, cancellationToken);
+                    .FirstOrDefaultAsync(c => c.Id == character.ClanId, cancellationToken);
 
                 var allianceName = "";
 
@@ -48,28 +48,28 @@ namespace COO.Business.Logic.MMO.Read.GetCharacter
 
                 return new GetCharacterResponseModel
                 {
-                    CharacterId = foundCharacter.Id,
-                    Name = foundCharacter.Name,
-                    Gender = foundCharacter.Gender,
-                    RaceId = foundCharacter.RaceId,
-                    ClassId = foundCharacter.ClassId,
-                    Health = foundCharacter.Health,
-                    Mana = foundCharacter.Mana,
-                    Level = foundCharacter.Level,
-                    Experience = foundCharacter.Experience,
-                    EquipChest = foundCharacter.EquipChest,
-                    EquipFeet = foundCharacter.EquipFeet,
-                    EquipHands = foundCharacter.EquipHands,
-                    EquipHead = foundCharacter.EquipHead,
-                    EquipLegs = foundCharacter.EquipLegs,
-                    PosX = foundCharacter.PosX,
-                    PosY = foundCharacter.PosY,
-                    PosZ = foundCharacter.PosZ,
-                    RotationYaw = foundCharacter.RotationYaw,
-                    Hotbar0 = foundCharacter.Hotbar0,
-                    Hotbar1 = foundCharacter.Hotbar1,
-                    Hotbar2 = foundCharacter.Hotbar2,
-                    Hotbar3 = foundCharacter.Hotbar3,
+                    CharacterId = character.Id,
+                    Name = character.Name,
+                    Gender = character.Gender,
+                    RaceId = character.RaceId,
+                    ClassId = character.ClassId,
+                    Health = character.Health,
+                    Mana = character.Mana,
+                    Level = character.Level,
+                    Experience = character.Experience,
+                    EquipChest = character.EquipChest,
+                    EquipFeet = character.EquipFeet,
+                    EquipHands = character.EquipHands,
+                    EquipHead = character.EquipHead,
+                    EquipLegs = character.EquipLegs,
+                    PosX = character.PosX,
+                    PosY = character.PosY,
+                    PosZ = character.PosZ,
+                    RotationYaw = character.RotationYaw,
+                    Hotbar0 = character.Hotbar0,
+                    Hotbar1 = character.Hotbar1,
+                    Hotbar2 = character.Hotbar2,
+                    Hotbar3 = character.Hotbar3,
                     ClanName = clan?.Name,
                     AllianceName = allianceName,
                     Inventory = inventories,

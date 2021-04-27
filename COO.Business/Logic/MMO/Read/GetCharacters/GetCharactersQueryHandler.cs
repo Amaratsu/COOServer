@@ -22,19 +22,19 @@ namespace COO.Business.Logic.MMO.Read.GetCharacters
         {
             await using var context = _contextFactory.CreateDbContext();
 
-            var foundUser = await context.Users.FirstOrDefaultAsync(user => user.Id == request.UserId, cancellationToken);
+            var user = await context.Users.FirstOrDefaultAsync(u => u.Id == request.UserId, cancellationToken);
 
-            if (foundUser != null)
+            if (user != null)
             {
                 var response = new GetCharactersResponseModel { Characters = new List<CharacterModel>() };
 
-                var foundCharacters = await context.Characters
-                    .Where(c => c.Id == foundUser.Id && c.GameServerId == request.ServerId)
+                var characters = await context.Characters
+                    .Where(c => c.UserId == user.Id && c.GameServerId == request.ServerId)
                     .ToListAsync(cancellationToken);
 
-                if (foundCharacters.Count > 0)
+                if (characters.Count > 0)
                 {
-                    foundCharacters.ForEach(c =>
+                    characters.ForEach(c =>
                     {
                         response.Characters.Add(new CharacterModel
                         {

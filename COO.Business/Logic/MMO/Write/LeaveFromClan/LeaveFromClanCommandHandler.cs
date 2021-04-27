@@ -20,25 +20,26 @@ namespace COO.Business.Logic.MMO.Write.LeaveFromClan
         {
             await using var context = _contextFactory.CreateDbContext();
 
-            var foundCharacter = await context.Characters
-                .FirstOrDefaultAsync(character => character.Id == request.CharacterId, cancellationToken);
+            var character = await context
+                .Characters
+                .FirstOrDefaultAsync(c => c.Id == request.CharacterId, cancellationToken);
 
-            var foundClan = await context.Clans.FirstOrDefaultAsync(c => c.LeaderId == foundCharacter.Id, cancellationToken);
+            var clan = await context.Clans.FirstOrDefaultAsync(c => c.LeaderId == character.Id, cancellationToken);
 
-            if (foundCharacter != null)
+            if (character != null)
             {
 
-                if (foundClan != null) {
+                if (clan != null) {
 
-                    if (foundCharacter.ClanId != null)
+                    if (character.ClanId != null)
                     {
-                        foundCharacter.ClanId = null;
+                        character.ClanId = null;
 
-                        context.Characters.Update(foundCharacter);
+                        context.Characters.Update(character);
 
-                        foundClan.CurrentCountCharacters--;
+                        clan.CurrentCountCharacters--;
 
-                        context.Clans.Update(foundClan);
+                        context.Clans.Update(clan);
 
                         await context.SaveChangesAsync(cancellationToken);
 

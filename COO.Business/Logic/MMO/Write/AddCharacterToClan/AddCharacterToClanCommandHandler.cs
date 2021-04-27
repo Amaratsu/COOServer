@@ -20,36 +20,35 @@ namespace COO.Business.Logic.MMO.Write.AddCharacterToClan
         {
             await using var context = _contextFactory.CreateDbContext();
 
-            var foundCharacter = await context
+            var character = await context
                 .Characters
                 .FirstOrDefaultAsync(c => c.Name.ToLower() == request.CharacterName.ToLower(), cancellationToken);
 
-            if (foundCharacter != null)
+            if (character != null)
             {
-                if (foundCharacter.ClanId != null)
+                if (character.ClanId != null)
                 {
                     throw new AppException("The character is already in a clan.");
                 }
                 else
                 {
-                    var foundClan =
-                        await context.Clans.FirstOrDefaultAsync(c => c.Id == request.ClanId, cancellationToken);
+                    var clan = await context.Clans.FirstOrDefaultAsync(c => c.Id == request.ClanId, cancellationToken);
 
-                    if (foundClan != null)
+                    if (clan != null)
                     {
-                        if (foundClan.CurrentCountCharacters + 1 > foundClan.MaxCountCharacters)
+                        if (clan.CurrentCountCharacters + 1 > clan.MaxCountCharacters)
                         {
                             throw new AppException("The clan has a maximum number of players.");
                         }
                         else
                         {
-                            foundCharacter.ClanId = request.ClanId;
+                            character.ClanId = request.ClanId;
 
-                            context.Characters.Update(foundCharacter);
+                            context.Characters.Update(character);
 
-                            foundClan.CurrentCountCharacters++;
+                            clan.CurrentCountCharacters++;
 
-                            context.Clans.Update(foundClan);
+                            context.Clans.Update(clan);
 
                             await context.SaveChangesAsync(cancellationToken);
 

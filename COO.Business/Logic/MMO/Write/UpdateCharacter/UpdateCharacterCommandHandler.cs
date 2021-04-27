@@ -24,33 +24,33 @@ namespace COO.Business.Logic.MMO.Write.UpdateCharacter
         {
             await using var context = _contextFactory.CreateDbContext();
 
-            var foundCharacter = await context
+            var character = await context
                 .Characters
                 .FirstOrDefaultAsync(c => c.Id == request.CharacterId, cancellationToken);
 
-            if (foundCharacter != null)
+            if (character != null)
             {
-                foundCharacter.ClassId = request.ClassId;
-                foundCharacter.Health = request.Health;
-                foundCharacter.Mana = request.Mana;
-                foundCharacter.Experience = request.Experience;
-                foundCharacter.Level = request.Level;
-                foundCharacter.PosX = request.PosX;
-                foundCharacter.PosY = request.PosY;
-                foundCharacter.PosZ = request.PosZ;
-                foundCharacter.RotationYaw = request.RotationYaw;
-                foundCharacter.EquipChest = request.EquipChest;
-                foundCharacter.EquipFeet = request.EquipFeet;
-                foundCharacter.EquipHands = request.EquipHands;
-                foundCharacter.EquipHead = request.EquipHead;
-                foundCharacter.EquipLegs = request.EquipLegs;
-                foundCharacter.Hotbar0 = request.Hotbar0;
-                foundCharacter.Hotbar1 = request.Hotbar1;
-                foundCharacter.Hotbar2 = request.Hotbar2;
-                foundCharacter.Hotbar3 = request.Hotbar3;
-                foundCharacter.IsOnline = request.IsOnline;
+                character.ClassId = request.ClassId;
+                character.Health = request.Health;
+                character.Mana = request.Mana;
+                character.Experience = request.Experience;
+                character.Level = request.Level;
+                character.PosX = request.PosX;
+                character.PosY = request.PosY;
+                character.PosZ = request.PosZ;
+                character.RotationYaw = request.RotationYaw;
+                character.EquipChest = request.EquipChest;
+                character.EquipFeet = request.EquipFeet;
+                character.EquipHands = request.EquipHands;
+                character.EquipHead = request.EquipHead;
+                character.EquipLegs = request.EquipLegs;
+                character.Hotbar0 = request.Hotbar0;
+                character.Hotbar1 = request.Hotbar1;
+                character.Hotbar2 = request.Hotbar2;
+                character.Hotbar3 = request.Hotbar3;
+                character.IsOnline = request.IsOnline;
                 
-                await context.Characters.AddAsync(foundCharacter, cancellationToken);
+                await context.Characters.AddAsync(character, cancellationToken);
 
                 if (request.Inventory != null && request.Inventory.Count > 0)
                 {

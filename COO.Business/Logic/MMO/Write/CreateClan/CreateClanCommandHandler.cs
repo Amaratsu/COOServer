@@ -21,11 +21,11 @@ namespace COO.Business.Logic.MMO.Write.CreateClan
         {
             await using var context = _contextFactory.CreateDbContext();
 
-            var foundCharacter = await context
+            var character = await context
                 .Characters
                 .FirstOrDefaultAsync(c => c.Id == request.CharacterId, cancellationToken);
 
-            if (foundCharacter != null)
+            if (character != null)
             {
 
                 var clan = await context
@@ -38,7 +38,7 @@ namespace COO.Business.Logic.MMO.Write.CreateClan
                 }
                 else
                 {
-                    if (foundCharacter.ClanId != null)
+                    if (character.ClanId != null)
                     {
                         throw new AppException("The character already has a clan");
                     }
@@ -46,8 +46,8 @@ namespace COO.Business.Logic.MMO.Write.CreateClan
                     {
                         var newClan = new Clan
                         {
-                            LeaderId = foundCharacter.Id,
-                            LeaderName = foundCharacter.Name,
+                            LeaderId = character.Id,
+                            LeaderName = character.Name,
                             Name = request.ClanName,
                             CurrentCountCharacters = 1,
                             MaxCountCharacters = 10
@@ -57,9 +57,9 @@ namespace COO.Business.Logic.MMO.Write.CreateClan
 
                         await context.SaveChangesAsync(cancellationToken);
 
-                        foundCharacter.ClanId = newClan.Id;
+                        character.ClanId = newClan.Id;
 
-                        context.Characters.Update(foundCharacter);
+                        context.Characters.Update(character);
 
                         await context.SaveChangesAsync(cancellationToken);
 

@@ -13,8 +13,8 @@ namespace COO.Domain.Core
         public string Port { get; set; }
         public string Name { get; set; }
         public string MapName { get; set; }
-        public string interiorIP { get; set; }
-        public string interiorPort { get; set; }
+        public string InteriorIP { get; set; }
+        public string InteriorPort { get; set; }
         public string ExternalIP { get; set; }
         public string ExternalPort { get; set; }
         public int CurrentCount { get; set; }

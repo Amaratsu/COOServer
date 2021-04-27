@@ -1,6 +1,5 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
-using COO.Business.Logic.Account.Write.UpdateActivity;
 using COO.DataAccess.Contexts;
 using COO.Infrastructure.Exceptions;
 using MediatR;
@@ -21,12 +20,12 @@ namespace COO.Business.Logic.MMO.Write.DeleteClanFromAlliance
         {
             await using var context = _contextFactory.CreateDbContext();
 
-            var foundCharacter = await context.Characters
-                .FirstOrDefaultAsync(character => character.Id == request.CharacterId, cancellationToken);
+            var character = await context.Characters
+                .FirstOrDefaultAsync(c => c.Id == request.CharacterId, cancellationToken);
 
-            if (foundCharacter != null)
+            if (character != null)
             {
-                var allianceLeaderInAlliance = await context.Alliances.FirstOrDefaultAsync(a => a.LeaderId == foundCharacter.Id, cancellationToken);
+                var allianceLeaderInAlliance = await context.Alliances.FirstOrDefaultAsync(a => a.LeaderId == character.Id, cancellationToken);
                 if (allianceLeaderInAlliance != null)
                 {
                     var deleteClanFromAlliance = await context
@@ -35,7 +34,7 @@ namespace COO.Business.Logic.MMO.Write.DeleteClanFromAlliance
 
                     if (deleteClanFromAlliance != null)
                     {
-                        if (deleteClanFromAlliance.LeaderId == foundCharacter.Id)
+                        if (deleteClanFromAlliance.LeaderId == character.Id)
                         {
                             deleteClanFromAlliance.AllianceId = null;
                             context.Clans.Update(deleteClanFromAlliance);

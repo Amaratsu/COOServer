@@ -21,45 +21,45 @@ namespace COO.Business.Logic.MMO.Write.DeleteCharacter
         {
             await using var context = _contextFactory.CreateDbContext();
 
-            var foundCharacter = await context.Characters
-                    .FirstOrDefaultAsync(character => character.Id == request.CharacterId, cancellationToken);
+            var character = await context.Characters
+                    .FirstOrDefaultAsync(c => c.Id == request.CharacterId, cancellationToken);
 
-            if (foundCharacter != null)
+            if (character != null)
             {
-                var allianceLeaderInAlliance = await context.Alliances.FirstOrDefaultAsync(a => a.LeaderId == foundCharacter.Id, cancellationToken);
+                var allianceLeaderInAlliance = await context.Alliances.FirstOrDefaultAsync(a => a.LeaderId == character.Id, cancellationToken);
                 if (allianceLeaderInAlliance != null)
                 {
-                    var foundClans = await context.Clans.Where(c => c.AllianceId == allianceLeaderInAlliance.Id)
+                    var clans = await context.Clans.Where(c => c.AllianceId == allianceLeaderInAlliance.Id)
                         .ToListAsync(cancellationToken);
-                    if (foundClans.Count > 0)
+                    if (clans.Count > 0)
                     {
-                        foundClans.ForEach(fc => fc.AllianceId = null);
-                        context.Clans.UpdateRange(foundClans);
+                        clans.ForEach(fc => fc.AllianceId = null);
+                        context.Clans.UpdateRange(clans);
                     }
                     context.Alliances.Remove(allianceLeaderInAlliance);
                 }
 
-                var clanLeaderInClan = await context.Clans.FirstOrDefaultAsync(c => c.LeaderId == foundCharacter.Id, cancellationToken);
+                var clanLeaderInClan = await context.Clans.FirstOrDefaultAsync(c => c.LeaderId == character.Id, cancellationToken);
                 if (clanLeaderInClan != null)
                 {
-                    var foundClanCharacters = await context.Characters.Where(c => c.ClanId == clanLeaderInClan.Id)
+                    var clanCharacters = await context.Characters.Where(c => c.ClanId == clanLeaderInClan.Id)
                         .ToListAsync(cancellationToken);
-                    if (foundClanCharacters.Count > 0)
+                    if (clanCharacters.Count > 0)
                     {
-                        foundClanCharacters.ForEach(fcc => fcc.ClanId = null);
-                        context.Characters.UpdateRange(foundClanCharacters);
+                        clanCharacters.ForEach(fcc => fcc.ClanId = null);
+                        context.Characters.UpdateRange(clanCharacters);
                     }
                     context.Clans.Remove(clanLeaderInClan);
                 }
 
-                var clanMemberInClan = await context.Clans.FirstOrDefaultAsync(c => c.Id == foundCharacter.ClanId, cancellationToken);
+                var clanMemberInClan = await context.Clans.FirstOrDefaultAsync(c => c.Id == character.ClanId, cancellationToken);
                 if (clanMemberInClan != null)
                 {
                     clanMemberInClan.CurrentCountCharacters--;
                     context.Clans.Update(clanMemberInClan);
                 }
                 
-                context.Characters.Remove(foundCharacter);
+                context.Characters.Remove(character);
 
                 await context.SaveChangesAsync(cancellationToken);
 

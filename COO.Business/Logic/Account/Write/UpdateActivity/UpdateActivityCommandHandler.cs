@@ -21,21 +21,21 @@ namespace COO.Business.Logic.Account.Write.UpdateActivity
         {
             await using var context = _contextFactory.CreateDbContext();
 
-            var foundUser =
-                await context.Users.
-                    FirstOrDefaultAsync(u => u.Id == request.UserId, cancellationToken);
+            var user = await context
+                .Users
+                .FirstOrDefaultAsync(u => u.Id == request.UserId, cancellationToken);
 
-            if (foundUser != null)
+            if (user != null)
             {
-                foundUser.LastActivity = DateTime.UtcNow;
+                user.LastActivity = DateTime.UtcNow;
 
-                context.Users.Update(foundUser);
+                context.Users.Update(user);
 
                 if (request.CharacterId != null)
                 {
-                    var character =
-                        await context.Characters.FirstOrDefaultAsync(c => c.Id == request.CharacterId,
-                            cancellationToken);
+                    var character = await context
+                        .Characters
+                        .FirstOrDefaultAsync(c => c.Id == request.CharacterId, cancellationToken);
 
                     if (character != null)
                     {

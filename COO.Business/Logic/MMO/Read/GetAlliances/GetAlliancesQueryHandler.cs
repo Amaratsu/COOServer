@@ -25,10 +25,10 @@ namespace COO.Business.Logic.MMO.Read.GetAlliances
                 Alliances = new List<AllianceModel>()
             };
 
-            var foundAlliances = await context.Alliances.ToListAsync(cancellationToken);
-            if (foundAlliances.Count > 0)
+            var alliances = await context.Alliances.ToListAsync(cancellationToken);
+            if (alliances.Count > 0)
             {
-                foundAlliances.ForEach(fa =>
+                alliances.ForEach(fa =>
                 {
                     response.Alliances.Add(new AllianceModel
                     {

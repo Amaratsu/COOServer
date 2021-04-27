@@ -21,39 +21,39 @@ namespace COO.Business.Logic.MMO.Write.CreateAlliance
         {
             await using var context = _contextFactory.CreateDbContext();
 
-            var foundCharacter = await context
+            var character = await context
                 .Characters
                 .FirstOrDefaultAsync(c => c.Id == request.CharacterId, cancellationToken);
 
-            if (foundCharacter != null)
+            if (character != null)
             {
 
-                var foundAlliance = await context
+                var alliance = await context
                     .Alliances
                     .FirstOrDefaultAsync(c => c.Name.ToLower() == request.AllianceName.ToLower(), cancellationToken);
 
-                var foundClanLeader = await context
+                var clanLeader = await context
                     .Clans
                     .FirstOrDefaultAsync(c => c.LeaderId == request.CharacterId, cancellationToken);
 
-                if (foundAlliance != null)
+                if (alliance != null)
                 {
                     throw new AppException("This alliance name is unavailable.");
                 }
                 else
                 {
-                    if (foundClanLeader != null)
+                    if (clanLeader != null)
                     {
-                        if (foundClanLeader.AllianceId != null)
+                        if (clanLeader.AllianceId != null)
                         {
                             throw new AppException("The clan is already in an alliance.");
                         }
 
                         var newAlliance = new Alliance
                         {
-                            LeaderId = foundCharacter.Id,
-                            LeaderName = foundCharacter.Name,
-                            Name = foundCharacter.Name,
+                            LeaderId = character.Id,
+                            LeaderName = character.Name,
+                            Name = character.Name,
                             CurrentCountClans = 1,
                             MaxCountClans = 3
                         };
@@ -62,9 +62,9 @@ namespace COO.Business.Logic.MMO.Write.CreateAlliance
 
                         await context.SaveChangesAsync(cancellationToken);
 
-                        foundClanLeader.AllianceId = newAlliance.Id;
+                        clanLeader.AllianceId = newAlliance.Id;
 
-                        context.Clans.Update(foundClanLeader);
+                        context.Clans.Update(clanLeader);
 
                         await context.SaveChangesAsync(cancellationToken);
 

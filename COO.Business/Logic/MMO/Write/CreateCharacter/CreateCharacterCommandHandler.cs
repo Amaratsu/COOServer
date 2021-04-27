@@ -21,20 +21,22 @@ namespace COO.Business.Logic.MMO.Write.CreateCharacter
         {
             await using var context = _contextFactory.CreateDbContext();
 
-            var foundCharacter = await context.Characters
+            var character = await context
+                .Characters
                 .AnyAsync(c => c.Name == request.Name, cancellationToken);
 
-            if (foundCharacter)
+            if (character)
             {
                 throw new AppException("This name is unavailable");
             }
 
-            var foundInitializeDataCharacter = await context.InitializeDataCharacters
-                .FirstOrDefaultAsync(character => character.RaceId == request.RaceId && character.ClassId == request.ClassId, cancellationToken);
+            var initializeDataCharacter = await context
+                .InitializeDataCharacters
+                .FirstOrDefaultAsync(c => c.RaceId == request.RaceId && c.ClassId == request.ClassId, cancellationToken);
 
-            if (foundInitializeDataCharacter != null)
+            if (initializeDataCharacter != null)
             {
-                var character = new Character
+                var newCharacter = new Character
                 {
                     UserId = request.UserId,
                     GameServerId = request.ServerId,
@@ -42,26 +44,26 @@ namespace COO.Business.Logic.MMO.Write.CreateCharacter
                     Gender = request.Gender,
                     Level = 1,
                     Experience = 0,
-                    RaceId = foundInitializeDataCharacter.RaceId,
-                    ClassId = foundInitializeDataCharacter.ClassId,
-                    Health = foundInitializeDataCharacter.Health,
-                    Mana = foundInitializeDataCharacter.Mana,
-                    PosX = foundInitializeDataCharacter.PosX,
-                    PosY = foundInitializeDataCharacter.PosY,
-                    PosZ = foundInitializeDataCharacter.PosZ,
-                    RotationYaw = foundInitializeDataCharacter.RotationYaw,
-                    EquipChest = foundInitializeDataCharacter.EquipChest,
-                    EquipFeet = foundInitializeDataCharacter.EquipFeet,
-                    EquipHands = foundInitializeDataCharacter.EquipHands,
-                    EquipHead = foundInitializeDataCharacter.EquipHead,
-                    EquipLegs = foundInitializeDataCharacter.EquipLegs,
-                    Hotbar0 = foundInitializeDataCharacter.Hotbar0,
-                    Hotbar1 = foundInitializeDataCharacter.Hotbar1,
-                    Hotbar2 = foundInitializeDataCharacter.Hotbar2,
-                    Hotbar3 = foundInitializeDataCharacter.Hotbar3
+                    RaceId = initializeDataCharacter.RaceId,
+                    ClassId = initializeDataCharacter.ClassId,
+                    Health = initializeDataCharacter.Health,
+                    Mana = initializeDataCharacter.Mana,
+                    PosX = initializeDataCharacter.PosX,
+                    PosY = initializeDataCharacter.PosY,
+                    PosZ = initializeDataCharacter.PosZ,
+                    RotationYaw = initializeDataCharacter.RotationYaw,
+                    EquipChest = initializeDataCharacter.EquipChest,
+                    EquipFeet = initializeDataCharacter.EquipFeet,
+                    EquipHands = initializeDataCharacter.EquipHands,
+                    EquipHead = initializeDataCharacter.EquipHead,
+                    EquipLegs = initializeDataCharacter.EquipLegs,
+                    Hotbar0 = initializeDataCharacter.Hotbar0,
+                    Hotbar1 = initializeDataCharacter.Hotbar1,
+                    Hotbar2 = initializeDataCharacter.Hotbar2,
+                    Hotbar3 = initializeDataCharacter.Hotbar3
                 };
 
-                await context.Characters.AddAsync(character, cancellationToken);
+                await context.Characters.AddAsync(newCharacter, cancellationToken);
 
                 await context.SaveChangesAsync(cancellationToken);
 

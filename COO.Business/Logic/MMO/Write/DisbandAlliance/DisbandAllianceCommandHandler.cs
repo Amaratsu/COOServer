@@ -21,23 +21,24 @@ namespace COO.Business.Logic.MMO.Write.DisbandAlliance
         {
             await using var context = _contextFactory.CreateDbContext();
 
-            var foundCharacter = await context.Characters
-                .FirstOrDefaultAsync(character => character.Id == request.CharacterId, cancellationToken);
-            if (foundCharacter != null)
+            var character = await context.Characters
+                .FirstOrDefaultAsync(c => c.Id == request.CharacterId, cancellationToken);
+
+            if (character != null)
             {
-                var allianceLeaderInAlliance = await context.Alliances.FirstOrDefaultAsync(a => a.LeaderId == foundCharacter.Id, cancellationToken);
+                var allianceLeaderInAlliance = await context.Alliances.FirstOrDefaultAsync(a => a.LeaderId == character.Id, cancellationToken);
                 if (allianceLeaderInAlliance == null)
                 {
                     throw new AppException("The character is not the alliance leader.");
                 }
                 else
                 {
-                    var foundClans = await context.Clans.Where(c => c.AllianceId == allianceLeaderInAlliance.Id)
+                    var clans = await context.Clans.Where(c => c.AllianceId == allianceLeaderInAlliance.Id)
                         .ToListAsync(cancellationToken);
-                    if (foundClans.Count > 0)
+                    if (clans.Count > 0)
                     {
-                        foundClans.ForEach(fc => fc.AllianceId = null);
-                        context.Clans.UpdateRange(foundClans);
+                        clans.ForEach(fc => fc.AllianceId = null);
+                        context.Clans.UpdateRange(clans);
                     }
                     context.Alliances.Remove(allianceLeaderInAlliance);
 

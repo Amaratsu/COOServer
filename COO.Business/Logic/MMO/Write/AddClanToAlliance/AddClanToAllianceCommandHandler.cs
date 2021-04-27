@@ -21,36 +21,36 @@ namespace COO.Business.Logic.MMO.Write.AddClanToAlliance
         {
             await using var context = _contextFactory.CreateDbContext();
 
-            var foundCharacter = await context
+            var character = await context
                 .Characters
                 .FirstOrDefaultAsync(c => c.Id == request.CharacterId, cancellationToken);
 
-            if (foundCharacter != null)
+            if (character != null)
             {
-                var foundAllianceLeader =
-                    await context.Alliances.FirstOrDefaultAsync(a => a.LeaderId == foundCharacter.Id,
+                var allianceLeader =
+                    await context.Alliances.FirstOrDefaultAsync(a => a.LeaderId == character.Id,
                         cancellationToken);
 
-                if (foundAllianceLeader != null)
+                if (allianceLeader != null)
                 {
-                    if (foundAllianceLeader.CurrentCountClans + 1 > foundAllianceLeader.MaxCountClans)
+                    if (allianceLeader.CurrentCountClans + 1 > allianceLeader.MaxCountClans)
                     {
                         throw new AppException("The alliance has a maximum number of clans.");
                     }
                     else
                     {
-                        var foundClan = await context.Clans.FirstOrDefaultAsync(c => string.Equals(c.Name, request.ClanName, StringComparison.CurrentCultureIgnoreCase),
+                        var clan = await context.Clans.FirstOrDefaultAsync(c => string.Equals(c.Name, request.ClanName, StringComparison.CurrentCultureIgnoreCase),
                             cancellationToken);
 
-                        if (foundClan != null)
+                        if (clan != null)
                         {
-                            if (foundClan.AllianceId != null)
+                            if (clan.AllianceId != null)
                             {
-                                foundClan.AllianceId = foundAllianceLeader.Id;
-                                context.Clans.Update(foundClan);
+                                clan.AllianceId = allianceLeader.Id;
+                                context.Clans.Update(clan);
 
-                                foundAllianceLeader.CurrentCountClans++;
-                                context.Alliances.Update(foundAllianceLeader);
+                                allianceLeader.CurrentCountClans++;
+                                context.Alliances.Update(allianceLeader);
 
                                 await context.SaveChangesAsync(cancellationToken);
 
