@@ -50,7 +50,7 @@ namespace COO.Server.Controllers.Account
                 html: $"Confirm registration by clicking on the link: <a href='{callbackUrl}'>link</a>"
             );
 
-            return Ok(new { Message = $"The account was created successfully, a confirmation email {user.Email} was sent to your email." });
+            return Ok(new { Message = $"The account was created successfully, a confirmation email {user.Email} was sent to your email.", Status = true });
         }
 
         [HttpGet]
@@ -72,7 +72,7 @@ namespace COO.Server.Controllers.Account
                 user.Id.ToString(),
                 user.UserName,
                 _appSettings.Secret);
-            return Ok(new { token, user.UserName });
+            return Ok(new { Token = token, user.UserName, Status = true });
         }
     }
 }

@@ -61,16 +61,16 @@ namespace COO.Server.Controllers.MMO
         }
 
         [HttpPost]
-        [Route(nameof(Character))]
-        public async Task<ActionResult> Character(GetCharacterRequestModel model)
+        [Route(nameof(GetCharacter))]
+        public async Task<ActionResult> GetCharacter(GetCharacterRequestModel model)
         {
             await _mediator.Send(new UpdateActivityCommand(UserId(), model.CharacterId));
             return Ok(await _mediator.Send(new GetCharacterQuery(model.CharacterId, model.ServerId)));
         }
 
         [HttpPost]
-        [Route(nameof(Characters))]
-        public async Task<ActionResult> Characters(GetCharactersRequestModel model)
+        [Route(nameof(GetCharacters))]
+        public async Task<ActionResult> GetCharacters(GetCharactersRequestModel model)
         {
             await _mediator.Send(new UpdateActivityCommand(UserId()));
             return Ok(await _mediator.Send(new GetCharactersQuery(UserId(), model.ServerId)));
