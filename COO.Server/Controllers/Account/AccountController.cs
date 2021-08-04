@@ -64,9 +64,9 @@ namespace COO.Server.Controllers.Account
         [HttpPost]
         [AllowAnonymous]
         [Route(nameof(Login))]
-        public async Task<ActionResult> Login(string login, string password)
+        public async Task<ActionResult> Login(LoginRequestModel model)
         {
-            var user = await _mediator.Send(new AuthenticationQuery(login, password));
+            var user = await _mediator.Send(new AuthenticationQuery(model.Login, model.Password));
 
             var token = _identityService.GenerateJwtToken(
                 user.Id.ToString(),
