@@ -1,4 +1,6 @@
-﻿namespace COO.Domain.Core
+﻿using System.Collections.Generic;
+
+namespace COO.Domain.Core
 {
     public class Clan
     {
@@ -9,5 +11,6 @@
         public string Name { get; set; }
         public int CurrentCountCharacters { get; set; }
         public int MaxCountCharacters { get; set; }
+        public List<Character> Characters { get; set; } = new List<Character>();
     }
 }

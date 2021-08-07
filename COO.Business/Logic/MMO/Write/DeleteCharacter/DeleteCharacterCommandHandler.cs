@@ -21,53 +21,72 @@ namespace COO.Business.Logic.MMO.Write.DeleteCharacter
         {
             await using var context = _contextFactory.CreateDbContext();
 
-            var character = await context.Characters
-                    .FirstOrDefaultAsync(c => c.Id == request.CharacterId, cancellationToken);
+            var user = await context.Users.FirstOrDefaultAsync(u => u.Id == request.UserId, cancellationToken);
 
-            if (character != null)
+            if (user != null)
             {
-                var allianceLeaderInAlliance = await context.Alliances.FirstOrDefaultAsync(a => a.LeaderId == character.Id, cancellationToken);
-                if (allianceLeaderInAlliance != null)
-                {
-                    var clans = await context.Clans.Where(c => c.AllianceId == allianceLeaderInAlliance.Id)
-                        .ToListAsync(cancellationToken);
-                    if (clans.Count > 0)
-                    {
-                        clans.ForEach(fc => fc.AllianceId = null);
-                        context.Clans.UpdateRange(clans);
-                    }
-                    context.Alliances.Remove(allianceLeaderInAlliance);
-                }
 
-                var clanLeaderInClan = await context.Clans.FirstOrDefaultAsync(c => c.LeaderId == character.Id, cancellationToken);
-                if (clanLeaderInClan != null)
-                {
-                    var clanCharacters = await context.Characters.Where(c => c.ClanId == clanLeaderInClan.Id)
-                        .ToListAsync(cancellationToken);
-                    if (clanCharacters.Count > 0)
-                    {
-                        clanCharacters.ForEach(fcc => fcc.ClanId = null);
-                        context.Characters.UpdateRange(clanCharacters);
-                    }
-                    context.Clans.Remove(clanLeaderInClan);
-                }
+                var character = user.Characters.Find(c => c.Id == request.CharacterId);
 
-                var clanMemberInClan = await context.Clans.FirstOrDefaultAsync(c => c.Id == character.ClanId, cancellationToken);
-                if (clanMemberInClan != null)
+                if (character != null)
                 {
-                    clanMemberInClan.CurrentCountCharacters--;
-                    context.Clans.Update(clanMemberInClan);
-                }
+                    var allianceLeaderInAlliance = await context.Alliances.FirstOrDefaultAsync(a => a.LeaderId == character.Id, cancellationToken);
+                    if (allianceLeaderInAlliance != null)
+                    {
+                        var clans = await context.Clans.Where(c => c.AllianceId == allianceLeaderInAlliance.Id)
+                            .ToListAsync(cancellationToken);
+                        if (clans.Count > 0)
+                        {
+                            clans.ForEach(fc => fc.AllianceId = null);
+                            context.Clans.UpdateRange(clans);
+                        }
+                        context.Alliances.Remove(allianceLeaderInAlliance);
+                    }
+
+                    var clanLeaderInClan = await context.Clans.FirstOrDefaultAsync(c => c.LeaderId == character.Id, cancellationToken);
+                    if (clanLeaderInClan != null)
+                    {
+                        context.Clans.Remove(clanLeaderInClan);
+                    }
+
+                    var clanMemberInClan = await context.Clans.FirstOrDefaultAsync(c => c.Characters.Exists(ch => ch.UserId == character.Id), cancellationToken);
+                    if (clanMemberInClan != null)
+                    {
+                        var deleteCharacter = clanMemberInClan.Characters.Find(c => c.Id == request.CharacterId);
+                        if (deleteCharacter != null)
+                        {
+                            clanMemberInClan.CurrentCountCharacters--;
+                            clanMemberInClan.Characters.Remove(deleteCharacter);
+
+                            context.Clans.Update(clanMemberInClan);
+                        }
+                    }
+
+                    var server = await context.InfoServers.FirstOrDefaultAsync(infoServer => infoServer.Id == request.ServerId);
+                    if (server != null)
+                    {
+                        var deleteServerCharacter = server.Characters.Find(ch => ch.Id == request.CharacterId);
+                        if (deleteServerCharacter != null)
+                        {
+                            server.Characters.Remove(deleteServerCharacter);
+                            context.InfoServers.Update(server);
+                        }
+                    }
                 
-                context.Characters.Remove(character);
+                    context.Users.Update(user);
 
-                await context.SaveChangesAsync(cancellationToken);
+                    await context.SaveChangesAsync(cancellationToken);
 
-                return "OK";
+                    return "OK";
+                }
+                else
+                {
+                    throw new AppException("The character not found.");
+                }
             }
             else
             {
-                throw new AppException("The character not found.");
+                throw new AppException("You are not logged in.");
             }
         }
     }

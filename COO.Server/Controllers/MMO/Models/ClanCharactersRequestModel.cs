@@ -2,6 +2,7 @@
 {
     public class ClanCharactersRequestModel
     {
+        public int ClanId { get; set; }
         public int CharacterId { get; set; }
     }
 }

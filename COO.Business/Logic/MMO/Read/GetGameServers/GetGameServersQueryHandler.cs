@@ -34,6 +34,7 @@ namespace COO.Business.Logic.MMO.Read.GetGameServers
                         Id = s.Id,
                         Name = s.Name,
                         IP = s.IP,
+                        Port = s.Port,
                         Status = s.Status,
                         CurrentCount = s.CurrentCount,
                         MaxCount = s.MaxCount

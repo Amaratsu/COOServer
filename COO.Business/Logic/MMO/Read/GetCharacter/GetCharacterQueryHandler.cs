@@ -22,63 +22,71 @@ namespace COO.Business.Logic.MMO.Read.GetCharacter
         {
             await using var context = _contextFactory.CreateDbContext();
 
-            var character = await context.Characters
-                .FirstOrDefaultAsync(c => c.Id == request.CharacterId && c.GameServerId == request.ServerId, cancellationToken);
+            var user = await context.Users.FirstOrDefaultAsync(u => u.Id == request.UserId, cancellationToken);
 
-            if (character != null)
+            if (user != null)
             {
-                var inventories = await context.InventoryItems
-                    .Where(i => i.CharacterId == character.Id)
-                    .ToListAsync(cancellationToken);
+                var character = user.Characters.Find(c => c.Id == request.CharacterId && c.GameServerId == request.ServerId);
 
-                var quests = await context.Quests
-                    .Where(q => q.CharacterId == character.Id)
-                    .ToListAsync(cancellationToken);
-
-                var clan = await context.Clans
-                    .FirstOrDefaultAsync(c => c.Id == character.ClanId, cancellationToken);
-
-                var allianceName = "";
-
-                if (clan?.AllianceId != null)
+                if (character != null)
                 {
-                    var alliance = await context.Alliances.FirstOrDefaultAsync(a => a.Id == clan.AllianceId, cancellationToken);
-                    allianceName = alliance.Name;
+                    var inventories = await context.InventoryItems
+                        .Where(i => i.CharacterId == character.Id)
+                        .ToListAsync(cancellationToken);
+
+                    var quests = await context.Quests
+                        .Where(q => q.CharacterId == character.Id)
+                        .ToListAsync(cancellationToken);
+
+                    var clan = await context.Clans
+                        .FirstOrDefaultAsync(c => c.Characters.Any(ch => ch.UserId == character.Id), cancellationToken);
+
+                    var allianceName = "";
+
+                    if (clan?.AllianceId != null)
+                    {
+                        var alliance = await context.Alliances.FirstOrDefaultAsync(a => a.Id == clan.AllianceId, cancellationToken);
+                        allianceName = alliance.Name;
+                    }
+
+                    return new GetCharacterResponseModel
+                    {
+                        CharacterId = character.Id,
+                        Name = character.Name,
+                        Gender = character.Gender,
+                        RaceId = character.RaceId,
+                        ClassId = character.ClassId,
+                        Health = character.Health,
+                        Mana = character.Mana,
+                        Level = character.Level,
+                        Experience = character.Experience,
+                        EquipChest = character.EquipChest,
+                        EquipFeet = character.EquipFeet,
+                        EquipHands = character.EquipHands,
+                        EquipHead = character.EquipHead,
+                        EquipLegs = character.EquipLegs,
+                        PosX = character.PosX,
+                        PosY = character.PosY,
+                        PosZ = character.PosZ,
+                        RotationYaw = character.RotationYaw,
+                        Hotbar0 = character.Hotbar0,
+                        Hotbar1 = character.Hotbar1,
+                        Hotbar2 = character.Hotbar2,
+                        Hotbar3 = character.Hotbar3,
+                        ClanName = clan?.Name,
+                        AllianceName = allianceName,
+                        Inventory = inventories,
+                        Quests = quests
+                    };
                 }
-
-                return new GetCharacterResponseModel
+                else
                 {
-                    CharacterId = character.Id,
-                    Name = character.Name,
-                    Gender = character.Gender,
-                    RaceId = character.RaceId,
-                    ClassId = character.ClassId,
-                    Health = character.Health,
-                    Mana = character.Mana,
-                    Level = character.Level,
-                    Experience = character.Experience,
-                    EquipChest = character.EquipChest,
-                    EquipFeet = character.EquipFeet,
-                    EquipHands = character.EquipHands,
-                    EquipHead = character.EquipHead,
-                    EquipLegs = character.EquipLegs,
-                    PosX = character.PosX,
-                    PosY = character.PosY,
-                    PosZ = character.PosZ,
-                    RotationYaw = character.RotationYaw,
-                    Hotbar0 = character.Hotbar0,
-                    Hotbar1 = character.Hotbar1,
-                    Hotbar2 = character.Hotbar2,
-                    Hotbar3 = character.Hotbar3,
-                    ClanName = clan?.Name,
-                    AllianceName = allianceName,
-                    Inventory = inventories,
-                    Quests = quests
-                };
+                    throw new AppException("The character not found.");
+                }
             }
             else
             {
-                throw new AppException("The character not found.");
+                throw new AppException("You are not logged in.");
             }
         }
     }

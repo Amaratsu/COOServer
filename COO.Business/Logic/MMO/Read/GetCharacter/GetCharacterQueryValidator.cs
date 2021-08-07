@@ -6,6 +6,7 @@ namespace COO.Business.Logic.MMO.Read.GetCharacter
     {
         public GetCharacterQueryValidator()
         {
+            RuleFor(x => x.UserId).NotNull().NotEmpty();
             RuleFor(x => x.CharacterId).NotNull().NotEmpty();
             RuleFor(x => x.ServerId).NotNull().NotEmpty();
         }

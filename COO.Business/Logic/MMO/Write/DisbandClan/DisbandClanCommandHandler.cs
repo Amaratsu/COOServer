@@ -21,51 +21,58 @@ namespace COO.Business.Logic.MMO.Write.DisbandClan
         {
             await using var context = _contextFactory.CreateDbContext();
 
-            var character = await context.Characters
-                .FirstOrDefaultAsync(c => c.Id == request.CharacterId, cancellationToken);
+            var user = await context.Users.FirstOrDefaultAsync(u => u.Id == request.UserId, cancellationToken);
 
-            if (character != null)
+            if (user != null)
             {
-                if (character.ClanId == null)
+                var character = user.Characters.Find(c => c.Id == request.CharacterId);
+
+                if (character != null)
                 {
-                    throw new AppException("The Character is not in a clan.");
+                    //if (character.ClanId == null)
+                    //{
+                    //    throw new AppException("The Character is not in a clan.");
+                    //}
+                    //else
+                    //{
+                    //    var clan = await context.Clans.FirstOrDefaultAsync(c => c.Id == character.ClanId, cancellationToken);
+
+                    //    if (clan.LeaderId != request.CharacterId)
+                    //    {
+                    //        throw new AppException("The character is not the clan leader.");
+                    //    }
+                    //    else
+                    //    {
+                    //        var clanCharacters = await context.Characters.Where(c => c.ClanId == clan.Id)
+                    //            .ToListAsync(cancellationToken);
+
+                    //        if (clanCharacters.Count > 0)
+                    //        {
+
+                    //            clanCharacters.ForEach(fcc => fcc.ClanId = null);
+
+                    //            context.Characters.UpdateRange(clanCharacters);
+                    //        }
+
+                    //        context.Clans.Remove(clan);
+
+                    //        context.Characters.Update(character);
+
+                    //        await context.SaveChangesAsync(cancellationToken);
+
+                    //        return "OK";
+                    //    }
+                    //}
+                    return "TODO";
                 }
                 else
                 {
-                    var clan = await context.Clans.FirstOrDefaultAsync(c => c.Id == character.ClanId, cancellationToken);
-
-                    if (clan.LeaderId != request.CharacterId)
-                    {
-                        throw new AppException("The character is not the clan leader.");
-                    }
-                    else
-                    {
-                        var clanCharacters = await context.Characters.Where(c => c.ClanId == clan.Id)
-                            .ToListAsync(cancellationToken);
-
-                        if (clanCharacters.Count > 0)
-                        {
-
-                            clanCharacters.ForEach(fcc => fcc.ClanId = null);
-
-                            context.Characters.UpdateRange(clanCharacters);
-                        }
-
-                        context.Clans.Remove(clan);
-
-                        character.ClanId = null;
-
-                        context.Characters.Update(character);
-
-                        await context.SaveChangesAsync(cancellationToken);
-
-                        return "OK";
-                    }
+                    throw new AppException("The character not found.");
                 }
             }
             else
             {
-                throw new AppException("The character not found.");
+                throw new AppException("You are not logged in.");
             }
         }
     }

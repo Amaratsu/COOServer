@@ -10,7 +10,7 @@ namespace COO.DataAccess.Contexts
             : base(options) { }
 
         public DbSet<User> Users { get; set; }
-        public DbSet<Character> Characters { get; set; }
+        //public DbSet<Character> Characters { get; set; }
         public DbSet<Clan> Clans { get; set; }
         public DbSet<Alliance> Alliances { get; set; }
         public DbSet<InventoryItem> InventoryItems { get; set; }

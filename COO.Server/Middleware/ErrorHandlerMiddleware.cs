@@ -48,7 +48,7 @@ namespace COO.Server.Middleware
                         break;
                 }
 
-                var result = JsonSerializer.Serialize(new { Message = error?.Message, Status = false });
+                var result = JsonSerializer.Serialize(new { Message = error?.Message });
                 await response.WriteAsync(result);
             }
         }

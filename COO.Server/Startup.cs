@@ -18,6 +18,7 @@ namespace COO.Server
 
         public IConfiguration Configuration { get; }
 
+        [System.Obsolete]
         public void ConfigureServices(IServiceCollection services)
             => services
                 .AddMediatR(typeof(RegistrationCommandHandler).GetTypeInfo().Assembly)

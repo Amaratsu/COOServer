@@ -23,11 +23,6 @@ namespace COO.Domain.Core
         public int Status { get; set; }
         public DateTime LastUpdate { get; set; }
 
-        public ICollection<User> Users { get; set; }
-
-        public GameServer()
-        {
-            Users = new HashSet<User>();
-        }
+        public List<Character> Characters { get; set; } = new List<Character>();
     }
 }
