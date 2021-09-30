@@ -10,10 +10,11 @@ namespace COO.Business.Logic.MMO.Read.GetCharacter
         public int Gender { get; set; }
         public int RaceId { get; set; }
         public int ClassId { get; set; }
-        public int Health { get; set; }
-        public int Mana { get; set; }
+        public List<InventoryItem> InventoryItems { get; set; }
+        public double Health { get; set; }
+        public double Mana { get; set; }
         public int Level { get; set; }
-        public int Experience { get; set; }
+        public double Experience { get; set; }
         public string ClanName { get; set; }
         public string AllianceName { get; set; }
         public List<InventoryItem> Inventory { get; set; }
@@ -21,15 +22,20 @@ namespace COO.Business.Logic.MMO.Read.GetCharacter
         public double PosX { get; set; }
         public double PosY { get; set; }
         public double PosZ { get; set; }
-        public double RotationYaw { get; set; }
-        public string EquipChest { get; set; }
-        public string EquipFeet { get; set; }
-        public string EquipHands { get; set; }
-        public string EquipHead { get; set; }
-        public string EquipLegs { get; set; }
-        public string Hotbar0 { get; set; }
-        public string Hotbar1 { get; set; }
-        public string Hotbar2 { get; set; }
-        public string Hotbar3 { get; set; }
+        public InventoryItem Primary { get; set; }
+        public InventoryItem Secondary { get; set; }
+        public InventoryItem Helmet { get; set; }
+        public InventoryItem BodyArmor { get; set; }
+        public InventoryItem Gloves { get; set; }
+        public InventoryItem Boots { get; set; }
+        public InventoryItem Shoulder { get; set; }
+        public InventoryItem Cape { get; set; }
+        public InventoryItem Belt { get; set; }
+        public InventoryItem Pants { get; set; }
+        public InventoryItem Necklace { get; set; }
+        public InventoryItem Ring1 { get; set; }
+        public InventoryItem Ring2 { get; set; }
+        public InventoryItem Earring1 { get; set; }
+        public InventoryItem Earring2 { get; set; }
     }
 }
