@@ -9,6 +9,7 @@ namespace COO.Domain.Core
         public int Gender { get; set; }
         public int RaceId { get; set; }
         public int ClassId { get; set; }
+        public int ClanId { get; set; }
         // bag
         public List<InventoryItem> InventoryItems { get; set; }
         // equipment items

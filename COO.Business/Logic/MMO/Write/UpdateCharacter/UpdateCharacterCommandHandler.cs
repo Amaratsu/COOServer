@@ -41,16 +41,16 @@ namespace COO.Business.Logic.MMO.Write.UpdateCharacter
                     character.PosX = request.PosX;
                     character.PosY = request.PosY;
                     character.PosZ = request.PosZ;
-                    character.RotationYaw = request.RotationYaw;
-                    character.EquipChest = request.EquipChest;
-                    character.EquipFeet = request.EquipFeet;
-                    character.EquipHands = request.EquipHands;
-                    character.EquipHead = request.EquipHead;
-                    character.EquipLegs = request.EquipLegs;
-                    character.Hotbar0 = request.Hotbar0;
-                    character.Hotbar1 = request.Hotbar1;
-                    character.Hotbar2 = request.Hotbar2;
-                    character.Hotbar3 = request.Hotbar3;
+                    //character.RotationYaw = request.RotationYaw;
+                    //character.EquipChest = request.EquipChest;
+                    //character.EquipFeet = request.EquipFeet;
+                    //character.EquipHands = request.EquipHands;
+                    //character.EquipHead = request.EquipHead;
+                    //character.EquipLegs = request.EquipLegs;
+                    //character.Hotbar0 = request.Hotbar0;
+                    //character.Hotbar1 = request.Hotbar1;
+                    //character.Hotbar2 = request.Hotbar2;
+                    //character.Hotbar3 = request.Hotbar3;
                     character.IsOnline = request.IsOnline;               
 
                     if (request.Inventory != null && request.Inventory.Count > 0)
@@ -81,9 +81,9 @@ namespace COO.Business.Logic.MMO.Write.UpdateCharacter
                             request.Inventory.ForEach(i => {
                                 inventory.Add(new InventoryItem {
                                     CharacterId = request.CharacterId,
-                                    Slot = i.Slot,
-                                    Item = i.Item,
-                                    Amount = i.Amount
+                                    //Slot = i.Slot,
+                                    //Item = i.Item,
+                                    //Amount = i.Amount
                                 });
                             });
                         

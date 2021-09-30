@@ -17,5 +17,6 @@ namespace COO.DataAccess.Contexts
         public DbSet<Quest> Quests { get; set; }
         public DbSet<GameServer> InfoServers { get; set; }
         public DbSet<InitializeDataCharacter> InitializeDataCharacters { get; set; }
+        public DbSet<Character> Characters { get; set; }
     }
 }

@@ -46,14 +46,14 @@ namespace COO.Business.Logic.MMO.Read.GetCharacters
                                 RaceId = c.RaceId,
                                 ClassId = c.ClassId,
                                 Level = c.Level,
-                                Experience = c.Experience,
-                                Health = c.Health,
-                                Mana = c.Mana,
-                                EquipChest = c.EquipChest,
-                                EquipFeet = c.EquipFeet,
-                                EquipHands = c.EquipHands,
-                                EquipHead = c.EquipHead,
-                                EquipLegs = c.EquipLegs
+                                //Experience = c.Experience,
+                                //Health = c.Health,
+                                //Mana = c.Mana,
+                                //EquipChest = c.EquipChest,
+                                //EquipFeet = c.EquipFeet,
+                                //EquipHands = c.EquipHands,
+                                //EquipHead = c.EquipHead,
+                                //EquipLegs = c.EquipLegs
                             });
                         });
                     }
