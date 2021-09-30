@@ -20,44 +20,49 @@ namespace COO.Business.Logic.MMO.Write.LeaveFromClan
         {
             await using var context = _contextFactory.CreateDbContext();
 
-            var character = await context
-                .Characters
-                .FirstOrDefaultAsync(c => c.Id == request.CharacterId, cancellationToken);
+            var user = await context.Users.FirstOrDefaultAsync(u => u.Id == request.UserId, cancellationToken);
 
-            var clan = await context.Clans.FirstOrDefaultAsync(c => c.LeaderId == character.Id, cancellationToken);
-
-            if (character != null)
+            if (user != null)
             {
+                var character = user.Characters.Find(c => c.Id == request.CharacterId);
 
-                if (clan != null) {
+                var clanLeader = await context.Clans.FirstOrDefaultAsync(c => c.LeaderId == character.Id, cancellationToken);
 
-                    if (character.ClanId != null)
-                    {
-                        character.ClanId = null;
+                if (character != null)
+                {
+                    if (clanLeader != null) {
+                        var clan = await context
+                            .Clans
+                            .FirstOrDefaultAsync(c => c.Characters.Exists(ch => ch.UserId == character.Id), cancellationToken);
 
-                        context.Characters.Update(character);
+                        if (clan != null)
+                        {
+                            clan.CurrentCountCharacters--;
 
-                        clan.CurrentCountCharacters--;
+                            context.Clans.Update(clan);
 
-                        context.Clans.Update(clan);
+                            await context.SaveChangesAsync(cancellationToken);
 
-                        await context.SaveChangesAsync(cancellationToken);
-
-                        return "OK";
+                            return "OK";
+                        }
+                        else
+                        {
+                            throw new AppException("The character is not in a clan.");
+                        }
                     }
                     else
                     {
-                        throw new AppException("The character is not in a clan.");
+                        throw new AppException("Clan leader cannot leave the clan.");
                     }
                 }
                 else
                 {
-                    throw new AppException("Clan leader cannot leave the clan.");
+                    throw new AppException("The character not found.");
                 }
             }
             else
             {
-                throw new AppException("The character not found.");
+                throw new AppException("You are not logged in.");
             }
         }
     }

@@ -84,18 +84,15 @@ namespace COO.Domain.Core
         public bool IsOnline { get; set; }
 
         public int UserId { get; set; }
+        public User User { get; set; }
 
         public int GameServerId { get; set; }
+        public GameServer GameServer { get; set; }
 
-        public UserCharacter UserCharacter { get; set; }
+        //public int? Groupid { get; set; }
+        //public Group Group { get; set; }
 
-        public int? GroupId { get; set; }
-        public Group Group { get; set; }
-
-        public int? ClanId { get; set; }
-        public Clan Clan { get; set; }
-
-        public int? AllianceId { get; set; }
-        public Alliance Alliance { get; set; }
+        //public int? Allianceid { get; set; }
+        //public Alliance Alliance { get; set; }
     }
 }

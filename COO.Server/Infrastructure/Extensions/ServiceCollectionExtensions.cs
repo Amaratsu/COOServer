@@ -84,6 +84,7 @@ namespace COO.Server.Infrastructure.Extensions
                     });
             });
 
+        [System.Obsolete]
         public static void AddApiControllers(this IServiceCollection services)
             => services
                 .AddControllers(options => options

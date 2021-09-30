@@ -21,60 +21,68 @@ namespace COO.Business.Logic.MMO.Write.AddClanToAlliance
         {
             await using var context = _contextFactory.CreateDbContext();
 
-            var character = await context
-                .Characters
-                .FirstOrDefaultAsync(c => c.Id == request.CharacterId, cancellationToken);
+            var user = await context.Users.FirstOrDefaultAsync(u => u.Id == request.UserId, cancellationToken);
 
-            if (character != null)
+            if (user != null)
             {
-                var allianceLeader =
-                    await context.Alliances.FirstOrDefaultAsync(a => a.LeaderId == character.Id,
-                        cancellationToken);
 
-                if (allianceLeader != null)
+                var character = user.Characters.Find(c => c.Id == request.CharacterId);
+
+                if (character != null)
                 {
-                    if (allianceLeader.CurrentCountClans + 1 > allianceLeader.MaxCountClans)
-                    {
-                        throw new AppException("The alliance has a maximum number of clans.");
-                    }
-                    else
-                    {
-                        var clan = await context.Clans.FirstOrDefaultAsync(c => string.Equals(c.Name, request.ClanName, StringComparison.CurrentCultureIgnoreCase),
+                    var allianceLeader =
+                        await context.Alliances.FirstOrDefaultAsync(a => a.LeaderId == character.Id,
                             cancellationToken);
 
-                        if (clan != null)
+                    if (allianceLeader != null)
+                    {
+                        if (allianceLeader.CurrentCountClans + 1 > allianceLeader.MaxCountClans)
                         {
-                            if (clan.AllianceId != null)
-                            {
-                                clan.AllianceId = allianceLeader.Id;
-                                context.Clans.Update(clan);
-
-                                allianceLeader.CurrentCountClans++;
-                                context.Alliances.Update(allianceLeader);
-
-                                await context.SaveChangesAsync(cancellationToken);
-
-                                return "OK";
-                            }
-                            else
-                            {
-                                throw new AppException("The clan is already in an alliance.");
-                            }
+                            throw new AppException("The alliance has a maximum number of clans.");
                         }
                         else
                         {
-                            throw new AppException("The clan not found.");
+                            var clan = await context.Clans.FirstOrDefaultAsync(c => string.Equals(c.Name, request.ClanName, StringComparison.CurrentCultureIgnoreCase),
+                                cancellationToken);
+
+                            if (clan != null)
+                            {
+                                if (clan.AllianceId != null)
+                                {
+                                    clan.AllianceId = allianceLeader.Id;
+                                    context.Clans.Update(clan);
+
+                                    allianceLeader.CurrentCountClans++;
+                                    context.Alliances.Update(allianceLeader);
+
+                                    await context.SaveChangesAsync(cancellationToken);
+
+                                    return "OK";
+                                }
+                                else
+                                {
+                                    throw new AppException("The clan is already in an alliance.");
+                                }
+                            }
+                            else
+                            {
+                                throw new AppException("The clan not found.");
+                            }
                         }
+                    }
+                    else
+                    {
+                        throw new AppException("The character is not an alliance leader.");
                     }
                 }
                 else
                 {
-                    throw new AppException("The character is not an alliance leader.");
+                    throw new AppException("The character not found.");
                 }
             }
             else
             {
-                throw new AppException("The character not found.");
+                throw new AppException("You are not logged in.");
             }
         }
     }

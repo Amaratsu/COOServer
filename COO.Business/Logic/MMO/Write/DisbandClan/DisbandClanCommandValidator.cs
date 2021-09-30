@@ -6,6 +6,7 @@ namespace COO.Business.Logic.MMO.Write.DisbandClan
     {
         public DisbandClanCommandValidator()
         {
+            RuleFor(x => x.UserId).NotNull().NotEmpty();
             RuleFor(x => x.CharacterId).NotNull().NotEmpty();
         }
     }

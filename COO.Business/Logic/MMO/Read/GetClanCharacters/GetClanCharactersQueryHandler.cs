@@ -22,50 +22,56 @@ namespace COO.Business.Logic.MMO.Read.GetClanCharacters
         {
             await using var context = _contextFactory.CreateDbContext();
 
-            var character = await context.Characters
-                .FirstOrDefaultAsync(character => character.Id == request.CharacterId, cancellationToken);
+            var user = await context.Users.FirstOrDefaultAsync(u => u.Id == request.UserId, cancellationToken);
 
-            if (character != null)
+            if (user != null)
             {
-                if (character.ClanId == null)
+                var character = user.Characters.Find(character => character.Id == request.CharacterId);
+
+                if (character != null)
                 {
-                    throw new AppException("The Character is not in a clan.");
+                        var clan = await context.Clans.FirstOrDefaultAsync(c => c.Id == request.ClanId, cancellationToken);
+
+                        var foundCharacter = clan.Characters.Find(c => c.Id == character.Id);
+
+                        if (foundCharacter == null)
+                    {
+                        throw new AppException("The Character is not in a clan.");
+                    }
+                    else
+                    {
+                        var response = new GetClanCharactersResponseModel
+                        {
+                            ClanCharacters = new List<ClanCharacterModel>()
+                        };
+
+                        if (clan.Characters.Count > 0)
+                        {
+                                clan.Characters.ForEach(fcc =>
+                            {
+                                response.ClanCharacters.Add(new ClanCharacterModel
+                                {
+                                    Name = fcc.Name,
+                                    IsOnline = fcc.IsOnline,
+                                    IsLeader = clan != null,
+                                    ClassId = fcc.ClassId,
+                                    Level = fcc.Level,
+                                    RaceId = fcc.RaceId
+                                });
+                            });
+                        }
+
+                        return response;
+                    }
                 }
                 else
                 {
-                    var clanCharacters = await context.Characters.Where(c => c.ClanId == character.ClanId)
-                        .ToListAsync(cancellationToken);
-
-                    var clan = await context.Clans.FirstOrDefaultAsync(c => c.LeaderId == character.Id,
-                        cancellationToken);
-
-                    var response = new GetClanCharactersResponseModel
-                    {
-                        ClanCharacters = new List<ClanCharacterModel>()
-                    };
-
-                    if (clanCharacters.Count > 0)
-                    {
-                        clanCharacters.ForEach(fcc =>
-                        {
-                            response.ClanCharacters.Add(new ClanCharacterModel
-                            {
-                                Name = fcc.Name,
-                                IsOnline = fcc.IsOnline,
-                                IsLeader = clan != null,
-                                ClassId = fcc.ClassId,
-                                Level = fcc.Level,
-                                RaceId = fcc.RaceId
-                            });
-                        });
-                    }
-
-                    return response;
+                    throw new AppException("The character not found.");
                 }
             }
             else
             {
-                throw new AppException("The character not found.");
+                throw new AppException("You are not logged in.");
             }
         }
     }

@@ -20,47 +20,50 @@ namespace COO.Business.Logic.MMO.Write.DeleteCharacterFromClan
         {
             await using var context = _contextFactory.CreateDbContext();
 
-            var character = await context
-                .Characters
-                .FirstOrDefaultAsync(c => c.Id == request.CharacterId, cancellationToken);
+            var user = await context.Users.FirstOrDefaultAsync(u => u.Id == request.UserId, cancellationToken);
 
-            if (character != null)
+            if (user != null)
             {
-                var clan = await context.Clans.FirstOrDefaultAsync(c => c.LeaderId == character.Id, cancellationToken);
+                var character = user.Characters.Find(c => c.Id == request.CharacterId);
 
-                if (clan != null)
+                if (character != null)
                 {
-                    var deleteCharacterFromClan = await context
-                        .Characters
-                        .FirstOrDefaultAsync(c => c.ClanId == clan.Id && c.Name.ToLower() == request.CharacterName.ToLower(), cancellationToken);
+                    var clan = await context.Clans.FirstOrDefaultAsync(c => c.LeaderId == character.Id, cancellationToken);
 
-                    if (deleteCharacterFromClan != null)
+                    if (clan != null)
                     {
-                        deleteCharacterFromClan.ClanId = null;
+                        var deleteCharacterFromClan = clan
+                            .Characters
+                            .Find(c => c.Name.ToLower() == request.CharacterName.ToLower());
 
-                        context.Characters.Update(character);
+                        if (deleteCharacterFromClan != null)
+                        {
+                            clan.Characters.Remove(deleteCharacterFromClan);
 
-                        clan.CurrentCountCharacters--;
+                            clan.CurrentCountCharacters--;
 
-                        context.Clans.Update(clan);
+                            await context.SaveChangesAsync(cancellationToken);
 
-                        await context.SaveChangesAsync(cancellationToken);
-
-                        return "OK";
+                            return "OK";
+                        }
+                        else
+                        {
+                            throw new AppException("The character is not in a clan.");
+                        }
                     }
                     else
                     {
-                        throw new AppException("The character is not in a clan.");
+                        throw new AppException("Only the clan leader can remove a player.");
                     }
                 }
                 else
                 {
-                    throw new AppException("Only the clan leader can remove a player.");
+                    throw new AppException("The character not found.");
                 }
             }
             else
             {
-                throw new AppException("The character not found.");
+                throw new AppException("You are not logged in.");
             }
         }
     }

@@ -20,51 +20,61 @@ namespace COO.Business.Logic.MMO.Write.AddCharacterToClan
         {
             await using var context = _contextFactory.CreateDbContext();
 
-            var character = await context
-                .Characters
-                .FirstOrDefaultAsync(c => c.Name.ToLower() == request.CharacterName.ToLower(), cancellationToken);
+            //var user = await context.Users.FirstOrDefaultAsync(u => u.Id == request.UserId, cancellationToken);
 
-            if (character != null)
-            {
-                if (character.ClanId != null)
-                {
-                    throw new AppException("The character is already in a clan.");
-                }
-                else
-                {
-                    var clan = await context.Clans.FirstOrDefaultAsync(c => c.Id == request.ClanId, cancellationToken);
+            //if (user != null)
+            //{
+            //    var character = user
+            //        .Characters
+            //        .Find(c => c.Name.ToLower() == request.CharacterName.ToLower());
 
-                    if (clan != null)
-                    {
-                        if (clan.CurrentCountCharacters + 1 > clan.MaxCountCharacters)
-                        {
-                            throw new AppException("The clan has a maximum number of players.");
-                        }
-                        else
-                        {
-                            character.ClanId = request.ClanId;
+            //    if (character != null)
+            //    {
+            //        if (character.ClanId != null)
+            //        {
+            //            throw new AppException("The character is already in a clan.");
+            //        }
+            //        else
+            //        {
+            //            var clan = await context.Clans.FirstOrDefaultAsync(c => c.Id == request.ClanId, cancellationToken);
 
-                            context.Characters.Update(character);
+            //            if (clan != null)
+            //            {
+            //                if (clan.CurrentCountCharacters + 1 > clan.MaxCountCharacters)
+            //                {
+            //                    throw new AppException("The clan has a maximum number of players.");
+            //                }
+            //                else
+            //                {
+            //                    character.ClanId = request.ClanId;
 
-                            clan.CurrentCountCharacters++;
+            //                    context.Users.Update(user);
 
-                            context.Clans.Update(clan);
+            //                    clan.CurrentCountCharacters++;
 
-                            await context.SaveChangesAsync(cancellationToken);
+            //                    context.Clans.Update(clan);
 
-                            return "OK";
-                        }
-                    }
-                    else
-                    {
-                        throw new AppException("The clan not found.");
-                    }
-                }
-            }
-            else
-            {
-                throw new AppException("The character not found.");
-            }
+            //                    await context.SaveChangesAsync(cancellationToken);
+
+            //                    return "OK";
+            //                }
+            //            }
+            //            else
+            //            {
+            //                throw new AppException("The clan not found.");
+            //            }
+            //        }
+            //    }
+            //    else
+            //    {
+            //        throw new AppException("The character not found.");
+            //    }
+            //}
+            //else
+            //{
+            //    throw new AppException("You are not logged in.");
+            //}
+            return "TODO";        
         }
     }
 }
